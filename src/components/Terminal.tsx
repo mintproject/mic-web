@@ -25,13 +25,11 @@ const Terminal = () => {
   }, []);
 
   const handleChange = (e: any) => {
-//      setCommand((prev) => command + e.key)
 
     switch (e.domEvent.keyCode) {
       // Enter
       case 13:
         socket.emit("execute");
-        console.log(command);
         setCommand("");
         break;
 
