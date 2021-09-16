@@ -76,11 +76,6 @@ const Terminal = () => {
   return (
     <div className="terminal-container">
       <div className="terminal-window">
-        <header>
-          <div className="button green"></div>
-          <div className="button yellow"></div>
-          <div className="button red"></div>
-        </header>
         <XTerm ref={xtermRef} onKey={handleChange} />
       </div>
     </div>
