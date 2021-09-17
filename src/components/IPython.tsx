@@ -3,6 +3,13 @@ import IPythonLogs from './IPythonLogs'
 import isUrl from 'validator/lib/isURL'
 import IPythonTerminal from './IPythonTerminal'
 
+const INTERVAL_TIME = 5000 //miliseconds
+
+enum TASK_STATUS  {
+    Pending = 'PENDING',
+    Success = 'SUCCESS'
+}
+
 function logs(id: string){
     /**
      * Return a webcomponent to show the logs using a websocket
@@ -35,7 +42,7 @@ const IPython = () => {
         /**
          * Stop the polling to the API if the task status is SUCCESS
          */
-        if (taskStatus === "SUCCESS"){
+        if (taskStatus === TASK_STATUS.Success){
             clearInterval(intervalId as NodeJS.Timeout)
         }
     }, [taskStatus])
@@ -51,7 +58,7 @@ const IPython = () => {
                     .then(data => {
                         setTaskStatus(data.task_status)
                     })
-            }, 1000))
+            }, INTERVAL_TIME))
             return () => clearInterval(intervalId as NodeJS.Timeout)
         }
     }, [taskId])
@@ -90,7 +97,7 @@ const IPython = () => {
                     onChange={handleChange}
                 />
                 <br />
-                <button disabled={loading}>Convert repository</button>
+                <button disabled={loading} hidden={loading}>Convert repository</button>
             </form>
             {taskId} - {taskStatus}
             {logs(taskId)}
