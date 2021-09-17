@@ -4,6 +4,13 @@ Mat is an application to assist scientists in encapsulating their softwares (e.g
 
 ## How to run?
 
+### Pre-requirements
+
+You must deploy the backend services.
+
+- [IPython2MINT](https://github.com/mosoriob/ipython2cwl-api): Convert your Binder Repository into MINT component.
+- Mat-backend: Provides a web terminal to capture the installation and execution of your model.
+
 ### Docker
 
 ```bash
