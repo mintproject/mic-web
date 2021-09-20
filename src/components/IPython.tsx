@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import IPythonLogs from './IPythonLogs'
 import isUrl from 'validator/lib/isURL'
 import IPythonTerminal from './IPythonTerminal'
 
@@ -8,6 +7,11 @@ const INTERVAL_TIME = 5000 //miliseconds
 enum TASK_STATUS  {
     Pending = 'PENDING',
     Success = 'SUCCESS'
+}
+
+interface FormState {
+    gitRepo: string,
+    modelName: string
 }
 
 function logs(id: string){
@@ -22,6 +26,7 @@ function logs(id: string){
         )
     }
 }
+
 const IPython = () => {
     const [gitRepo, setGitRepo] = useState('')
     const [taskId, setTaskId] = useState('')

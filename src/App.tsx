@@ -6,13 +6,16 @@ import History from './components/History';
 import {Link, Switch, Route} from 'react-router-dom'
 import IPython from './components/IPython';
 import IPythonLogs from './components/IPythonLogs';
+import Notebooks from './components/Notebooks';
 function App() {
   return (
     <div className="App">
-      <Link to='/ipython'>IPython2MINT</Link>
+      <Link to='/ipython'>IPython2MINT</Link> <br></br>
+      <Link to='/term'>Term</Link>
       <Switch>
         <Route exact path='/ipython'><IPython /></Route>
-        
+        <Route path='/notebooks/:taskId'><Notebooks /></Route>
+        <Route exact path='/term'> <Terminal /> </Route> 
       </Switch>
     </div>
 
