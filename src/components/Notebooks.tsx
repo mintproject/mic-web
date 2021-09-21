@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { IPYTHON_API } from "./environment";
 
 type NotebooksParams = {
   taskId: string;
@@ -27,7 +28,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
     console.log(option);
   }
   useEffect(() => {
-    fetch(`http://localhost:8004/tasks/${taskId}/specs`)
+    fetch(`${IPYTHON_API}/tasks/${taskId}/specs`)
       .then((response) => response.json())
       .then((data) => {
         setNotebooks(data.map((d: string) => {

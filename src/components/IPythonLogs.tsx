@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { MAT_API } from "./environment";
 interface Message {
   id: string;
   message: string;
@@ -23,7 +24,8 @@ const IPythonLogs = (props: IProps) => {
 
   
   useEffect(() => {
-    ws.current = new WebSocket(`ws://localhost:8004/stream/${props.taskId}`);
+
+    ws.current = new WebSocket(`ws://${MAT_API}/stream/${props.taskId}`);
     ws.current.onopen = () => {
       console.log("Connection opened!");
       setConnectionOpen(true);

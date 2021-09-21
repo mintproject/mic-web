@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import isUrl from 'validator/lib/isURL'
+import { IPYTHON_API } from './environment'
 import IPythonTerminal from './IPythonTerminal'
 
 const INTERVAL_TIME = 5000 //miliseconds
@@ -58,7 +59,7 @@ const IPython = () => {
          */
         if (taskId !== ''){
             setIntervalId(setInterval(() => {
-                fetch(`http://localhost:8004/tasks/${taskId}`)
+                fetch(`http://${IPYTHON_API}/tasks/${taskId}`)
                     .then(response => response.json())
                     .then(data => {
                         setTaskStatus(data.task_status)
@@ -73,7 +74,7 @@ const IPython = () => {
         setLoading(true)
         setErrors(undefined)
         if (isUrl(gitRepo)) {
-            const url = 'http://localhost:8004/tasks'
+            const url = `http://${IPYTHON_API}/tasks`
             fetch(url, {
                 method: 'POST',
                 headers: {
