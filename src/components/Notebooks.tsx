@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IPYTHON_API, MAT_API } from "./environment";
 import {parse, stringify} from 'yaml';
-import {Model} from '../types/cwl'
+import {Model} from '../types/mat'
+import {Redirect} from "react-router-dom"
 
 type NotebooksParams = {
   taskId: string;
