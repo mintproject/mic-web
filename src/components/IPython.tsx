@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import isUrl from 'validator/lib/isURL'
 import { IPYTHON_API } from './environment'
 import IPythonTerminal from './IPythonTerminal'
@@ -49,7 +50,9 @@ const IPython = () => {
          * Stop the polling to the API if the task status is SUCCESS
          */
         if (taskStatus === TASK_STATUS.Success){
-            clearInterval(intervalId as NodeJS.Timeout)
+            clearInterval(intervalId as NodeJS.Timeout);
+            console.log("redirect");
+            <Redirect to="/notebooks/"/>
         }
     }, [taskStatus])
 
@@ -59,7 +62,7 @@ const IPython = () => {
          */
         if (taskId !== ''){
             setIntervalId(setInterval(() => {
-                fetch(`http://${IPYTHON_API}/tasks/${taskId}`)
+                fetch(`${IPYTHON_API}/tasks/${taskId}`)
                     .then(response => response.json())
                     .then(data => {
                         setTaskStatus(data.task_status)
@@ -74,7 +77,7 @@ const IPython = () => {
         setLoading(true)
         setErrors(undefined)
         if (isUrl(gitRepo)) {
-            const url = `http://${IPYTHON_API}/tasks`
+            const url = `${IPYTHON_API}/tasks`
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -95,9 +98,10 @@ const IPython = () => {
 
     return (
         <>
+            <h2> Transform your repository into MINT component </h2>
             <form onSubmit={handleSubmit}>
                 <input 
-                    placeholder="gitRepo"
+                    placeholder="URL of your public repository"
                     name="gitRepo" 
                     value={gitRepo}
                     onChange={handleChange}
@@ -105,7 +109,11 @@ const IPython = () => {
                 <br />
                 <button disabled={loading} hidden={loading}>Convert repository</button>
             </form>
-            {taskId} - {taskStatus}
+            {taskId} - {
+                taskStatus === 'SUCCESS' ?
+                <Redirect to={`notebooks/${taskId}`} /> :
+                taskStatus
+            }
             {logs(taskId)}
             {errors}
         </>
