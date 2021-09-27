@@ -1,9 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import { IPYTHON_API, MAT_API } from "./environment";
-import {parse, stringify} from 'yaml';
-import {Model} from '../types/mat'
-import {Redirect} from "react-router-dom"
+import { parse, stringify } from "yaml";
+import { Model, Parameter, Input, createParameters, createInputs } from "../types/mat";
+import { CommandLineObject } from "../types/cwl";
+
+function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+    return value !== null && value !== undefined;
+}
+
+
+function getParametersCwl(data: CommandLineObject) : Parameter[]{
+      return Object.entries(data.inputs)
+        .map(([key, value], index ) => {
+          if (value?.type !== "File") {
+            return {name: key, prefix: value?.inputBinding.prefix, type: value?.type}
+          }
+        }
+        ).filter(notEmpty)
+}
+
+
+function getFilesCwl(data: CommandLineObject) : Input[]{
+      return Object.entries(data.inputs)
+        .map(([key, value], index ) => {
+          if (value?.type === "File") {
+            return {name: key, display_name: key, prefix: value?.inputBinding.prefix}
+          }
+        }
+        ).filter(notEmpty)
+}
 
 type NotebooksParams = {
   taskId: string;
@@ -21,16 +47,34 @@ const Notebooks = (props: NotebooksParams | {}) => {
   );
   const { taskId } = useParams<NotebooksParams>();
   const [option, setOption] = useState<string | undefined>(undefined);
-  
-   async function setCwlSpec(taskId: string, fileName: string | undefined){
-      if (typeof fileName === "undefined"){
-        console.error('filename cannot be undefined')
-      }
-      else {
-      return await fetch(`${IPYTHON_API}/specs/${taskId}?spec_file_name=${encodeURIComponent(fileName)}`)
-          .then((response) => response.text())
-          .then((spec) => (parse(spec)))
-      }
+  const [ triggerRedirect, setTriggerRedirect ] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [modelId, setModelId] = useState('');
+
+  async function setCwlSpec(taskId: string, fileName: string | undefined) {
+    if (typeof fileName === "undefined") {
+      console.error("filename cannot be undefined");
+    } else {
+      return fetch(
+        `${IPYTHON_API}/specs/${taskId}?spec_file_name=${encodeURIComponent(
+          fileName
+        )}`
+      )
+        .then((response) => response.text())
+        .then((spec) => {
+          const parsed_spec : CommandLineObject = parse(spec)
+          const model : Model = {
+            name: option ? option : "",
+            description: "test",
+            type: "cwl",
+            cwl_spec: parsed_spec,
+            //inputs: getFilesCwl(parsed_spec),
+            //parameters: getParametersCwl(parsed_spec),
+            docker_image: parsed_spec.hints.DockerRequirement.dockerImageId
+          }
+          return model
+        });
+    }
   }
 
   function onValueChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -39,41 +83,43 @@ const Notebooks = (props: NotebooksParams | {}) => {
 
   function formSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    setCwlSpec(taskId, option)
-      .then(data => {
-        console.log(data)
-          const model : Model = {
-            name: option? option : "",
-            description: "description",
-            type: "cwl",
-            cwl_spec: data
-          }
-          const url = `${MAT_API}/models`
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(model)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-            })
+    setCwlSpec(taskId, option).then((model) => {
+      const url = `${MAT_API}/models`;
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(model),
       })
+        .then((response) => response.json())
+        .then((model: Model) => {
+            createParameters(model.id as string, getParametersCwl(model.cwl_spec))
+            createInputs(model.id as string, getFilesCwl(model.cwl_spec))
+            setModelId(model.id as string)
+            setTriggerRedirect(true)
+            
+        })
+
+    });
   }
   useEffect(() => {
     fetch(`${IPYTHON_API}/tasks/${taskId}/specs`)
       .then((response) => response.json())
       .then((data) => {
-        setNotebooks(data.map((d: string) => {
-            return {name: d, checked: false}
-        }));
+        setNotebooks(
+          data.map((d: string) => {
+            return { name: d, checked: false };
+          })
+        );
+        setLoading(false);
       });
   }, []);
 
   return (
     <div className="selection_notebook">
+      {modelId !== '' && <Redirect to={`/models/${modelId}/summary`}/> }
+      {loading ? <h2> Loading your notebooks </h2> : <h2>Select the notebooks</h2>}
       <form onSubmit={formSubmit}>
         {notebooks?.map((n) => (
           <div key={n.name} className="radio">
@@ -90,7 +136,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
           </div>
         ))}
         <button className="btn btn-default" type="submit">
-            Submit
+          Submit
         </button>
       </form>
     </div>
