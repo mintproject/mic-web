@@ -1,5 +1,5 @@
 import { MAT_API } from "../components/environment";
-import { IdMap, CommandLineObject } from "./cwl";
+import { CommandLineObject } from "./cwl";
 export interface Model {
   id?: string;
   name: string;
@@ -39,7 +39,7 @@ export interface Input {
 
 export function createParameters(modelId: string, parameters: Parameter[]) {
   const url = `${MAT_API}/models/${modelId}/parameters`;
-  parameters.map((parameter) => {
+  const response = parameters.map((parameter) => {
     fetch(url, {
       method: "POST",
       headers: {

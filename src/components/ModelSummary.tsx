@@ -18,7 +18,7 @@ const ModelSummary = () => {
   const { modelId } = useParams<ModelParameter>();
   const [model, setModel] = useState<Model>();
   const [loading, setLoading] = useState<Boolean>(true);
-  const [inputData, setInputData] = useState();
+  //const [inputData, setInputData] = useState();
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;

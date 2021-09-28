@@ -11,11 +11,6 @@ enum TASK_STATUS  {
     Success = 'SUCCESS'
 }
 
-interface FormState {
-    gitRepo: string,
-    modelName: string
-}
-
 function logs(id: string){
     /**
      * Return a webcomponent to show the logs using a websocket
@@ -42,6 +37,7 @@ const IPython = () => {
          * Handle input change
          */
         const {name, value} = event.target
+        console.log("Setting " + name)
         setGitRepo(value)
     }
 

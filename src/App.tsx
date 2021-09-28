@@ -1,13 +1,8 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Terminal from './components/Terminal';
-import History from './components/History';
 import {Link, Switch, Route} from 'react-router-dom'
 import IPython from './components/IPython';
-import IPythonLogs from './components/IPythonLogs';
 import Notebooks from './components/Notebooks';
-import { IPYTHON_API } from './components/environment';
 import ModelSummary from './components/ModelSummary';
 import ModelList from './components/ModelList';
 

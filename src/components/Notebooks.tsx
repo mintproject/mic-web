@@ -16,6 +16,7 @@ function getParametersCwl(data: CommandLineObject) : Parameter[]{
           if (value?.type !== "File") {
             return {name: key, prefix: value?.inputBinding.prefix, type: value?.type}
           }
+          return undefined
         }
         ).filter(notEmpty)
 }
