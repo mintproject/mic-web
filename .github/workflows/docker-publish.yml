@@ -31,9 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build (webpack) 
-        run: npm run create-build
-      - name: Test
-        run: npm test
+        run: npm build
+      #- name: Test
+      #  run: npm test
       - uses: actions/upload-artifact@v2
         with:
           name: nextjs-build
