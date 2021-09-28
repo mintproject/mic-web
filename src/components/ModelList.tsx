@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Model } from "../types/mat";
 import { MAT_API } from "./environment";
-import { useTable } from 'react-table';
 import { Link } from "react-router-dom";
 
 
