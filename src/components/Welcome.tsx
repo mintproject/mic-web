@@ -21,8 +21,6 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import Paper from '@mui/material/Paper';
 
-const theme = createTheme();
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
@@ -33,15 +31,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function Welcome() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            MINT Model Insertion
-          </Typography>
-        </Toolbar>
-      </AppBar>
       <main>
         {/* Hero unit */}
         <Box
@@ -89,7 +78,6 @@ function Welcome() {
           </Container>
         </Box>
       </main>
-    </ThemeProvider>
   );
 }
 
