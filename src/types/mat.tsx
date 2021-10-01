@@ -2,11 +2,11 @@ import { MAT_API } from "../components/environment";
 import { CommandLineObject } from "./cwl";
 export interface Model {
   id?: string;
-  name: string;
+  name?: string;
   display_name?: string;
   description?: string;
-  type: string;
-  cwl_spec: CommandLineObject;
+  type?: string;
+  cwl_spec?: CommandLineObject;
   docker_image?: string;
   parameters?: Parameter[];
   inputs?: Input[];
@@ -18,20 +18,20 @@ export interface Parameter {
   display_name?: string;
   description?: string;
   type?: string;
-
   unit?: string;
   unit_description?: string;
   data_type?: string;
   default?: Number | string | boolean;
   choices?: string[];
-  min?: number;
-  max?: number;
+  min?: Number;
+  max?: Number;
   prefix?: string;
 }
 
 export interface Input {
   id?: string;
   name: string;
+  description?: string;
   display_name?: string;
   path?: string;
   prefix?: string;

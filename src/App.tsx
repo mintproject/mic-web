@@ -9,10 +9,11 @@ import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { Link as RouterLink, MemoryRouter as Router } from 'react-router-dom';
 import Link from '@mui/material/Link';
-
+import './App.css'
+import ParameterEditor from "./components/ParameterEditor";
+import InputEditor from "./components/InputEditor";
 const theme = createTheme();
 
 
@@ -51,6 +52,12 @@ function App() {
         </Route>
         <Route path="/models/:modelId/summary">
           <ModelSummary />
+        </Route>
+        <Route path="/inputs/:inputId">
+          <InputEditor />
+        </Route>
+        <Route path="/parameters/:parameterId">
+          <ParameterEditor />
         </Route>
         <Route exact path="/term">
           {" "}

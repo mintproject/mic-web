@@ -18,11 +18,7 @@ const IPythonTerminal = (props: IProps) => {
   }, []);
 
   return (
-    <div className="terminal-container">
-      <div className="terminal-window">
-        <XTerm ref={xtermRef} addons={[attachAddon, fitAddon]} />
-      </div>
-    </div>
+        <XTerm ref={xtermRef} addons={[attachAddon]} />
   );
 };
 
