@@ -12,7 +12,7 @@ import { Link, Redirect, useParams } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
 import Grid from "@mui/material/Grid";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 
 type ModelParameter = {
   modelId: string;
@@ -71,8 +71,6 @@ const ParameterGrid = (props: ParameterGridProps) => {
   );
 };
 
-
-
 const InputGridItem = (props: InputItemGridProps) => {
   return (
     <Grid container>
@@ -122,7 +120,7 @@ function handleErrors(response: Response) {
 const ModelSummary = () => {
   const { modelId } = useParams<ModelParameter>();
   const [model, setModel] = useState<Model>();
-  const [loading, setLoading] = useState<Boolean>(true);
+  const [isLoading, setLoading] = useState<Boolean>(true);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -141,28 +139,21 @@ const ModelSummary = () => {
       .then((data) => {
         setModel(data[0]);
         setLoading(false);
-      })
-      .catch((error) => <Redirect to="/404" />);
+      });
   }, []);
-  
-  if (loading) {
-    return <p>Loading</p>;
-  } else {
-    return (
-      <Container maxWidth="sm">
+
+  return (
+    <Container maxWidth="sm">
+      {isLoading && <p>Pending</p>}
+      {model && (
         <Paper
           variant="outlined"
           sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
         >
-        <Typography
-            variant='h6'
-            color='inherit'
-            gutterBottom
-        >
-            Tell us about your Model 
-        </Typography>
+          <Typography variant="h6" color="inherit" gutterBottom>
+            Tell us about your Model
+          </Typography>
           <form onSubmit={handleSubmit}>
-            
             <TextField
               fullWidth
               id="display"
@@ -191,9 +182,9 @@ const ModelSummary = () => {
             <Button variant="contained">Save</Button>
           </form>
         </Paper>
-      </Container>
-    );
-  }
+      )}
+    </Container>
+  );
 };
 
 export default ModelSummary;

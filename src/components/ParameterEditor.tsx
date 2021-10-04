@@ -106,7 +106,7 @@ const ParameterEditor = () => {
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
         <Typography variant="h6" color="inherit" gutterBottom>
-          Tell us about your Parameter {parameter?.name}
+          Describe your parameter:  {parameter?.name}
         </Typography>
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField
@@ -116,6 +116,7 @@ const ParameterEditor = () => {
             id="display_name"
             label="Display name"
             variant="outlined"
+            defaultValue={parameter?.name}
             onChange={handleChange}
           />
           <TextField

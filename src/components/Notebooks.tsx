@@ -20,7 +20,7 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
 }
 
 function getParametersCwl(data: CommandLineObject): Parameter[] {
-  console.log(data)
+  console.log(data);
   return Object.entries(data.inputs)
     .map(([key, value], index) => {
       if (value?.type !== "File") {
@@ -66,6 +66,8 @@ const Notebooks = (props: NotebooksParams | {}) => {
   const [option, setOption] = useState<string | undefined>(undefined);
   const [triggerRedirect, setTriggerRedirect] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isParametersPosted, setParametersPosted] = useState(false);
+  const [isInputsPosted, setInputsPosted] = useState(false);
   const [modelId, setModelId] = useState("");
 
   async function setCwlSpec(taskId: string, fileName: string | undefined) {
@@ -109,19 +111,31 @@ const Notebooks = (props: NotebooksParams | {}) => {
         .then((response) => response.json())
         .then((model: Model) => {
           if (typeof model.cwl_spec !== undefined) {
-            
-            const parameters = getParametersCwl(model.cwl_spec as CommandLineObject)
-            const files = getFilesCwl(model.cwl_spec as CommandLineObject)
-            createParameters(model.id as string, parameters);
-            createInputs(model.id as string, files);
-            console.log(parameters);
-            console.log(files)
+            const parameters = getParametersCwl(
+              model.cwl_spec as CommandLineObject
+            );
+            const files = getFilesCwl(model.cwl_spec as CommandLineObject);
+            createParameters(model.id as string, parameters)
+                .map((p) => p.then((response) => response.ok))
+                .reduce((p) => p)
+                .then(p => setInputsPosted(true))
+
+            createInputs(model.id as string, files)
+                .map((p) => p.then((response) => response.ok))
+                .reduce((p) => p)
+                .then(p => setParametersPosted(true))
           }
           setModelId(model.id as string);
-          setTriggerRedirect(true);
         });
     });
   }
+
+  useEffect(() => {
+    if ( isInputsPosted && isParametersPosted && (modelId !== "")){
+      setTriggerRedirect(true)
+    }
+  }, [isInputsPosted, isParametersPosted, modelId])
+  
   useEffect(() => {
     fetch(`${IPYTHON_API}/tasks/${taskId}/specs`)
       .then((response) => response.json())
@@ -141,7 +155,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        {modelId !== "" && <Redirect to={`/models/${modelId}/summary`} />}
+        {triggerRedirect && <Redirect to={`/models/${modelId}/summary`} />}
         <Typography variant="h5" color="inherit">
           Select the notebook to add
         </Typography>
