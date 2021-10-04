@@ -55,7 +55,7 @@ const IPython = () => {
       console.log("redirect");
       <Redirect to="/notebooks/" />;
     }
-  }, [taskStatus, intervalId]);
+  }, [taskStatus]);
 
   useEffect(() => {
     /**
@@ -73,7 +73,7 @@ const IPython = () => {
       );
       return () => clearInterval(intervalId as NodeJS.Timeout);
     }
-  }, [taskId, intervalId]);
+  }, [taskId]);
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
