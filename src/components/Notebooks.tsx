@@ -149,7 +149,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
         );
         setLoading(false);
       });
-  }, [taskId]);
+    }, [taskId]);
 
   return (
     <Container maxWidth="sm">

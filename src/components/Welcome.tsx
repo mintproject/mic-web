@@ -6,65 +6,65 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
-import Paper from '@mui/material/Paper';
+import Paper from "@mui/material/Paper";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   color: theme.palette.text.secondary,
 }));
 
-
 function Welcome() {
   return (
-      <main>
-        {/* Hero unit */}
-        <Box
-          sx={{
-            bgcolor: "background.paper",
-            pt: 8,
-            pb: 6,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              I would like to encapsulate...
-            </Typography>
-            <Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            >
-              <Grid container spacing={3}>
-                <Grid item xs>
-                  <Item>     
-                    <p> A Python Jupyter Notebook </p>
-                   <Button 
-                    component={Link} to={'/ipython'}  
-                    variant="contained">
+    <main>
+
+      {/* Hero unit */}
+      <Box
+        sx={{
+          bgcolor: "background.paper",
+          pt: 8,
+          pb: 6,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Typography
+            component="h1"
+            variant="h2"
+            align="center"
+            color="text.primary"
+            gutterBottom
+          >
+            I would like to encapsulate...
+          </Typography>
+          <Stack
+            sx={{ pt: 4 }}
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+          >
+            <Grid container spacing={3}>
+              <Grid item xs>
+                <Item>
+                  <p> A Python Jupyter Notebook </p>
+                  <Button component={Link} to={"/ipython"} variant="contained">
                     Start
-                   </Button>
-                  </Item>
-                </Grid>
-                <Grid item xs>
-                  <Item>     
-                    <p> My model using CLI </p>
-                   <Button variant="outlined" disabled>Soon</Button>
-                  </Item>
-                </Grid>
+                  </Button>
+                </Item>
               </Grid>
-            </Stack>
-          </Container>
-        </Box>
-      </main>
+              <Grid item xs>
+                <Item>
+                  <p> My model using CLI </p>
+                  <Button variant="outlined" disabled>
+                    Soon
+                  </Button>
+                </Item>
+              </Grid>
+            </Grid>
+          </Stack>
+        </Container>
+      </Box>
+    </main>
   );
 }
 
