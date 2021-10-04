@@ -30,6 +30,7 @@ function getParametersCwl(data: CommandLineObject): Parameter[] {
           type: value?.type,
         };
       }
+      return undefined
     })
     .filter(notEmpty);
 }
@@ -44,6 +45,7 @@ function getFilesCwl(data: CommandLineObject): Input[] {
           prefix: value?.inputBinding.prefix,
         };
       }
+      return undefined
     })
     .filter(notEmpty);
 }
@@ -147,7 +149,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
         );
         setLoading(false);
       });
-  }, []);
+  }, [taskId]);
 
   return (
     <Container maxWidth="sm">

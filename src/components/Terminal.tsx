@@ -22,7 +22,7 @@ const Terminal = () => {
     socket.on("output", (data) => {
       xtermRef.current?.terminal.write(data);
     });
-  }, []);
+  }, [socket]);
 
   const handleChange = (e: any) => {
 

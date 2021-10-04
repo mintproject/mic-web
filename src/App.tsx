@@ -5,11 +5,11 @@ import ModelList from "./components/ModelList";
 import ModelSummary from "./components/ModelSummary";
 import Terminal from "./components/Terminal";
 import Welcome from "./components/Welcome";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { Link as RouterLink, MemoryRouter as Router } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Link from '@mui/material/Link';
 import './App.css'
 import ParameterEditor from "./components/ParameterEditor";

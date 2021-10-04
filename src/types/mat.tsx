@@ -39,27 +39,26 @@ export interface Input {
 
 export function createParameters(modelId: string, parameters: Parameter[]) {
   const url = `${MAT_API}/models/${modelId}/parameters`;
-  return parameters.map((parameter) => {
-    return fetch(url, {
+  return parameters.map((parameter) => 
+    fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(parameter),
     })
-  });
+  );
 }
-
 
 export function createInputs(modelId: string, inputs: Input[]) {
   const url = `${MAT_API}/models/${modelId}/inputs`;
-  return inputs.map((input) => {
-    return fetch(url, {
+  return inputs.map((input) =>
+    fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(input),
     })
-  });
+  );
 }

@@ -3,16 +3,14 @@ import {
   Container,
   Box,
   TextField,
-  TextFieldProps,
   Typography,
   Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link, Redirect, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
 import Grid from "@mui/material/Grid";
-import EditIcon from "@mui/icons-material/Edit";
 
 type ModelParameter = {
   modelId: string;
@@ -110,13 +108,6 @@ const ParameterGridItem = (props: ParameterItemGridProps) => {
   );
 };
 
-function handleErrors(response: Response) {
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
-  return response;
-}
-
 const ModelSummary = () => {
   const { modelId } = useParams<ModelParameter>();
   const [model, setModel] = useState<Model>();
@@ -140,7 +131,7 @@ const ModelSummary = () => {
         setModel(data[0]);
         setLoading(false);
       });
-  }, []);
+  }, [modelId]);
 
   return (
     <Container maxWidth="sm">

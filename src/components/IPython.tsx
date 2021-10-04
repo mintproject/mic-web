@@ -1,4 +1,4 @@
-import { Button, Container, makeStyles, Paper, Typography } from "@mui/material";
+import { Button, Container, Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ const IPython = () => {
       console.log("redirect");
       <Redirect to="/notebooks/" />;
     }
-  }, [taskStatus]);
+  }, [taskStatus, intervalId]);
 
   useEffect(() => {
     /**
@@ -73,7 +73,7 @@ const IPython = () => {
       );
       return () => clearInterval(intervalId as NodeJS.Timeout);
     }
-  }, [taskId]);
+  }, [taskId, intervalId]);
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();

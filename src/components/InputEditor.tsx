@@ -3,12 +3,10 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import { useParams, useHistory } from "react-router-dom";
 import {
   CircularProgress,
   Container,
-  MenuItem,
   Paper,
   TextField,
 } from "@mui/material";
@@ -19,28 +17,16 @@ interface Props {
   inputId: string;
 }
 
-const types = [
-  {
-    value: "int",
-    label: "Integer",
-  },
-  {
-    value: "string",
-    label: "String",
-  },
-];
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+// const types = [
+//   {
+//     value: "int",
+//     label: "Integer",
+//   },
+//   {
+//     value: "string",
+//     label: "String",
+//   },
+// ];
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -51,7 +37,7 @@ function replacer(key: string, value: any) {
 }
 
 const InputEditor = () => {
-  const { inputId: inputId } = useParams<Props>();
+  const { inputId } = useParams<Props>();
   const history = useHistory();
   const [input, setInput] = useState<Input>();
   const [loading, setLoading] = useState(true);
@@ -85,7 +71,6 @@ const InputEditor = () => {
       .then((data) => {
         setInput(data);
         setLoading(false);
-        console.log(input?.type);
       });
   }, [inputId]);
 
