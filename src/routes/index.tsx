@@ -56,9 +56,7 @@ export const AppRouter = () => {
           <Route exact path="/models/">
             <ModelList />
           </Route>
-          <Route path="/models/:modelId/summary">
-            <ModelSummary />
-          </Route>
+          <PrivateRoute path="/models/:modelId/summary" component={ModelSummary} />
           <Route path="/inputs/:inputId">
             <InputEditor />
           </Route>

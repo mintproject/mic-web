@@ -12,18 +12,13 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import { MAT_API } from "./environment";
+import { replacer } from "../utils/utils";
 
 interface Props {
   parameterId: string;
 }
 
-function replacer(key: string, value: any) {
-  console.log(value);
-  if (value === null) {
-    return undefined;
-  }
-  return value;
-}
+
 
 const ParameterEditor = () => {
   const { parameterId } = useParams<Props>();

@@ -1,33 +1,46 @@
-import { AppBar, Link } from "@mui/material"
-import Button from "@mui/material/Button"
-import Toolbar from "@mui/material/Toolbar"
-import { useKeycloak } from "@react-keycloak/web"
-import { Link as RouterLink } from "react-router-dom"
+import { AppBar, Link } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { useKeycloak } from "@react-keycloak/web";
+import { Link as RouterLink } from "react-router-dom";
 
 const Menu = () => {
-    const {keycloak} = useKeycloak();
-    return (
-      <AppBar position="relative">
+  const { keycloak } = useKeycloak();
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
         <Toolbar>
-            <Link
-              variant='h6'
-              color='inherit'
-              underline='none'
-              component={RouterLink}
-              to="/"
-            >
-              MINT Model Insertion
-            </Link>
-            {keycloak && !keycloak.authenticated &&
-              <Button color="inherit" onClick={() => keycloak.login()}>Login</Button>
-            }
-            {keycloak && keycloak.authenticated &&
-              <Button color="inherit" onClick={() => keycloak.logout()}> Logout </Button>
-            }
-            
+          <Link  sx={{flexGrow: 1}}
+            variant="h6"
+            color="inherit"
+            underline="none"
+            component={RouterLink}
+            to="/"
+          >
+                      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          MINT Insertion
+          </Typography>    
+        
+          </Link>
+
+          {keycloak && !keycloak.authenticated && (
+            <Button color="inherit" onClick={() => keycloak.login()}>
+              Login
+            </Button>
+          )}
+          {keycloak && keycloak.authenticated && (
+            <Button color="inherit" onClick={() => keycloak.logout()}>
+              {" "}
+              Logout{" "}
+              
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
-    )
-}
+    </Box>
+  );
+};
 
-export default Menu
+export default Menu;
