@@ -12,17 +12,17 @@ const Menu = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Link  sx={{flexGrow: 1}}
+          <Link
+            sx={{ flexGrow: 1 }}
             variant="h6"
             color="inherit"
             underline="none"
             component={RouterLink}
             to="/"
           >
-                      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          MINT Insertion
-          </Typography>    
-        
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              MINT Insertion
+            </Typography>
           </Link>
 
           {keycloak && !keycloak.authenticated && (
@@ -34,7 +34,6 @@ const Menu = () => {
             <Button color="inherit" onClick={() => keycloak.logout()}>
               {" "}
               Logout{" "}
-              
             </Button>
           )}
         </Toolbar>
