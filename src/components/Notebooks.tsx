@@ -30,7 +30,7 @@ function getParametersCwl(data: CommandLineObject): Parameter[] {
           type: value?.type,
         };
       }
-      return undefined
+      return undefined;
     })
     .filter(notEmpty);
 }
@@ -45,7 +45,7 @@ function getFilesCwl(data: CommandLineObject): Input[] {
           prefix: value?.inputBinding.prefix,
         };
       }
-      return undefined
+      return undefined;
     })
     .filter(notEmpty);
 }
@@ -117,15 +117,28 @@ const Notebooks = (props: NotebooksParams | {}) => {
               model.cwl_spec as CommandLineObject
             );
             const files = getFilesCwl(model.cwl_spec as CommandLineObject);
-            createParameters(model.id as string, parameters)
-                .map((p) => p.then((response) => response.ok))
-                .reduce((p) => p)
-                .then(p => setInputsPosted(true))
 
-            createInputs(model.id as string, files)
-                .map((p) => p.then((response) => response.ok))
-                .reduce((p) => p)
-                .then(p => setParametersPosted(true))
+            const promisesParameters = createParameters(model.id as string, parameters)
+              .map((p) => p.then((response) => response.ok))
+
+            if (promisesParameters.length > 1){
+            promisesParameters
+              .reduce((p) => p)
+              .then((p) => setInputsPosted(true));
+            } else {
+              setInputsPosted(true);
+            }
+
+            const promisesInputs = createInputs(model.id as string, files)
+              .map((p) => p.then((response) => response.ok))
+
+            if (promisesInputs.length > 1){
+              promisesInputs
+              .reduce((p) => p)
+              .then((p) => setParametersPosted(true));
+            } else {
+              setParametersPosted(true)
+            }
           }
           setModelId(model.id as string);
         });
@@ -133,11 +146,11 @@ const Notebooks = (props: NotebooksParams | {}) => {
   }
 
   useEffect(() => {
-    if ( isInputsPosted && isParametersPosted && (modelId !== "")){
-      setTriggerRedirect(true)
+    if (isInputsPosted && isParametersPosted && modelId !== "") {
+      setTriggerRedirect(true);
     }
-  }, [isInputsPosted, isParametersPosted, modelId])
-  
+  }, [isInputsPosted, isParametersPosted, modelId]);
+
   useEffect(() => {
     fetch(`${IPYTHON_API}/tasks/${taskId}/specs`)
       .then((response) => response.json())
@@ -149,7 +162,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
         );
         setLoading(false);
       });
-    }, [taskId]);
+  }, [taskId]);
 
   return (
     <Container maxWidth="sm">
