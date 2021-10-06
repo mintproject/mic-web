@@ -118,26 +118,29 @@ const Notebooks = (props: NotebooksParams | {}) => {
             );
             const files = getFilesCwl(model.cwl_spec as CommandLineObject);
 
-            const promisesParameters = createParameters(model.id as string, parameters)
-              .map((p) => p.then((response) => response.ok))
+            const promisesParameters = createParameters(
+              model.id as string,
+              parameters
+            ).map((p) => p.then((response) => response.ok));
 
-            if (promisesParameters.length > 1){
-            promisesParameters
-              .reduce((p) => p)
-              .then((p) => setInputsPosted(true));
+            if (promisesParameters.length > 0) {
+              promisesParameters
+                .reduce((p) => p)
+                .then((p) => setInputsPosted(true));
             } else {
               setInputsPosted(true);
             }
 
-            const promisesInputs = createInputs(model.id as string, files)
-              .map((p) => p.then((response) => response.ok))
+            const promisesInputs = createInputs(model.id as string, files).map(
+              (p) => p.then((response) => response.ok)
+            );
 
-            if (promisesInputs.length > 1){
+            if (promisesInputs.length > 0) {
               promisesInputs
-              .reduce((p) => p)
-              .then((p) => setParametersPosted(true));
+                .reduce((p) => p)
+                .then((p) => setParametersPosted(true));
             } else {
-              setParametersPosted(true)
+              setParametersPosted(true);
             }
           }
           setModelId(model.id as string);
