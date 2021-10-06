@@ -1,16 +1,9 @@
-import {
-  Paper,
-  Box,
-  TextField,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Paper, Box, TextField, Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
 import Grid from "@mui/material/Grid";
-
 
 interface InputItemGridProps {
   input: Input;
@@ -110,7 +103,7 @@ interface Props {
 
 function replacer(key: string, value: any) {
   console.log(value);
-  if ( key === 'inputs' || key === 'parameters' || value === null) {
+  if (key === "inputs" || key === "parameters" || value === null) {
     return undefined;
   }
   return value;
@@ -138,11 +131,10 @@ const ModelEditor = (props: Props) => {
   const [saving, setSaving] = useState(false);
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    console.log("hi")
-    setSaving(true)
-    micModelPut(model as Model)
-    .then(response => {
-        response.ok && setSaving(false)
+    console.log("hi");
+    setSaving(true);
+    micModelPut(model as Model).then((response) => {
+      response.ok && setSaving(false);
     });
   }
 
@@ -163,7 +155,7 @@ const ModelEditor = (props: Props) => {
       <Typography variant="h6" color="inherit" gutterBottom>
         Tell us about your Model
       </Typography>
-      <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           fullWidth
           id="display"
@@ -184,12 +176,22 @@ const ModelEditor = (props: Props) => {
           onChange={handleChange}
         />
         <h3> Inputs </h3>
+        {model?.inputs ? (
         <InputGrid model={model as Model} />
-
+        ): (
+          "None"
+        )
+        }
         <h3> Parameters </h3>
-        <ParameterGrid model={model as Model} />
+        {model?.parameters ? (
+          <ParameterGrid model={model as Model} />
+        ) : (
+            "None"
+        )}
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
-          <Button type='submit' variant="contained">{saving ? "Saving" : "Save"}</Button>
+          <Button type="submit" variant="contained">
+            {saving ? "Saving" : "Save"}
+          </Button>
         </Box>
       </form>
     </Paper>
