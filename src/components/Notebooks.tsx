@@ -67,7 +67,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
   const { taskId } = useParams<NotebooksParams>();
   const [option, setOption] = useState<string | undefined>(undefined);
   const [triggerRedirect, setTriggerRedirect] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isParametersPosted, setParametersPosted] = useState(false);
   const [isInputsPosted, setInputsPosted] = useState(false);
   const [modelId, setModelId] = useState("");
@@ -101,6 +101,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
 
   function formSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
+    setLoading(true)
     setCwlSpec(taskId, option).then((model) => {
       const url = `${MAT_API}/models`;
       fetch(url, {
