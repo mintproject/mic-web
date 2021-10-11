@@ -35,7 +35,7 @@ function Welcome() {
             color="text.primary"
             gutterBottom
           >
-            Register my model
+            Register my model.
           </Typography>
           <Stack
             sx={{ pt: 4 }}
