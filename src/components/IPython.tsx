@@ -1,4 +1,4 @@
-import { Button, Container, Paper, Typography } from "@mui/material";
+import { Button, Container, Link, Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
@@ -111,6 +111,13 @@ const IPython = () => {
             Build and launch a Git repository
         </Typography>
 
+        <Typography
+            variant='body1'
+            color='inherit'
+        >
+            You must prepare your repository for use with BinderHub
+        </Typography>
+        <Link />
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <Box
             sx={{

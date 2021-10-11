@@ -35,7 +35,7 @@ function Welcome() {
             color="text.primary"
             gutterBottom
           >
-            I would like to encapsulate...
+            Register my model
           </Typography>
           <Stack
             sx={{ pt: 4 }}
