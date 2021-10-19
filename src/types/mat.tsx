@@ -37,6 +37,23 @@ export interface Input {
   prefix?: string;
 }
 
+export interface Container {
+  id?: string;
+  name?: string,
+  image?: string,
+  launched_at?: string,
+  host?: string,
+  port?: string,
+  docker_id?: string,
+  modelId?: string,
+}
+
+export function getContainer(containerId: string){
+  return fetch(
+      `${MAT_API}/containers/${containerId}`
+    )
+}
+
 export function createParameters(modelId: string, parameters: Parameter[]) {
   const url = `${MAT_API}/models/${modelId}/parameters`;
   return parameters.map((parameter) => 

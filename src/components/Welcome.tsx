@@ -55,8 +55,8 @@ function Welcome() {
               <Grid item xs>
                 <Item>
                   <p> My model using CLI </p>
-                  <Button variant="outlined" disabled>
-                    Soon
+                  <Button component={Link} to={'/commandLine'} variant="outlined">
+                    Start
                   </Button>
                 </Item>
               </Grid>
