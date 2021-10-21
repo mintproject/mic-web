@@ -1,10 +1,15 @@
+import { Container } from "@mui/material";
 import React from "react";
 
-const Command = () => {
+interface Props {
+    command: string | undefined;
+}
+const Command = (props: Props) => {
     return (
-        <div>
-            <p>Command 1</p>
-        </div>
+        <Container>
+            <p>{props.command}</p>
+            
+        </Container>
     )
 }
 

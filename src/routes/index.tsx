@@ -65,7 +65,7 @@ export const AppRouter = () => {
           <Route path="/parameters/:parameterId">
             <ParameterEditor />
           </Route>
-         <Route path="/term/:containerId">
+         <Route path="/term/:modelId/:containerId">
             {" "}
             <Terminal />{" "}
           </Route>

@@ -10,6 +10,8 @@ export interface Model {
   docker_image?: string;
   parameters?: Parameter[];
   inputs?: Input[];
+  container?: Container;
+  directives?: Directive[];
 }
 
 export interface Parameter {
@@ -39,24 +41,48 @@ export interface Input {
 
 export interface Container {
   id?: string;
-  name?: string,
-  image?: string,
-  launched_at?: string,
-  host?: string,
-  port?: string,
-  docker_id?: string,
-  modelId?: string,
+  name?: string;
+  image?: string;
+  launched_at?: string;
+  host?: string;
+  port?: string;
+  docker_id?: string;
+  modelId?: string;
 }
 
-export function getContainer(containerId: string){
-  return fetch(
-      `${MAT_API}/containers/${containerId}`
-    )
+export interface Directive {
+  id?: string;
+  command?: string;
+  modelId?: string;
+  created_at?: Date;
+}
+
+export function getContainer(containerId: string) {
+  return fetch(`${MAT_API}/containers/${containerId}`);
+}
+
+export function getDirectives(modelId: string) {
+  const url = `${MAT_API}/models/${modelId}/directives`;
+  return fetch(url);
+}
+
+export function createDirective(modelId: string, command: string) {
+  const url = `${MAT_API}/models/${modelId}/directives`;
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      command: command,
+      modelId: modelId
+    }),
+  });
 }
 
 export function createParameters(modelId: string, parameters: Parameter[]) {
   const url = `${MAT_API}/models/${modelId}/parameters`;
-  return parameters.map((parameter) => 
+  return parameters.map((parameter) =>
     fetch(url, {
       method: "POST",
       headers: {

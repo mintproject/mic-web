@@ -25,7 +25,7 @@ const CommandLine = () => {
       .then((response) => response.json())
       .then((data) => {
         const response_model = data as Model;
-        fetch(`${MAT_API}/models/${response_model.id}/containers`, {
+        fetch(`${MAT_API}/models/${response_model.id}/container`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -35,7 +35,10 @@ const CommandLine = () => {
           }),
         })
         .then((response) => response.json())
-        .then((data) => setContainerId(data.id))
+        .then((data) => {
+          setModelId(response_model.id)
+          setContainerId(data.id)
+        })
         console.log(response_model);
       });
   };
@@ -47,9 +50,10 @@ const CommandLine = () => {
 
   const [model, setModel] = useState<Model>();
   const [containerId, setContainerId] = useState();
+  const [modelId, setModelId] = useState<string>()
   const [loading, setLoading] = useState(false);
   return containerId ? (
-    <Redirect to={`term/${containerId}`} />
+    <Redirect to={`term/${modelId}/${containerId}`} />
   ) : 
       loading ? (
         <p> a </p>
@@ -79,6 +83,7 @@ const CommandLine = () => {
             id="docker_image"
             label="Image"
             variant="outlined"
+            defaultValue="mintproject/mint-term"
             onChange={handleChange}
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -90,7 +95,6 @@ const CommandLine = () => {
       </Paper>
     </Container>
   )
-  );
 };
 
 export default CommandLine;
