@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { XTerm } from "xterm-for-react";
 import io, { Socket } from "socket.io-client";
 import "./terminal.css";
-import { MAT_API } from "./environment";
 import { useParams } from "react-router-dom";
 import {
   getContainer,
@@ -11,8 +10,8 @@ import {
   getDirectives,
   Directive,
 } from "../types/mat";
-import Command from "./Command";
 import History from "./History";
+import Grid from "@mui/material/Grid";
 
 type ContainerParameter = {
   containerId: string;
@@ -137,12 +136,16 @@ const Terminal = () => {
   }, [modelId]);
 
   return (
-    <div className="terminal-container">
-      <div className="terminal-window">
+    <Grid container spacing={2}>
+      <Grid item xs={10} md={8}>
         <XTerm ref={xtermRef} onKey={handleChange} />
-      </div>
-      <History directives={directives ?? []} containerId={containerId} modelId={modelId} />
-    </div>
+      </Grid>
+      <Grid item xs={2} md={4}>
+        <History directives={directives ?? []} containerId={containerId} modelId={modelId} />
+      </Grid>
+    </Grid>
+
+
   );
 };
 
