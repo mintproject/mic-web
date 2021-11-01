@@ -52,7 +52,6 @@ const IPython = () => {
      */
     if (taskStatus === TASK_STATUS.Success) {
       clearInterval(intervalId as NodeJS.Timeout);
-      console.log("redirect");
       <Redirect to="/notebooks/" />;
     }
   }, [taskStatus]);
@@ -68,6 +67,10 @@ const IPython = () => {
             .then((response) => response.json())
             .then((data) => {
               setTaskStatus(data.task_status);
+              return data;
+            })
+            .catch((error) => {
+              console.log(error);
             });
         }, INTERVAL_TIME)
       );
@@ -91,7 +94,9 @@ const IPython = () => {
         .then((response) => response.json())
         .then((data) => {
           setTaskId(data.task_id);
-        });
+          return data
+        })
+        .catch((error) => {console.log(error)});
     } else {
       setErrors("The url is not valid git url");
       setLoading(false);
@@ -104,18 +109,12 @@ const IPython = () => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        <Typography
-            variant='h6'
-            color='inherit'
-        >
-            Build and launch a Git repository
+        <Typography variant="h6" color="inherit">
+          Build and launch a Git repository
         </Typography>
 
-        <Typography
-            variant='body1'
-            color='inherit'
-        >
-            You must prepare your repository for use with BinderHub
+        <Typography variant="body1" color="inherit">
+          You must prepare your repository for use with BinderHub
         </Typography>
         <Link />
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -134,11 +133,11 @@ const IPython = () => {
               value={gitRepo}
               onChange={handleChange}
               required
-              variant='standard'
+              variant="standard"
               helperText={errors}
             />
           </Box>
-          
+
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               type="submit"
@@ -149,17 +148,11 @@ const IPython = () => {
               Convert repository
             </Button>
           </Box>
-
         </form>
       </Paper>
-        {logs(taskId)}
+      {logs(taskId)}
 
-      {taskStatus === "SUCCESS" ? (
-        <Redirect to={`notebooks/${taskId}`} />
-      ) : (
-        ''
-      )}
-
+      {taskStatus === "SUCCESS" ? <Redirect to={`notebooks/${taskId}`} /> : ""}
     </Container>
   );
 };

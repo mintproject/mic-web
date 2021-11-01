@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Paper, Typography } from "@mui/material";
+import { ErrorBoundary, useErrorHandler } from "react-error-boundary";
 
 function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
@@ -71,6 +72,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
   const [isParametersPosted, setParametersPosted] = useState(false);
   const [isInputsPosted, setInputsPosted] = useState(false);
   const [modelId, setModelId] = useState("");
+  const handleError = useErrorHandler();
 
   async function setCwlSpec(taskId: string, fileName: string | undefined) {
     if (typeof fileName === "undefined") {
@@ -101,7 +103,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
 
   function formSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    setLoading(true)
+    setLoading(true);
     setCwlSpec(taskId, option).then((model) => {
       const url = `${MAT_API}/models`;
       fetch(url, {
@@ -157,53 +159,60 @@ const Notebooks = (props: NotebooksParams | {}) => {
 
   useEffect(() => {
     fetch(`${IPYTHON_API}/tasks/${taskId}/specs`)
-      .then((response) => response.json())
+      .then(
+        (response) => response.json(),
+        (error) => handleError(error)
+      )
       .then((data) => {
-        setNotebooks(
-          data.map((d: string) => {
-            return { name: d, checked: false };
-          })
-        );
+        console.log(data);
+        data &&
+          setNotebooks(
+            data.map((d: string) => {
+              return { name: d, checked: false };
+            })
+          );
         setLoading(false);
       });
   }, [taskId]);
 
   return (
-    <Container maxWidth="sm">
-      <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-      >
-        {triggerRedirect && <Redirect to={`/models/${modelId}/summary`} />}
-        <Typography variant="h5" color="inherit">
-          Select the notebook to add
-        </Typography>
-        {loading && (
-          <Box sx={{ display: "flex" }}>
-            <CircularProgress />
-          </Box>
-        )}
-        <form onSubmit={formSubmit}>
-          {notebooks?.map((n) => (
-            <div key={n.name} className="radio">
-              <label>
-                <input
-                  type="radio"
-                  value={n.name}
-                  onChange={onValueChange}
-                  checked={option === n.name}
-                />
-                {n.name}
-                {stringify(n.spec)}
-              </label>
-            </div>
-          ))}
-          <button className="btn btn-default" type="submit">
-            Submit
-          </button>
-        </form>
-      </Paper>
-    </Container>
+    <ErrorBoundary fallback={<p>Something went wrong</p>}>
+      <Container maxWidth="sm">
+        <Paper
+          variant="outlined"
+          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+        >
+          {triggerRedirect && <Redirect to={`/models/${modelId}/summary`} />}
+          <Typography variant="h5" color="inherit">
+            Select the notebook to add
+          </Typography>
+          {loading && (
+            <Box sx={{ display: "flex" }}>
+              <CircularProgress />
+            </Box>
+          )}
+          <form onSubmit={formSubmit}>
+            {notebooks?.map((n) => (
+              <div key={n.name} className="radio">
+                <label>
+                  <input
+                    type="radio"
+                    value={n.name}
+                    onChange={onValueChange}
+                    checked={option === n.name}
+                  />
+                  {n.name}
+                  {stringify(n.spec)}
+                </label>
+              </div>
+            ))}
+            <button className="btn btn-default" type="submit">
+              Submit
+            </button>
+          </form>
+        </Paper>
+      </Container>
+    </ErrorBoundary>
   );
 };
 
