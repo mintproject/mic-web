@@ -44,7 +44,7 @@ export const createParameters = async (
   const url = `${MAT_API}/models/${modelId}/parameters`;
   try {
     for (const parameter of parameters) {
-      const response = await fetch(url, {
+      await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export const createInputs = async (modelId: string, inputs: Input[]) => {
   const url = `${MAT_API}/models/${modelId}/inputs`;
   try {
     for (const parameter of inputs) {
-      const response = await fetch(url, {
+      await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

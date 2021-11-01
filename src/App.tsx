@@ -6,14 +6,6 @@ import keycloak from "./keycloak";
 import { AppRouter } from "./routes";
 const theme = createTheme();
 
-const eventLogger = (event: unknown, error: unknown) => {
-  console.log("onKeycloakEvent", event, error);
-};
-
-const tokenLogger = (tokens: unknown) => {
-  console.log("onKeycloakTokens", tokens);
-};
-
 function App() {
   return (
     <ThemeProvider theme={theme}>

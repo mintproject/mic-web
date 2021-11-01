@@ -6,10 +6,11 @@ import { Redirect } from "react-router-dom";
 import isUrl from "validator/lib/isURL";
 import { IPYTHON_API } from "./environment";
 import IPythonTerminal from "./IPythonTerminal";
+import Timeout from 'node';
 
 const INTERVAL_TIME = 5000; //miliseconds
 
-enum TASK_STATUS {
+export enum TASK_STATUS {
   Pending = "PENDING",
   Success = "SUCCESS",
 }
@@ -32,7 +33,7 @@ const IPython = () => {
   const [taskId, setTaskId] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(
+  const [intervalId, setIntervalId] = useState<Timeout | undefined>(
     undefined
   );
   const [errors, setErrors] = useState<string | undefined>(undefined);
@@ -51,7 +52,7 @@ const IPython = () => {
      * Stop the polling to the API if the task status is SUCCESS
      */
     if (taskStatus === TASK_STATUS.Success) {
-      clearInterval(intervalId as NodeJS.Timeout);
+      clearInterval(intervalId as Timeout);
       <Redirect to="/notebooks/" />;
     }
   }, [taskStatus]);
@@ -74,7 +75,7 @@ const IPython = () => {
             });
         }, INTERVAL_TIME)
       );
-      return () => clearInterval(intervalId as NodeJS.Timeout);
+      return () => clearInterval(intervalId as Timeout);
     }
   }, [taskId]);
 
@@ -94,7 +95,6 @@ const IPython = () => {
         .then((response) => response.json())
         .then((data) => {
           setTaskId(data.task_id);
-          return data
         })
         .catch((error) => {console.log(error)});
     } else {

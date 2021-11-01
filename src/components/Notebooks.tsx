@@ -115,57 +115,10 @@ const Notebooks = (props: NotebooksParams | {}) => {
       const files = (typeof model.cwl_spec !== undefined)?  getFilesCwl(model.cwl_spec) : [];
       await createParameters(model.id, parameters)
       await createInputs(model.id, files)
-      console.log("done")
       setModelId(model.id)
     };
 
     submitNotebook();
-
-    // setCwlSpec(taskId, option).then((model) => {
-    //   const url = `${MAT_API}/models`;
-    //   fetch(url, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(model),
-    //   })
-    //     .then((response) => response.json())
-    //     .then((model: Model) => {
-    //       if (typeof model.cwl_spec !== undefined) {
-    //         const parameters = getParametersCwl(
-    //           model.cwl_spec as CommandLineObject
-    //         );
-    //         const files = getFilesCwl(model.cwl_spec as CommandLineObject);
-
-    //         const promisesParameters = createParameters(
-    //           model.id as string,
-    //           parameters
-    //         ).map((p) => p.then((response) => response.ok));
-
-    //         if (promisesParameters.length > 0) {
-    //           promisesParameters
-    //             .reduce((p) => p)
-    //             .then((p) => setInputsPosted(true));
-    //         } else {
-    //           setInputsPosted(true);
-    //         }
-
-    //         const promisesInputs = createInputs(model.id as string, files).map(
-    //           (p) => p.then((response) => response.ok)
-    //         );
-
-    //         if (promisesInputs.length > 0) {
-    //           promisesInputs
-    //             .reduce((p) => p)
-    //             .then((p) => setParametersPosted(true));
-    //         } else {
-    //           setParametersPosted(true);
-    //         }
-    //       }
-    //       setModelId(model.id as string);
-    //     });
-    // });
   }
 
   useEffect(() => {
@@ -175,12 +128,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
         if (!response.ok) throw new Error("Not Found");
         else {
           const data = await response.json();
-          data &&
-            setNotebooks(
-              data.map((d: string) => {
-                return { name: d, checked: false };
-              })
-            );
+          setNotebooks(data)
         }
         setLoading(false);
       } catch (error) {

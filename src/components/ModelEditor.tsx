@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
 import Grid from "@mui/material/Grid";
-
+import React from "react"
 interface InputItemGridProps {
   input: Input;
 }
@@ -122,20 +122,16 @@ const micModelPut = (model: Model) => {
   });
 };
 
-const modelCatalogPost = (model: Model) => {
-  console.log(model);
-};
 
 const ModelEditor = (props: Props) => {
   const [model, setModel] = useState<Model>();
   const [saving, setSaving] = useState(false);
-  function handleSubmit(event: React.FormEvent<EventTarget>) {
+  
+  const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
-    console.log("hi");
     setSaving(true);
-    micModelPut(model as Model).then((response) => {
-      response.ok && setSaving(false);
-    });
+    const response = await micModelPut(model as Model)
+    response.ok && setSaving(false);
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
