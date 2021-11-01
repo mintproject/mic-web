@@ -20,8 +20,6 @@ function App() {
       <CssBaseline />
       <ReactKeycloakProvider
         authClient={keycloak}
-        onEvent={eventLogger}
-        onTokens={tokenLogger}
       >
         <AppRouter />
       </ReactKeycloakProvider>

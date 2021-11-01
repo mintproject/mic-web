@@ -62,16 +62,24 @@ const InputEditor = () => {
         console.log(response.ok)
         history.goBack()
       }
-    });
+    })
+    .catch((error) => {console.log(error)});
   }
 
   useEffect(() => {
-    fetch(`${MAT_API}/inputs/${inputId}`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchInput = async () => {
+      try {
+        const response = await fetch(`${MAT_API}/inputs/${inputId}`);
+        const data = await response.json();
         setInput(data);
         setLoading(false);
-      });
+      }
+      catch (error){
+        console.log(error)
+      }
+
+    }
+    fetchInput()
   }, [inputId]);
 
   return loading ? (

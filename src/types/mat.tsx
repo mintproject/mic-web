@@ -37,28 +37,39 @@ export interface Input {
   prefix?: string;
 }
 
-export function createParameters(modelId: string, parameters: Parameter[]) {
+export const createParameters = async (
+  modelId: string,
+  parameters: Parameter[]
+) => {
   const url = `${MAT_API}/models/${modelId}/parameters`;
-  return parameters.map((parameter) => 
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(parameter),
-    })
-  );
-}
+  try {
+    for (const parameter of parameters) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parameter),
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
-export function createInputs(modelId: string, inputs: Input[]) {
+export const createInputs = async (modelId: string, inputs: Input[]) => {
   const url = `${MAT_API}/models/${modelId}/inputs`;
-  return inputs.map((input) =>
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(input),
-    })
-  );
-}
+  try {
+    for (const parameter of inputs) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parameter),
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
