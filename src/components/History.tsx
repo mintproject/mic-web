@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid";
-import { Directive, getDirectives } from "../types/mat";
+import { Directive } from "../types/mat";
 import DirectiveItem from "./DirectiveItem";
 
 type Props = {
