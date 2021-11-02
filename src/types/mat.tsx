@@ -10,6 +10,8 @@ export interface Model {
   docker_image?: string;
   parameters?: Parameter[];
   inputs?: Input[];
+  container?: Container;
+  directives?: Directive[];
 }
 
 export interface Parameter {
@@ -37,25 +39,48 @@ export interface Input {
   prefix?: string;
 }
 
-export const createParameters = async (
-  modelId: string,
-  parameters: Parameter[]
-) => {
-  const url = `${MAT_API}/models/${modelId}/parameters`;
-  try {
-    for (const parameter of parameters) {
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(parameter),
-      });
-    }
-  } catch (error) {
-    throw new Error(error);
-  }
-};
+
+export interface Container {
+  id?: string;
+  name?: string;
+  image?: string;
+  launched_at?: string;
+  host?: string;
+  port?: string;
+  docker_id?: string;
+  modelId?: string;
+}
+
+export interface Directive {
+  id?: string;
+  command?: string;
+  modelId?: string;
+  created_at?: Date;
+}
+
+export function getContainer(containerId: string) {
+  return fetch(`${MAT_API}/containers/${containerId}`);
+}
+
+export function getDirectives(modelId: string) {
+  const url = `${MAT_API}/models/${modelId}/directives`;
+  return fetch(url);
+}
+
+export function createDirective(modelId: string, command: string) {
+  const url = `${MAT_API}/models/${modelId}/directives`;
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      command: command,
+      modelId: modelId
+    }),
+  });
+}
+r
 
 export const createInputs = async (modelId: string, inputs: Input[]) => {
   const url = `${MAT_API}/models/${modelId}/inputs`;

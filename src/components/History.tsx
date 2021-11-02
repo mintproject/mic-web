@@ -1,15 +1,19 @@
-import React from "react";
-import Command from "./Command";
+import Grid from "@mui/material/Grid";
+import { Directive, getDirectives } from "../types/mat";
+import DirectiveItem from "./DirectiveItem";
 
-const History = () => {
-    return (
-        <div> 
-            <Command />
-            <Command />
-            <Command />
-            <Command />
-        </div>
-    )
+type Props = {
+  directives: Directive[];
+  containerId: string;
+  modelId: string;
 }
+
+const History = (props: Props) => {
+  return ( 
+    <Grid container spacing={0}>
+      {props.directives?.map((directive) => <DirectiveItem directive={directive} />)}
+    </Grid> 
+  )
+};
 
 export default History;
