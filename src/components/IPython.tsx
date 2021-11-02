@@ -6,7 +6,6 @@ import { Redirect } from "react-router-dom";
 import isUrl from "validator/lib/isURL";
 import { IPYTHON_API } from "./environment";
 import IPythonTerminal from "./IPythonTerminal";
-import Timeout from 'node';
 
 const INTERVAL_TIME = 5000; //miliseconds
 
@@ -33,9 +32,7 @@ const IPython = () => {
   const [taskId, setTaskId] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [intervalId, setIntervalId] = useState<Timeout | undefined>(
-    undefined
-  );
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(undefined);
   const [errors, setErrors] = useState<string | undefined>(undefined);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -52,7 +49,7 @@ const IPython = () => {
      * Stop the polling to the API if the task status is SUCCESS
      */
     if (taskStatus === TASK_STATUS.Success) {
-      clearInterval(intervalId as Timeout);
+      clearInterval(intervalId as NodeJS.Timeout);
       <Redirect to="/notebooks/" />;
     }
   }, [taskStatus]);
@@ -75,32 +72,36 @@ const IPython = () => {
             });
         }, INTERVAL_TIME)
       );
-      return () => clearInterval(intervalId as Timeout);
+      return () => clearInterval(intervalId as NodeJS.Timeout);
     }
   }, [taskId]);
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    setLoading(true);
-    setErrors(undefined);
-    if (isUrl(gitRepo)) {
-      const url = `${IPYTHON_API}/tasks`;
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: gitRepo }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
+    const submit = async () => {
+      setLoading(true);
+      setErrors(undefined);
+      if (isUrl(gitRepo)) {
+        try {
+          const url = `${IPYTHON_API}/tasks`;
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: gitRepo }),
+          });
+          const data = await response.json();
           setTaskId(data.task_id);
-        })
-        .catch((error) => {console.log(error)});
-    } else {
-      setErrors("The url is not valid git url");
-      setLoading(false);
-    }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setErrors("The url is not valid git url");
+        setLoading(false);
+      }
+    };
+    submit();
   }
 
   return (

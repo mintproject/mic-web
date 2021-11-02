@@ -1,14 +1,17 @@
 module.exports = {
   extends: [
     "react-app",
-    "eslint:recommended"
-    //"plugin:promise/recommended"
+    "eslint:recommended",
+    "plugin:promise/recommended"
   ],
   plugins: ["promise"],
   rules: {
     "promise/catch-or-return": "error",
     "promise/always-return": "error",
-    "semi": "off",
-    "@typescript-eslint/semi": "error"
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "error"
+  },
+  "globals": {
+    "NodeJS": true
   },
 };
