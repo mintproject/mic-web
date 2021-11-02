@@ -58,6 +58,26 @@ export interface Directive {
   created_at?: Date;
 }
 
+export const createParameters = async (
+  modelId: string,
+  parameters: Parameter[]
+) => {
+  const url = `${MAT_API}/models/${modelId}/parameters`;
+  try {
+    for (const parameter of parameters) {
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parameter),
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export function getContainer(containerId: string) {
   return fetch(`${MAT_API}/containers/${containerId}`);
 }
@@ -80,7 +100,7 @@ export function createDirective(modelId: string, command: string) {
     }),
   });
 }
-r
+
 
 export const createInputs = async (modelId: string, inputs: Input[]) => {
   const url = `${MAT_API}/models/${modelId}/inputs`;
