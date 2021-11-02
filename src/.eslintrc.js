@@ -8,7 +8,8 @@ module.exports = {
   rules: {
     "promise/catch-or-return": "error",
     "promise/always-return": "error",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
+    "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-unused-vars": "error"
   },
   "globals": {

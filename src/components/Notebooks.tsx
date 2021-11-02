@@ -88,7 +88,6 @@ const Notebooks = (props: NotebooksParams | {}) => {
         docker_image: parsed_spec.hints.DockerRequirement.dockerImageId,
       };
       return model;
-
     }
   }
 
@@ -102,7 +101,6 @@ const Notebooks = (props: NotebooksParams | {}) => {
       setLoading(true);
       const url = `${MAT_API}/models`;
       const model_request = await setCwlSpec(taskId, option);
-      console.log(model_request);
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -111,11 +109,15 @@ const Notebooks = (props: NotebooksParams | {}) => {
         body: JSON.stringify(model_request),
       });
       const model = await response.json();
-      const parameters = (typeof model.cwl_spec !== undefined)?  getParametersCwl(model.cwl_spec) : [];
-      const files = (typeof model.cwl_spec !== undefined)?  getFilesCwl(model.cwl_spec) : [];
-      await createParameters(model.id, parameters)
-      await createInputs(model.id, files)
-      setModelId(model.id)
+      const parameters =
+        typeof model.cwl_spec !== undefined
+          ? getParametersCwl(model.cwl_spec)
+          : [];
+      const files =
+        typeof model.cwl_spec !== undefined ? getFilesCwl(model.cwl_spec) : [];
+      await createParameters(model.id, parameters);
+      await createInputs(model.id, files);
+      setModelId(model.id);
     };
 
     submitNotebook();
@@ -128,7 +130,11 @@ const Notebooks = (props: NotebooksParams | {}) => {
         if (!response.ok) throw new Error("Not Found");
         else {
           const data = await response.json();
-          setNotebooks(data)
+          setNotebooks(
+            data.map((d: string) => {
+              return { name: d, checked: false };
+            })
+          );
         }
         setLoading(false);
       } catch (error) {

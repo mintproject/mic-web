@@ -62,7 +62,7 @@ const InputGridItem = (props: InputItemGridProps) => {
   return (
     <Grid container>
       <Grid item xs={2} md={3}>
-        <Box>{props.input.name}</Box>
+        <Box>{props.input.display_name || props.input.name}</Box>
       </Grid>
       <Grid item xs={2} md={8}>
         <Box>{props.input.description} </Box>
@@ -80,7 +80,7 @@ const ParameterGridItem = (props: ParameterItemGridProps) => {
   return (
     <Grid container>
       <Grid item xs={2} md={3}>
-        <Box>{props.input.name}</Box>
+        <Box>{props.input.display_name || props.input.name } </Box>
       </Grid>
       <Grid item xs={4} md={6}>
         <Box>{props.input.description}</Box>
@@ -156,8 +156,8 @@ const ModelEditor = (props: Props) => {
           fullWidth
           id="display"
           placeholder="Display Name"
-          name="displayName"
-          value={model?.display_name}
+          name="name"
+          value={model?.name}
           variant="outlined"
           onChange={handleChange}
         />
