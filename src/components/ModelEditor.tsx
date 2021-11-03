@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
 import Grid from "@mui/material/Grid";
-
+import React from "react"
 interface InputItemGridProps {
   input: Input;
 }
@@ -62,7 +62,7 @@ const InputGridItem = (props: InputItemGridProps) => {
   return (
     <Grid container>
       <Grid item xs={2} md={3}>
-        <Box>{props.input.name}</Box>
+        <Box>{props.input.display_name || props.input.name}</Box>
       </Grid>
       <Grid item xs={2} md={8}>
         <Box>{props.input.description} </Box>
@@ -80,7 +80,7 @@ const ParameterGridItem = (props: ParameterItemGridProps) => {
   return (
     <Grid container>
       <Grid item xs={2} md={3}>
-        <Box>{props.input.name}</Box>
+        <Box>{props.input.display_name || props.input.name } </Box>
       </Grid>
       <Grid item xs={4} md={6}>
         <Box>{props.input.description}</Box>
@@ -122,20 +122,16 @@ const micModelPut = (model: Model) => {
   });
 };
 
-const modelCatalogPost = (model: Model) => {
-  console.log(model);
-};
 
 const ModelEditor = (props: Props) => {
   const [model, setModel] = useState<Model>();
   const [saving, setSaving] = useState(false);
-  function handleSubmit(event: React.FormEvent<EventTarget>) {
+  
+  const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
-    console.log("hi");
     setSaving(true);
-    micModelPut(model as Model).then((response) => {
-      response.ok && setSaving(false);
-    });
+    const response = await micModelPut(model as Model)
+    response.ok && setSaving(false);
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -160,8 +156,8 @@ const ModelEditor = (props: Props) => {
           fullWidth
           id="display"
           placeholder="Display Name"
-          name="displayName"
-          value={model?.display_name}
+          name="name"
+          value={model?.name}
           variant="outlined"
           onChange={handleChange}
         />

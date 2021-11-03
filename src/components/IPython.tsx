@@ -9,7 +9,7 @@ import IPythonTerminal from "./IPythonTerminal";
 
 const INTERVAL_TIME = 5000; //miliseconds
 
-enum TASK_STATUS {
+export enum TASK_STATUS {
   Pending = "PENDING",
   Success = "SUCCESS",
 }
@@ -32,9 +32,7 @@ const IPython = () => {
   const [taskId, setTaskId] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(
-    undefined
-  );
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(undefined);
   const [errors, setErrors] = useState<string | undefined>(undefined);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -52,7 +50,6 @@ const IPython = () => {
      */
     if (taskStatus === TASK_STATUS.Success) {
       clearInterval(intervalId as NodeJS.Timeout);
-      console.log("redirect");
       <Redirect to="/notebooks/" />;
     }
   }, [taskStatus]);
@@ -68,6 +65,10 @@ const IPython = () => {
             .then((response) => response.json())
             .then((data) => {
               setTaskStatus(data.task_status);
+              return data;
+            })
+            .catch((error) => {
+              console.log(error);
             });
         }, INTERVAL_TIME)
       );
@@ -77,25 +78,30 @@ const IPython = () => {
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    setLoading(true);
-    setErrors(undefined);
-    if (isUrl(gitRepo)) {
-      const url = `${IPYTHON_API}/tasks`;
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: gitRepo }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
+    const submit = async () => {
+      setLoading(true);
+      setErrors(undefined);
+      if (isUrl(gitRepo)) {
+        try {
+          const url = `${IPYTHON_API}/tasks`;
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: gitRepo }),
+          });
+          const data = await response.json();
           setTaskId(data.task_id);
-        });
-    } else {
-      setErrors("The url is not valid git url");
-      setLoading(false);
-    }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setErrors("The url is not valid git url");
+        setLoading(false);
+      }
+    };
+    submit();
   }
 
   return (
@@ -104,18 +110,12 @@ const IPython = () => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        <Typography
-            variant='h6'
-            color='inherit'
-        >
-            Build and launch a Git repository
+        <Typography variant="h6" color="inherit">
+          Build and launch a Git repository
         </Typography>
 
-        <Typography
-            variant='body1'
-            color='inherit'
-        >
-            You must prepare your repository for use with BinderHub
+        <Typography variant="body1" color="inherit">
+          You must prepare your repository for use with BinderHub
         </Typography>
         <Link />
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -134,7 +134,7 @@ const IPython = () => {
               value={gitRepo}
               onChange={handleChange}
               required
-              variant='standard'
+              variant="standard"
               helperText={errors}
             />
           </Box>
@@ -149,17 +149,11 @@ const IPython = () => {
               Convert repository
             </Button>
           </Box>
-
         </form>
       </Paper>
-        {logs(taskId)}
+      {logs(taskId)}
 
-      {taskStatus === "SUCCESS" ? (
-        <Redirect to={`notebooks/${taskId}`} />
-      ) : (
-        ''
-      )}
-
+      {taskStatus === "SUCCESS" ? <Redirect to={`notebooks/${taskId}`} /> : ""}
     </Container>
   );
 };

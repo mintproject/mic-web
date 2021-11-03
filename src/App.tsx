@@ -19,22 +19,12 @@ const theme = createTheme({
   },
 });
 
-const eventLogger = (event: unknown, error: unknown) => {
-  console.log("onKeycloakEvent", event, error);
-};
-
-const tokenLogger = (tokens: unknown) => {
-  console.log("onKeycloakTokens", tokens);
-};
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ReactKeycloakProvider
         authClient={keycloak}
-        onEvent={eventLogger}
-        onTokens={tokenLogger}
       >
         <AppRouter />
       </ReactKeycloakProvider>

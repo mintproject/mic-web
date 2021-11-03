@@ -1,8 +1,18 @@
- module.exports = {
-     "extends": ["react-app", "plugin:promise/recommended"],
-     "plugins": ['promise'],
-     "rules" : {
-         "indent": ["warn", 4] // A custom style-related rule for example
-         // More custom rules here
-     }
- }
+module.exports = {
+  extends: [
+    "react-app",
+    "eslint:recommended",
+    "plugin:promise/recommended"
+  ],
+  plugins: ["promise"],
+  rules: {
+    "promise/catch-or-return": "error",
+    "promise/always-return": "error",
+    "no-unused-vars": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "@typescript-eslint/no-unused-vars": "error"
+  },
+  "globals": {
+    "NodeJS": true
+  },
+};
