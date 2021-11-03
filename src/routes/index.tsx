@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { CircularProgress } from "@mui/material";
+import IPythonModelRegister from "../components/IPythonModelRegister";
 import CommandLine from "../components/CommandLine";
 
 export const AppRouter = () => {
@@ -52,7 +53,7 @@ export const AppRouter = () => {
           <Route exact path="/">
             <Welcome />
           </Route>
-          <PrivateRoute exact path="/ipython" component={IPython} />
+          <PrivateRoute exact path="/ipython" component={IPythonModelRegister} />
           <PrivateRoute exact path="/commandLine" component={CommandLine} />
           <PrivateRoute path="/notebooks/:taskId" component={Notebooks}/>
           <Route exact path="/models/">
