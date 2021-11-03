@@ -1,6 +1,5 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import IPython from "../components/IPython";
 import Notebooks from "../components/Notebooks";
 import ModelList from "../components/ModelList";
 import ModelSummary from "../components/ModelSummary";

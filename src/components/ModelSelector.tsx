@@ -4,7 +4,10 @@ import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
 import isUrl from "validator/lib/isURL";
 
-import { Model, SoftwareVersion, ModelApi, SoftwareVersionApi, Configuration, ModelCategory, ModelCategoryApi, ModelConfiguration, ModelConfigurationApi } from "@mintproject/modelcatalog_client";
+import { Model, SoftwareVersion, ModelApi, SoftwareVersionApi, Configuration, ModelCategory, ModelCategoryApi, 
+  //ModelConfiguration, 
+  //ModelConfigurationApi 
+} from "@mintproject/modelcatalog_client";
 
 const ModelSelector = () => {
   //Model catalog API related
@@ -20,7 +23,7 @@ const ModelSelector = () => {
 
   // State
   const [editMode, setEditMode] = useState(true);
-  const [creating, setCreating] = useState(false);
+  const [creating] = useState(false);
   const [modelUrl, setModelUrl] = useState("");
   const [versionUrl, setVersionUrl] = useState("");
   const [categoryUrl, setCategoryUrl] = useState("-");
@@ -34,10 +37,11 @@ const ModelSelector = () => {
   const [selectedVersion, setSelectedVersion] = useState<SoftwareVersion|null>(null);
 
   // Errors 
-  const [errors, setErrors] = useState<string | undefined>(undefined);
+  //const [errors, setErrors] = useState<string | undefined>(undefined);
 
   // Load data from the model catalog
   useEffect(() => {
+    setMCUser('mint@isi.edu')
     //FIXME add correct dependencies to use effect
     if (allModels.length + allVersions.length === 0) {
       setLoadingMC(true);
@@ -55,18 +59,28 @@ const ModelSelector = () => {
       let pModels : Promise<Model[]> = mApi.modelsGet({username: MCUser});
       let pCategory : Promise<ModelCategory[]> = cApi.modelcategorysGet({username: MCUser});
       let pVersions : Promise<SoftwareVersion[]> = vApi.softwareversionsGet({username: MCUser});
-
+  
       pModels.then((models:Model[]) => {
         setAllModels(models);
         setPossibleModels(models);
+        return models
+      })
+      .catch((err) => {
+        //TODO: handle error
+        console.log(err);
       });
-      pCategory.then(setAllCategories);
-      pVersions.then(setAllVersions);
+      pCategory.then(setAllCategories)
+      .catch((err) => {
+        //TODO: handle error
+        console.log(err);
+      });
+      pVersions.then(setAllVersions)
+      .catch((err) => {
+        console.log(err);
+      });
 
       Promise.all([pModels, pVersions, pCategory])
-        .then(()=> {
-          setLoadingMC(false);
-        })
+        .then(()=> setLoadingMC(false))
         .catch((error) => {
           console.warn(error);
           setModelUrl("create_new")
@@ -406,76 +420,76 @@ const ModelSelector = () => {
     return number;
   }
 
-  function saveConfiguration (cfg:ModelConfiguration) : Promise<ModelConfiguration> {
-    setCreating(true);
-    let returnVal = new Promise<ModelConfiguration>((resolve, reject) => {
-      if (selectedModel == null || selectedVersion == null) {
-        reject("You must first select a model an version")
-      } else {
-        let cApi : ModelConfigurationApi = new ModelConfigurationApi();
-        let vApi : SoftwareVersionApi = new SoftwareVersionApi();
-        let mApi : ModelApi = new ModelApi();
+  // function saveConfiguration (cfg:ModelConfiguration) : Promise<ModelConfiguration> {
+  //   setCreating(true);
+  //   let returnVal = new Promise<ModelConfiguration>((resolve, reject) => {
+  //     if (selectedModel == null || selectedVersion == null) {
+  //       reject("You must first select a model an version")
+  //     } else {
+  //       let cApi : ModelConfigurationApi = new ModelConfigurationApi();
+  //       let vApi : SoftwareVersionApi = new SoftwareVersionApi();
+  //       let mApi : ModelApi = new ModelApi();
 
-        let cProm = cApi.modelconfigurationsPost({user: MCUser, modelConfiguration: cfg});
-        cProm.catch(reject);
-        cProm.then((realConfig:ModelConfiguration) => {
-          //We have the saved configuration.
-          if (selectedVersion.id) {
-            //Version already exists, get the version and update.
-            let gvProm = vApi.softwareversionsIdGet({id: selectedVersion.id, username:MCUser});
-            gvProm.catch(reject);
-            gvProm.then((sv:SoftwareVersion) => {
-              if (sv.hasConfiguration) {
-                sv.hasConfiguration.push(realConfig);
-              } else {
-                sv.hasConfiguration = [realConfig];
-              }
-              let pvProm = vApi.softwareversionsIdPut({user:MCUser, id:(sv.id as string), softwareVersion: sv});
-              pvProm.catch(reject);
-              pvProm.then((realV:SoftwareVersion) => {
-                resolve(realConfig);
-              })
-            })
-          } else {
-            // We need to create the version first
-            selectedVersion.hasConfiguration = [realConfig];
-            let pvProm = vApi.softwareversionsPost({user:MCUser, softwareVersion: selectedVersion});
-            pvProm.catch(reject);
-            pvProm.then((newVer:SoftwareVersion) => {
-              //As this is a new version, we need to add it to the model:
-              if (selectedModel.id) {
-                // Get this model and add the version.
-                let gmProm = mApi.modelsIdGet({username:MCUser, id:selectedModel.id});
-                gmProm.catch(reject);
-                gmProm.then((realModel:Model) => {
-                  if (realModel.hasVersion) {
-                    realModel.hasVersion.push(newVer);
-                  } else {
-                    realModel.hasVersion = [newVer];
-                  }
-                  let pmProm = mApi.modelsIdPut({user:MCUser, id:(realModel.id as string), model:realModel});
-                  pmProm.catch(reject);
-                  pmProm.then((updatedModel:Model) => {
-                    resolve(realConfig);
-                  })
-                });
-              } else {
-                // Add the model too
-                selectedModel.hasVersion = [newVer];
-                let postModelProm = mApi.modelsPost({user:MCUser, model: selectedModel});
-                postModelProm.catch(reject);
-                postModelProm.then((newModel:Model) => {
-                  resolve(realConfig)
-                })
-              }
-            });
-          }
-        });
-      }
-    });
-    returnVal.finally(() => setCreating(false));
-    return returnVal;
-  }
+  //       let cProm = cApi.modelconfigurationsPost({user: MCUser, modelConfiguration: cfg});
+  //       cProm.catch(reject);
+  //       cProm.then((realConfig:ModelConfiguration) => {
+  //         //We have the saved configuration.
+  //         if (selectedVersion.id) {
+  //           //Version already exists, get the version and update.
+  //           let gvProm = vApi.softwareversionsIdGet({id: selectedVersion.id, username:MCUser});
+  //           gvProm.catch(reject);
+  //           gvProm.then((sv:SoftwareVersion) => {
+  //             if (sv.hasConfiguration) {
+  //               sv.hasConfiguration.push(realConfig);
+  //             } else {
+  //               sv.hasConfiguration = [realConfig];
+  //             }
+  //             let pvProm = vApi.softwareversionsIdPut({user:MCUser, id:(sv.id as string), softwareVersion: sv});
+  //             pvProm.catch(reject);
+  //             pvProm.then((realV:SoftwareVersion) => {
+  //               resolve(realConfig);
+  //             })
+  //           })
+  //         } else {
+  //           // We need to create the version first
+  //           selectedVersion.hasConfiguration = [realConfig];
+  //           let pvProm = vApi.softwareversionsPost({user:MCUser, softwareVersion: selectedVersion});
+  //           pvProm.catch(reject);
+  //           pvProm.then((newVer:SoftwareVersion) => {
+  //             //As this is a new version, we need to add it to the model:
+  //             if (selectedModel.id) {
+  //               // Get this model and add the version.
+  //               let gmProm = mApi.modelsIdGet({username:MCUser, id:selectedModel.id});
+  //               gmProm.catch(reject);
+  //               gmProm.then((realModel:Model) => {
+  //                 if (realModel.hasVersion) {
+  //                   realModel.hasVersion.push(newVer);
+  //                 } else {
+  //                   realModel.hasVersion = [newVer];
+  //                 }
+  //                 let pmProm = mApi.modelsIdPut({user:MCUser, id:(realModel.id as string), model:realModel});
+  //                 pmProm.catch(reject);
+  //                 pmProm.then((updatedModel:Model) => {
+  //                   resolve(realConfig);
+  //                 })
+  //               });
+  //             } else {
+  //               // Add the model too
+  //               selectedModel.hasVersion = [newVer];
+  //               let postModelProm = mApi.modelsPost({user:MCUser, model: selectedModel});
+  //               postModelProm.catch(reject);
+  //               postModelProm.then((newModel:Model) => {
+  //                 resolve(realConfig)
+  //               })
+  //             }
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  //   returnVal.finally(() => setCreating(false));
+  //   return returnVal;
+  // }
 
   // Entry point 
   return (
