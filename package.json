@@ -30,6 +30,7 @@
     "web-vitals": "^1.0.1",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0",
+    "xterm-addon-web-links": "^0.4.0",
     "xterm-for-react": "^1.0.4",
     "yaml": "^2.0.0-8"
   },
@@ -56,5 +57,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-promise": "^5.1.1"
   }
 }

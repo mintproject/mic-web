@@ -15,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { CircularProgress } from "@mui/material";
 import IPythonModelRegister from "../components/IPythonModelRegister";
+import CommandLine from "../components/CommandLine";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -53,6 +54,7 @@ export const AppRouter = () => {
             <Welcome />
           </Route>
           <PrivateRoute exact path="/ipython" component={IPythonModelRegister} />
+          <PrivateRoute exact path="/commandLine" component={CommandLine} />
           <PrivateRoute path="/notebooks/:taskId" component={Notebooks}/>
           <Route exact path="/models/">
             <ModelList />
@@ -64,7 +66,7 @@ export const AppRouter = () => {
           <Route path="/parameters/:parameterId">
             <ParameterEditor />
           </Route>
-          <Route exact path="/term">
+         <Route path="/term/:modelId/:containerId">
             {" "}
             <Terminal />{" "}
           </Route>
