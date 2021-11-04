@@ -1,4 +1,4 @@
-import { Button, Container, Paper, Typography, InputLabel, Select, SelectChangeEvent, MenuItem, TextareaAutosize, CircularProgress, ListSubheader} from "@mui/material";
+import { Button, Container, Paper, Typography, InputLabel, Select, SelectChangeEvent, MenuItem, TextareaAutosize, CircularProgress, ListSubheader, FormHelperText} from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
@@ -37,7 +37,10 @@ const ModelSelector = () => {
   const [selectedVersion, setSelectedVersion] = useState<SoftwareVersion|null>(null);
 
   // Errors 
-  //const [errors, setErrors] = useState<string | undefined>(undefined);
+  const [errCategory, setErrCategory] = useState<string | undefined>(undefined);
+  const [errModelName, setErrModelName] = useState<string | undefined>(undefined);
+  const [errModelDescription, setErrModelDescription] = useState<string | undefined>(undefined);
+  const [errVersionNumber, setErrVersionNumber] = useState<string | undefined>(undefined);
 
   // Load data from the model catalog
   useEffect(() => {
@@ -64,26 +67,17 @@ const ModelSelector = () => {
         setAllModels(models);
         setPossibleModels(models);
         return models
-      })
-      .catch((err) => {
-        //TODO: handle error
-        console.log(err);
-      });
-      pCategory.then(setAllCategories)
-      .catch((err) => {
-        //TODO: handle error
-        console.log(err);
-      });
-      pVersions.then(setAllVersions)
-      .catch((err) => {
-        console.log(err);
-      });
+      }).catch(null);
+      pCategory.then(setAllCategories).catch(null);
+      pVersions.then(setAllVersions).catch(null);
 
       Promise.all([pModels, pVersions, pCategory])
         .then(()=> setLoadingMC(false))
         .catch((error) => {
+          // This happens when some promise fails, the model catalog is not responding,
+          // we could do a timeout and try again but thats the same as reloading the page.
           console.warn(error);
-          setModelUrl("create_new")
+          setModelUrl("create_new");
         })
     }
   });
@@ -170,6 +164,7 @@ const ModelSelector = () => {
           {!loadingMC && allCategories.length > 0 && (allCategories.map(renderOption))
           }
         </Select>
+        <FormHelperText style={{margin: "0px 14px"}}>{errCategory}</FormHelperText>
       </div>
     );
   }
@@ -263,17 +258,21 @@ const ModelSelector = () => {
                   style={{margin: "5px 2px"}}
                   fullWidth
                   label="New model name"
+                  helperText={errModelName}
                   onChange={handleModelNameChange}
                   value={modelName}
                 />
-                <TextareaAutosize
-                  style={{margin: "5px 2px", width: "100%"}}
-                  aria-label="Model description"
-                  placeholder="Enter a short model description"
-                  onChange={handleModelDescriptionChange}
-                  minRows={3}
-                  value={modelDescription}
-                />
+                <div style={{margin: "5px 2px", width: "100%"}}>
+                  <TextareaAutosize
+                    style={{width: "100%"}}
+                    aria-label="Model description"
+                    placeholder="Enter a short model description"
+                    onChange={handleModelDescriptionChange}
+                    minRows={3}
+                    value={modelDescription}
+                  />
+                  <FormHelperText style={{margin: "0px 14px"}}>{errModelDescription}</FormHelperText>
+                </div>
               </Box>
             )}
 
@@ -281,6 +280,7 @@ const ModelSelector = () => {
 
             {versionUrl === "create_new" && (
                 <TextField
+                  helperText={errVersionNumber}
                   style={{margin: "5px 2px"}}
                   fullWidth
                   label="New model version"
@@ -345,13 +345,20 @@ const ModelSelector = () => {
     );
   }
 
+  function cleanSelected () {
+    setSelectedModel(null);
+    setSelectedVersion(null);
+    setErrCategory(undefined);
+    setErrModelName(undefined);
+    setErrModelDescription(undefined);
+    setErrVersionNumber(undefined);
+  }
+
   // Handle submit and save
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
 
-    setSelectedModel(null);
-    setSelectedVersion(null);
-
+    cleanSelected();
     let sModel : Model|null = null;
 
     if (isUrl(modelUrl)) {
@@ -362,7 +369,9 @@ const ModelSelector = () => {
     } else if (modelUrl === "create_new") {
       // The model does not exists, create a new model without ID
       if (!modelName || !modelDescription || !isUrl(categoryUrl)) {
-        //FIXME: show errors!
+        if (!modelName) setErrModelName("You must specify a Model name")
+        if (!modelDescription) setErrModelDescription("You must specify a Model description")
+        if (!isUrl(categoryUrl)) setErrCategory("You must choose a category for you model")
         return;
       } else {
         let newModel : Model = {
@@ -373,14 +382,17 @@ const ModelSelector = () => {
         setSelectedModel(newModel);
         sModel = newModel;
       }
-    } else console.warn("unhandled else 1");
+    } else {
+      //This should never happen
+      console.warn("unhandled else 1");
+    }
 
     if (isUrl(versionUrl)) {
       let version : SoftwareVersion = allVersions.filter((v:SoftwareVersion) => v.id === versionUrl)[0];
       setSelectedVersion(version);
     } else if (versionUrl === "create_new") {
       if (!versionNumber) {
-        //FIXME: show error
+        setErrVersionNumber("You must specify a version number")
         return;
       } else {
         let newVersion : SoftwareVersion = {
@@ -390,7 +402,10 @@ const ModelSelector = () => {
         };
         setSelectedVersion(newVersion);
       }
-    } else console.warn("unhandled else 2");
+    } else {
+      //This should never happen
+      console.warn("unhandled else 2");
+    }
 
     setEditMode(false);
   }
