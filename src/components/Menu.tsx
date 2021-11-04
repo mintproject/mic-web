@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useKeycloak } from "@react-keycloak/web";
 import { Link as RouterLink } from "react-router-dom";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Menu = () => {
   const { keycloak } = useKeycloak();
@@ -28,6 +29,7 @@ const Menu = () => {
           {keycloak && !keycloak.authenticated && (
             <Button color="inherit" onClick={() => keycloak.login()}>
               Login
+              <AccountCircleIcon style={{marginLeft: "5px"}}/>
             </Button>
           )}
           {keycloak && keycloak.authenticated && (
