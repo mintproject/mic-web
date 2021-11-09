@@ -54,14 +54,10 @@ export const AppRouter = () => {
           </Route>
           <PrivateRoute exact path="/ipython" component={IPythonModelRegister} />
           <PrivateRoute exact path="/commandLine" component={CommandLine} />
-          <PrivateRoute path="/notebooks/:taskId" component={Notebooks}/>
           <Route exact path="/models/">
             <ModelList />
           </Route>
           <PrivateRoute path="/models/:modelId/summary" component={ModelSummary} />
-          <Route path="/inputs/:inputId">
-            <InputEditor />
-          </Route>
           <Route path="/parameters/:parameterId">
             <ParameterEditor />
           </Route>

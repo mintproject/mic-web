@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, useParams } from "react-router-dom";
 import { IPYTHON_API, MAT_API } from "./environment";
 import { parse, stringify } from "yaml";
 import {
@@ -8,12 +7,14 @@ import {
   Input,
   createParameters,
   createInputs,
+  createSpec,
 } from "../types/mat";
 import { CommandLineObject } from "../types/cwl";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Paper, Typography } from "@mui/material";
+import ModelSummary from "./ModelSummary";
 
 function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
@@ -60,13 +61,13 @@ type NotebookStatus = {
   spec: string;
 };
 
-const Notebooks = (props: NotebooksParams | {}) => {
+const Notebooks = (props: NotebooksParams) => {
   const [notebooks, setNotebooks] = useState<NotebookStatus[] | undefined>(
     undefined
   );
-  const { taskId } = useParams<NotebooksParams>();
+  const { taskId } = props;
   const [option, setOption] = useState<string | undefined>(undefined);
-  const [modelId, setModelId] = useState();
+  const [modelId, setModelId] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
@@ -81,13 +82,7 @@ const Notebooks = (props: NotebooksParams | {}) => {
       );
       const spec = await response.text();
       const parsed_spec: CommandLineObject = parse(spec);
-      const model: Model = {
-        name: option ? option : "",
-        type: "cwl",
-        cwl_spec: parsed_spec,
-        docker_image: parsed_spec.hints.DockerRequirement.dockerImageId,
-      };
-      return model;
+      return parsed_spec as CommandLineObject;
     }
   }
 
@@ -100,24 +95,45 @@ const Notebooks = (props: NotebooksParams | {}) => {
     const submitNotebook = async () => {
       setLoading(true);
       const url = `${MAT_API}/models`;
-      const model_request = await setCwlSpec(taskId, option);
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(model_request),
-      });
-      const model = await response.json();
-      const parameters =
-        typeof model.cwl_spec !== undefined
-          ? getParametersCwl(model.cwl_spec)
-          : [];
-      const files =
-        typeof model.cwl_spec !== undefined ? getFilesCwl(model.cwl_spec) : [];
-      await createParameters(model.id, parameters);
-      await createInputs(model.id, files);
-      setModelId(model.id);
+      //Get cwl spec
+      const parsed_spec = await setCwlSpec(taskId, option);
+      if (parsed_spec !== undefined) {
+        //Create model
+        const model_request: Model = {
+          name: option ? option : "",
+          type: "cwl",
+          docker_image: parsed_spec?.hints.DockerRequirement.dockerImageId,
+        };
+        //Submit the model
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(model_request),
+        });
+        const model = await response.json();
+
+        //Submit the spec
+        try {
+          await createSpec(model.id, parsed_spec);
+        } catch (error) {
+          throw new Error(error);
+        }
+
+        //Create parameters
+        const parameters =
+          typeof model.cwlspec !== undefined
+            ? getParametersCwl(parsed_spec)
+            : [];
+        //Create files
+        const files =
+          typeof model.cwlspec !== undefined ? getFilesCwl(parsed_spec) : [];
+        //Submit parameters and inputs
+        await createParameters(model.id, parameters);
+        await createInputs(model.id, files);
+        setModelId(model.id);
+      }
     };
 
     submitNotebook();
@@ -144,15 +160,12 @@ const Notebooks = (props: NotebooksParams | {}) => {
     fetchNotebook();
   }, [taskId]);
 
-  return error ? (
-    <Container maxWidth="sm">{error}</Container>
-  ) : (
-    <Container maxWidth="sm">
+  const renderNotebooks = () => {
+    return (
       <Paper
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        {modelId && <Redirect to={`/models/${modelId}/summary`} />}
         <Typography variant="h5" color="inherit">
           Select the notebook to add
         </Typography>
@@ -181,7 +194,13 @@ const Notebooks = (props: NotebooksParams | {}) => {
           </button>
         </form>
       </Paper>
-    </Container>
+    );
+  };
+
+  return modelId === undefined ? (
+    renderNotebooks()
+  ) : (
+    <ModelSummary modelId={modelId} />
   );
 };
 

@@ -1,17 +1,23 @@
-import { Button, Container, Link, Paper, Typography} from "@mui/material";
+import { Button, Container, Link, Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
 import isUrl from "validator/lib/isURL";
 import { IPYTHON_API } from "./environment";
 import IPythonTerminal from "./IPythonTerminal";
+import Notebooks from "./Notebooks";
 
 const INTERVAL_TIME = 5000; //miliseconds
 
 export enum TASK_STATUS {
   Pending = "PENDING",
   Success = "SUCCESS",
+}
+
+enum RENDER {
+  Repository = "REPOSITORY",
+  Notebook = "NOTEBOOK",
+  Summary = "SUMMARY",
 }
 
 function logs(id: string) {
@@ -32,8 +38,11 @@ const IPython = () => {
   const [taskId, setTaskId] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(
+    undefined
+  );
   const [errors, setErrors] = useState<string | undefined>(undefined);
+  const [renderStatus, setRenderStatus] = useState<RENDER>(RENDER.Repository);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     /**
@@ -50,7 +59,7 @@ const IPython = () => {
      */
     if (taskStatus === TASK_STATUS.Success) {
       clearInterval(intervalId as NodeJS.Timeout);
-      <Redirect to="/notebooks/" />;
+      setRenderStatus(RENDER.Notebook);
     }
   }, [taskStatus]);
 
@@ -76,36 +85,8 @@ const IPython = () => {
     }
   }, [taskId]);
 
-  function handleSubmit(event: React.FormEvent<EventTarget>) {
-    event.preventDefault();
-    const submit = async () => {
-      setLoading(true);
-      setErrors(undefined);
-      if (isUrl(gitRepo)) {
-        try {
-          const url = `${IPYTHON_API}/tasks`;
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ url: gitRepo }),
-          });
-          const data = await response.json();
-          setTaskId(data.task_id);
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        setErrors("The url is not valid git url");
-        setLoading(false);
-      }
-    };
-    submit();
-  }
-
-  return (
-    <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+  const renderRepository = () => {
+    return (
       <Paper
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
@@ -150,10 +131,57 @@ const IPython = () => {
             </Button>
           </Box>
         </form>
+        {logs(taskId)}
       </Paper>
-      {logs(taskId)}
+    );
+  };
 
-      {taskStatus === "SUCCESS" ? <Redirect to={`notebooks/${taskId}`} /> : ""}
+  const renderNotebook = () => {
+    return (
+        <Notebooks taskId={taskId}/>
+    );
+  };
+
+  const render = () => {
+    switch (renderStatus) {
+      case RENDER.Repository:
+        return renderRepository();
+      case RENDER.Notebook:
+        return renderNotebook();
+    }
+  };
+
+  function handleSubmit(event: React.FormEvent<EventTarget>) {
+    event.preventDefault();
+    const submit = async () => {
+      setLoading(true);
+      setErrors(undefined);
+      if (isUrl(gitRepo)) {
+        try {
+          const url = `${IPYTHON_API}/tasks`;
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: gitRepo }),
+          });
+          const data = await response.json();
+          setTaskId(data.task_id);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setErrors("The url is not valid git url");
+        setLoading(false);
+      }
+    };
+    submit();
+  }
+
+  return (
+    <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+      {render()}
     </Container>
   );
 };

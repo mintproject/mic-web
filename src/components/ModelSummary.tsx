@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext} from "react";
 import { useParams } from "react-router-dom";
 import { Model } from "../types/mat";
 import { MAT_API } from "./environment";
@@ -9,8 +9,8 @@ type ModelParameter = {
   modelId: string;
 };
 
-const ModelSummary = () => {
-  const { modelId } = useParams<ModelParameter>();
+const ModelSummary = (props: ModelParameter) => {
+  const { modelId } = props
   const [model, setModel] = useState<Model>();
   const [isLoading, setLoading] = useState<Boolean>(true);
 

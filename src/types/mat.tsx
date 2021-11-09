@@ -6,7 +6,7 @@ export interface Model {
   display_name?: string;
   description?: string;
   type?: string;
-  cwl_spec?: CommandLineObject;
+  cwlspec?: CommandLineObject;
   docker_image?: string;
   parameters?: Parameter[];
   inputs?: Input[];
@@ -39,7 +39,6 @@ export interface Input {
   prefix?: string;
 }
 
-
 export interface Container {
   id?: string;
   name?: string;
@@ -57,6 +56,38 @@ export interface Directive {
   modelId?: string;
   created_at?: Date;
 }
+
+export const createSpec = async (modelId: string, spec: CommandLineObject) => {
+  const url = `${MAT_API}/models/${modelId}/cwlspec`;
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(spec),
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const uploadFile = async (spec: CommandLineObject) => {
+  const username = "upload";
+  const password = "HVmyqAPWDNuk5SmkLOK2";
+  try {
+    fetch("https://publisher.mint.isi.edu", {
+      method: "POST",
+      headers: {
+        Authorization: "Basic " + btoa(`${username}:${password}`),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(spec), // This is your file object
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 export const createParameters = async (
   modelId: string,
@@ -96,11 +127,10 @@ export function createDirective(modelId: string, command: string) {
     },
     body: JSON.stringify({
       command: command,
-      modelId: modelId
+      modelId: modelId,
     }),
   });
 }
-
 
 export const createInputs = async (modelId: string, inputs: Input[]) => {
   const url = `${MAT_API}/models/${modelId}/inputs`;

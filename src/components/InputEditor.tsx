@@ -3,25 +3,13 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useParams, useHistory } from "react-router-dom";
 import { CircularProgress, Container, Paper, TextField } from "@mui/material";
 import { useEffect } from "react";
 import { MAT_API } from "./environment";
-import React from "react"
+import React from "react";
 interface Props {
   inputId: string;
 }
-
-// const types = [
-//   {
-//     value: "int",
-//     label: "Integer",
-//   },
-//   {
-//     value: "string",
-//     label: "String",
-//   },
-// ];
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -31,11 +19,11 @@ function replacer(key: string, value: any) {
   return value;
 }
 
-const InputEditor = () => {
-  const { inputId } = useParams<Props>();
-  const history = useHistory();
+const InputEditor = (props: Props) => {
+  const { inputId } = props;
   const [input, setInput] = useState<Input>();
   const [loading, setLoading] = useState(true);
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setInput((prevParameter) => ({ ...prevParameter, [name]: value }));
@@ -56,8 +44,9 @@ const InputEditor = () => {
         });
 
         if (response.ok) {
-          history.goBack();
+          console.log("ok")
         }
+
       } catch (error) {
         //TODO: Show error
         console.log(error);
