@@ -22,6 +22,7 @@ import isUrl from "validator/lib/isURL";
 import ListSubheader from "@mui/material/ListSubheader";
 import TextField from "@mui/material/TextField";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
+import IPython from "./IPython";
 
 const ModelSelector = () => {
   const {
@@ -48,6 +49,7 @@ const ModelSelector = () => {
   const [versionUrl, setVersionUrl] = useState("");
 
   // handle events
+
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     /**
@@ -146,22 +148,22 @@ const ModelSelector = () => {
     );
   }
 
-  function createVersionDescription (model:Model| undefined, number:string) {
+  function createVersionDescription(model: Model | undefined, number: string) {
     if (model && model.label && model.label.length > 0) {
       return "Version " + number + " for " + model.label[0];
     }
     return number;
   }
 
-  function createVersionLabel (model:Model| undefined, number:string) {
+  function createVersionLabel(model: Model | undefined, number: string) {
     if (model && model.label && model.label.length > 0) {
-      let label:string = model.label[0];
-      let re : RegExp = /\(.*?\)/;
+      let label: string = model.label[0];
+      let re: RegExp = /\(.*?\)/;
       if (label.includes(":")) {
-        let sp : string[] = label.split(":");
+        let sp: string[] = label.split(":");
         return sp[0] + " version " + number;
       } else if (re.test(label)) {
-        let matches : RegExpExecArray | null = re.exec(label);
+        let matches: RegExpExecArray | null = re.exec(label);
         if (matches && matches.length > 0) {
           return matches[0] + " version " + number;
         }
@@ -265,7 +267,6 @@ const ModelSelector = () => {
     );
   }
 
-
   function renderEditMode() {
     /**
      * Render Edit Mode
@@ -332,7 +333,7 @@ const ModelSelector = () => {
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               type="submit"
-              disabled={ loadingMC || modelUrl === ""}
+              disabled={loadingMC || modelUrl === ""}
               variant="contained"
               onClick={enableEditMode}
             >
@@ -342,6 +343,14 @@ const ModelSelector = () => {
         </form>
       </div>
     );
+  }
+
+  function handleSave(event: React.FormEvent<EventTarget>) {
+    /**
+     * Handle save button event
+     */
+    event.preventDefault();
+    console.log("saving");
   }
 
   function enableEditMode() {
@@ -369,48 +378,7 @@ const ModelSelector = () => {
 
   function renderViewMode() {
     return (
-      <div>
-        <Typography variant="body1" color="inherit">
-          Selected model:
-        </Typography>
-
-        {selectedModel != null && selectedVersion != null ? (
-          [
-            <Typography variant="h6" color="inherit">
-              {selectedModel.label && selectedModel.label.length > 0
-                ? selectedModel.label[0]
-                : "no-label"}
-            </Typography>,
-            <i style={{ color: "#888" }}>
-              {selectedModel.description && selectedModel.description.length > 0
-                ? selectedModel.description[0]
-                : "no-description"}
-            </i>,
-            <Typography variant="body1" color="inherit">
-              Selected version:{" "}
-              {selectedVersion.hasVersionId &&
-              selectedVersion.hasVersionId.length > 0
-                ? selectedVersion.hasVersionId[0]
-                : "no-vid"}
-            </Typography>,
-          ]
-        ) : (
-          <Typography variant="body1" color="inherit">
-            An error has ocurred
-          </Typography>
-        )}
-
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            type="submit"
-            disabled={loadingMC}
-            variant="contained"
-            onClick={enableEditMode}
-          >
-            Edit
-          </Button>
-        </Box>
-      </div>
+      <IPython />
     );
   }
 

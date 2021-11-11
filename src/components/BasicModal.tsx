@@ -12,8 +12,9 @@ import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
 import { Input } from "../types/mat";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MAT_API } from "./environment";
+import { MicContext } from "../contexts/MicContext";
 
 
 function replacer(key: string, value: any) {
@@ -35,12 +36,18 @@ const style = {
   p: 4,
 };
 
+interface Props {
+  input: Input;
+}
 
-export default function BasicModal({input}:Input) {
+
+export default function BasicModal(props: Props) {
+  const {model, setModel} = useContext(MicContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [loading, setLoading] = useState(true);
+  const [input, setInput] = useState<Input>(props.input)
+  
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setInput((prevParameter) => ({ ...prevParameter, [name]: value }));
@@ -62,8 +69,20 @@ export default function BasicModal({input}:Input) {
 
         if (response.ok) {
           console.log("ok")
+          const updatedArr = model?.inputs?.map(item => {
+            if(item.id === item?.id) {
+                return input
+            }
+            return item
+          })
+          setModel(prevState => {
+            return {
+              ...prevState, inputs: updatedArr
+            }
+          })
           handleClose()
         }
+        
 
       } catch (error) {
         //TODO: Show error
@@ -72,10 +91,7 @@ export default function BasicModal({input}:Input) {
     };
     submit();
   }
-
-  useEffect(() => {
-    setInput(props.input)
-  }, []);
+  
 
   return (
     <div>

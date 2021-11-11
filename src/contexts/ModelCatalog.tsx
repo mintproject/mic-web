@@ -56,7 +56,7 @@ const ModelContextProvider: FC = ({ children }) => {
   //selected
   const [selectedModel, setSelectedModel] = useState<Model | undefined>();
   const [selectedVersion, setSelectedVersion] = useState<SoftwareVersion | undefined>();
-  
+
   const saveConfiguration = (cfg:ModelConfiguration) => {
     setCreating(true);
     let returnVal = new Promise<ModelConfiguration>((resolve, reject) => {

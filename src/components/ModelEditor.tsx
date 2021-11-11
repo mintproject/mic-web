@@ -3,7 +3,6 @@ import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
-import Grid from "@mui/material/Grid";
 import React from "react";
 import {
   DatasetSpecification,
@@ -11,118 +10,9 @@ import {
   ModelConfiguration,
 } from "@mintproject/modelcatalog_client";
 import { Context } from "../contexts/ModelCatalog";
-import Modal from "@mui/material/Modal";
-import BasicModal from "./BasicModal";
-
-
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-interface InputItemGridProps {
-  input: Input;
-}
-
-interface ParameterItemGridProps {
-  input: Parameter;
-}
-
-interface ParameterGridProps {
-  model: Model;
-}
-
-const InputGrid = (props: ParameterGridProps) => {
-  return (
-    <Grid container spacing={0}>
-      <Grid item xs={2} md={3}>
-        <Box>Name</Box>
-      </Grid>
-      <Grid item xs={2} md={8}>
-        <Box>Description</Box>
-      </Grid>
-      <Grid item xs={4} md={1}>
-        <Box></Box>
-      </Grid>
-      {props.model?.inputs?.map((input) => (
-        <InputGridItem key={input.id} input={input} />
-      ))}
-    </Grid>
-  );
-};
-
-const ParameterGrid = (props: ParameterGridProps) => {
-  return (
-    <Grid container spacing={0}>
-      <Grid item xs={4} md={3}>
-        <Box>Name</Box>
-      </Grid>
-      <Grid item xs={4} md={6}>
-        <Box>Description</Box>
-      </Grid>
-      <Grid item xs={4} md={2}>
-        <Box>Type</Box>
-      </Grid>
-      <Grid item xs={4} md={1}>
-        <Box></Box>
-      </Grid>
-      {props.model?.parameters?.map((input) => (
-        <ParameterGridItem key={input.id} input={input} />
-      ))}
-    </Grid>
-  );
-};
-
-const InputGridItem = (props: InputItemGridProps) => {
-  return (
-    <Grid container>
-      <Grid item xs={2} md={3}>
-        <Box>{props.input.display_name || props.input.name}</Box>
-      </Grid>
-      <Grid item xs={2} md={8}>
-        <Box>{props.input.description} </Box>
-      </Grid>
-      <Grid item xs={1} md={1}>
-        <Box>
-          <BasicModal />
-        </Box>
-      </Grid>
-    </Grid>
-  );
-};
-
-const ParameterGridItem = (props: ParameterItemGridProps) => {
-  return (
-    <Grid container>
-      <Grid item xs={2} md={3}>
-        <Box>{props.input.display_name || props.input.name} </Box>
-      </Grid>
-      <Grid item xs={4} md={6}>
-        <Box>{props.input.description}</Box>
-      </Grid>
-      <Grid item xs={2} md={2}>
-        <Box>{props.input.type}</Box>
-      </Grid>
-      <Grid item xs={1} md={1}>
-        <Box>
-          <BasicModal />
-        </Box>
-      </Grid>
-    </Grid>
-  );
-};
-
-interface Props {
-  model: Model;
-}
+import { MicContext } from "../contexts/MicContext";
+import InputGrid from "./InputGrid";
+import ParameterGrid from "./ParameterGrid";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -168,8 +58,8 @@ const convertInputsDataset = (model: Model): DatasetSpecification[] => {
       })
     : ([] as DatasetSpecification[]);
 };
-const ModelEditor = (props: Props) => {
-  const [model, setModel] = useState<Model>();
+const ModelEditor = () => {
+  const { model, setModel } = useContext(MicContext);
   const [saving, setSaving] = useState(false);
   const { saveConfiguration } = useContext(Context);
 
@@ -192,15 +82,8 @@ const ModelEditor = (props: Props) => {
     setModel((prevModel) => ({ ...prevModel, [name]: value }));
   }
 
-  useEffect(() => {
-    setModel(props.model);
-  }, [props]);
-
   return (
-    <Paper
-      variant="outlined"
-      sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-    >
+    <div>
       <Typography variant="h6" color="inherit" gutterBottom>
         Tell us about your Model Configuration.
       </Typography>
@@ -225,10 +108,10 @@ const ModelEditor = (props: Props) => {
           onChange={handleChange}
         />
         <h3> Inputs </h3>
-        {model?.inputs ? <InputGrid model={model as Model} /> : "None"}
+        {model?.inputs ? <InputGrid  /> : "None"}
 
         <h3> Parameters </h3>
-        {model?.parameters ? <ParameterGrid model={model as Model} /> : "None"}
+        {model?.parameters ? <ParameterGrid /> : "None"}
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
           <Button type="submit" variant="contained">
@@ -236,7 +119,7 @@ const ModelEditor = (props: Props) => {
           </Button>
         </Box>
       </form>
-    </Paper>
+    </div>
   );
 };
 

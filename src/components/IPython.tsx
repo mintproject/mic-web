@@ -1,7 +1,8 @@
+import React, { useContext, useEffect, useState } from "react";
+import { MicContext } from "../contexts/MicContext";
 import { Button, Container, Link, Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import React, { useEffect, useState } from "react";
 import isUrl from "validator/lib/isURL";
 import { IPYTHON_API } from "./environment";
 import IPythonTerminal from "./IPythonTerminal";
@@ -44,7 +45,7 @@ const IPython = () => {
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [renderStatus, setRenderStatus] = useState<RENDER>(RENDER.Repository);
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     /**
      * Handle input change
      */
@@ -85,14 +86,11 @@ const IPython = () => {
     }
   }, [taskId]);
 
-  const renderRepository = () => {
+  const renderRepository = (toggleDark: () => void) => {
     return (
-      <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-      >
+      <div>
         <Typography variant="h6" color="inherit">
-          Build and launch a Git repository
+          Create a Model Component for your model.
         </Typography>
 
         <Typography variant="body1" color="inherit">
@@ -132,7 +130,7 @@ const IPython = () => {
           </Box>
         </form>
         {logs(taskId)}
-      </Paper>
+      </div>
     );
   };
 
@@ -142,12 +140,12 @@ const IPython = () => {
     );
   };
 
-  const render = () => {
+  const render = (toggleDark : () => void) => {
     switch (renderStatus) {
       case RENDER.Repository:
-        return renderRepository();
+        return renderRepository(toggleDark);
       case RENDER.Notebook:
-        return renderNotebook();
+        return (<Notebooks taskId={taskId}/>)
     }
   };
 
@@ -178,10 +176,10 @@ const IPython = () => {
     };
     submit();
   }
-
+  const { toggleDark } = useContext(MicContext);
   return (
     <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-      {render()}
+      {render(toggleDark)}
     </Container>
   );
 };

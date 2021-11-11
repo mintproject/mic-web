@@ -162,10 +162,7 @@ const Notebooks = (props: NotebooksParams) => {
 
   const renderNotebooks = () => {
     return (
-      <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-      >
+      <div>
         <Typography variant="h5" color="inherit">
           Select the notebook to add
         </Typography>
@@ -193,14 +190,14 @@ const Notebooks = (props: NotebooksParams) => {
             Submit
           </button>
         </form>
-      </Paper>
+      </div>
     );
   };
 
   return modelId === undefined ? (
     renderNotebooks()
   ) : (
-    <ModelSummary modelId={modelId} />
+    <ModelSummary id={modelId}/>
   );
 };
 
