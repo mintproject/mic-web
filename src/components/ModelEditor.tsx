@@ -9,10 +9,10 @@ import {
   Parameter as ModelCatalogParameter,
   ModelConfiguration,
 } from "@mintproject/modelcatalog_client";
-import { Context } from "../contexts/ModelCatalog";
 import { MicContext } from "../contexts/MicContext";
 import InputGrid from "./InputGrid";
 import ParameterGrid from "./ParameterGrid";
+import { ModelContext } from "../contexts/ModelCatalog";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -61,7 +61,7 @@ const convertInputsDataset = (model: Model): DatasetSpecification[] => {
 const ModelEditor = () => {
   const { model, setModel } = useContext(MicContext);
   const [saving, setSaving] = useState(false);
-  const { saveConfiguration } = useContext(Context);
+  //const { saveConfiguration } = useContext(ModelContext);
 
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
@@ -74,7 +74,7 @@ const ModelEditor = () => {
       hasInput: convertInputsDataset(model as Model),
       hasParameter: convertParameterToModelCatalog(model as Model),
     };
-    saveConfiguration(newModelConfiguration);
+    //saveConfiguration(newModelConfiguration);
   };
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

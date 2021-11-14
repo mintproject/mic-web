@@ -10,6 +10,7 @@ interface MicContextState {
   setModel: Dispatch<React.SetStateAction<Model | undefined>>
   setId: Dispatch<React.SetStateAction<string | undefined>>
 }
+
 const defaultState = {
   dark: false,
   id: '',

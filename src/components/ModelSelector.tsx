@@ -16,25 +16,27 @@ import {
   ModelCategory,
   //ModelConfiguration,
 } from "@mintproject/modelcatalog_client";
-import { Context } from "../contexts/ModelCatalog";
+import { ModelContext } from "../contexts/ModelCatalog";
 import Box from "@mui/material/Box";
 import isUrl from "validator/lib/isURL";
 import ListSubheader from "@mui/material/ListSubheader";
 import TextField from "@mui/material/TextField";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-import IPython from "./IPython";
 
 const ModelSelector = () => {
   const {
     models,
     versions,
     categories,
-    loadingMC,
-    selectedModel,
-    selectedVersion,
+    test,
+    setTest,
     setSelectedModel,
+    selectedModel,
     setSelectedVersion,
-  } = useContext(Context);
+    selectedVersion,
+    saveVersion
+  } = useContext(ModelContext);
+
   const [editMode, setEditMode] = useState(true);
   const [modelName, setModelName] = useState("");
   const [modelDescription, setModelDescription] = useState("");
@@ -44,62 +46,37 @@ const ModelSelector = () => {
   const [possibleVersions, setPossibleVersions] = useState(
     [] as SoftwareVersion[]
   );
-
   const [modelUrl, setModelUrl] = useState("");
   const [versionUrl, setVersionUrl] = useState("");
+  const [loadingMC, setLoadingMC] = useState(false);
 
   // handle events
+  useEffect(() => {
+    console.log(modelDescription)
+    if (!(modelName === "" && modelDescription === "")) {
+      const newModel: Model = {
+        label: [modelName],
+        description: [modelDescription],
+        hasModelCategory: [{ id: categoryUrl }],
+      };
+      setSelectedModel(newModel);
+    }
+  }, [modelName, modelDescription, categoryUrl]);
 
+  useEffect(() => {
+    if (versionNumber !== "") {
+      const newVersion: SoftwareVersion = {
+        label: [createVersionLabel(selectedModel, versionNumber)],
+        description: [`Version ${versionNumber}`],
+      };
+      setSelectedVersion(newVersion);
+    }
+    console.log(selectedVersion);
+  }, [versionNumber]);
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
-    /**
-     * Handle save button event
-     */
     event.preventDefault();
-    setSelectedModel(undefined);
-    setSelectedVersion(undefined);
-    let sModel: Model | undefined = undefined;
-    if (isUrl(modelUrl)) {
-      // Model exists, just assign it.
-      let model: Model = models.filter((m: Model) => m.id === modelUrl)[0];
-      setSelectedModel(model);
-      sModel = model;
-    } else if (modelUrl === "create_new") {
-      // The model does not exists, create a new model without ID
-      if (!modelName || !modelDescription || !isUrl(categoryUrl)) {
-        //FIXME: show errors!
-        return;
-      } else {
-        let newModel: Model = {
-          label: [modelName],
-          description: [modelDescription],
-          hasModelCategory: [{ id: categoryUrl }],
-        };
-        setSelectedModel(newModel);
-        sModel = newModel;
-      }
-    } else console.warn("unhandled else 1");
-
-    if (isUrl(versionUrl)) {
-      let version: SoftwareVersion = versions.filter(
-        (v: SoftwareVersion) => v.id === versionUrl
-      )[0];
-      setSelectedVersion(version);
-    } else if (versionUrl === "create_new") {
-      if (!versionNumber) {
-        //FIXME: show error
-        return;
-      } else {
-        let newVersion: SoftwareVersion = {
-          label: [createVersionLabel(sModel, versionNumber)],
-          description: [createVersionDescription(sModel, versionNumber)],
-          hasVersionId: [versionNumber],
-        };
-        setSelectedVersion(newVersion);
-      }
-    } else console.warn("unhandled else 2");
-
-    setEditMode(false);
+    saveVersion()
   }
 
   function handleCategoryChange(event: SelectChangeEvent<String>) {
@@ -135,9 +112,9 @@ const ModelSelector = () => {
           (model.hasVersion || []).some((v2) => v2.id === v.id)
         )
       );
-    }
-    if (possibleVersions.length === 0 || modelId === "create_new") {
-      setVersionUrl("create_new");
+      setSelectedModel(model);
+    } else {
+      setSelectedModel(undefined);
     }
   }
 
@@ -276,6 +253,7 @@ const ModelSelector = () => {
         <Typography variant="h6" color="inherit">
           Select a model
         </Typography>
+        {test}
 
         <Typography variant="body1" color="inherit">
           Choose an existing model or create a new one
@@ -314,11 +292,8 @@ const ModelSelector = () => {
                 </Box>
               )}
 
-              {isUrl(modelUrl) &&
-                possibleVersions.length > 0 &&
-                versionSelector()}
-
-              {versionUrl === "create_new" && (
+              {selectedModel !== undefined && versionSelector()}
+              {(selectedModel !== undefined && (possibleVersions.length === 0|| versionUrl === "create_new")) && (
                 <TextField
                   style={{ margin: "5px 2px" }}
                   fullWidth
@@ -335,50 +310,12 @@ const ModelSelector = () => {
               type="submit"
               disabled={loadingMC || modelUrl === ""}
               variant="contained"
-              onClick={enableEditMode}
             >
               Set
             </Button>
           </Box>
         </form>
       </div>
-    );
-  }
-
-  function handleSave(event: React.FormEvent<EventTarget>) {
-    /**
-     * Handle save button event
-     */
-    event.preventDefault();
-    console.log("saving");
-  }
-
-  function enableEditMode() {
-    if (selectedModel) {
-      if (selectedModel.label && selectedModel.label.length > 0)
-        setModelName(selectedModel.label[0]);
-      if (selectedModel.description && selectedModel.description.length > 0)
-        setModelDescription(selectedModel.description[0]);
-      if (
-        selectedModel.hasModelCategory &&
-        selectedModel.hasModelCategory.length > 0 &&
-        selectedModel.hasModelCategory[0].id
-      )
-        setCategoryUrl(selectedModel.hasModelCategory[0].id);
-    }
-    if (selectedVersion) {
-      if (
-        selectedVersion.hasVersionId &&
-        selectedVersion.hasVersionId.length > 0
-      )
-        setVersionNumber(selectedVersion.hasVersionId[0]);
-    }
-    setEditMode(true);
-  }
-
-  function renderViewMode() {
-    return (
-      <IPython />
     );
   }
 
@@ -389,7 +326,7 @@ const ModelSelector = () => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        {editMode ? renderEditMode() : renderViewMode()}
+        {renderEditMode()}
       </Paper>
     </Container>
   );
