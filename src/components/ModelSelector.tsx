@@ -22,22 +22,23 @@ import isUrl from "validator/lib/isURL";
 import ListSubheader from "@mui/material/ListSubheader";
 import TextField from "@mui/material/TextField";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
+import { Redirect } from "react-router-dom";
+import { getIdFromUrl } from "../utils/utils";
 
 const ModelSelector = () => {
   const {
     models,
     versions,
     categories,
-    test,
-    setTest,
+    loading,
+    setLoading,
     setSelectedModel,
     selectedModel,
     setSelectedVersion,
     selectedVersion,
-    saveVersion
+    saveVersion,
   } = useContext(ModelContext);
 
-  const [editMode, setEditMode] = useState(true);
   const [modelName, setModelName] = useState("");
   const [modelDescription, setModelDescription] = useState("");
   const [versionNumber, setVersionNumber] = useState("");
@@ -48,11 +49,11 @@ const ModelSelector = () => {
   );
   const [modelUrl, setModelUrl] = useState("");
   const [versionUrl, setVersionUrl] = useState("");
-  const [loadingMC, setLoadingMC] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   // handle events
   useEffect(() => {
-    console.log(modelDescription)
+    console.log(modelDescription);
     if (!(modelName === "" && modelDescription === "")) {
       const newModel: Model = {
         label: [modelName],
@@ -71,12 +72,15 @@ const ModelSelector = () => {
       };
       setSelectedVersion(newVersion);
     }
-    console.log(selectedVersion);
   }, [versionNumber]);
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    saveVersion()
+    const save = async () => {
+      await saveVersion();
+    }
+    save()
+    setSaved(true)
   }
 
   function handleCategoryChange(event: SelectChangeEvent<String>) {
@@ -84,6 +88,8 @@ const ModelSelector = () => {
      * Handle selection of categories.
      */
     let catId: string = event.target.value as string;
+    setSelectedModel(undefined)
+    setSelectedVersion(undefined)
     setCategoryUrl(catId);
     if (isUrl(catId)) {
       // Filter models by category url
@@ -97,6 +103,16 @@ const ModelSelector = () => {
     } else {
       setPossibleModels(models);
     }
+  }
+
+  function handleVersionChange(event: SelectChangeEvent<String>) {
+    let versionId: string = event.target.value as string;
+
+    setVersionUrl(versionId)
+    if (isUrl(versionId)) {
+      let version: SoftwareVersion = possibleVersions.filter((v: SoftwareVersion) => v.id === versionId)[0]
+      setSelectedVersion(version);
+    } 
   }
 
   function handleModelChange(event: SelectChangeEvent<String>) {
@@ -167,7 +183,8 @@ const ModelSelector = () => {
           onChange={handleCategoryChange}
         >
           <MenuItem value="-"> None </MenuItem>
-          {!loadingMC && categories.length > 0 && categories.map(renderOption)}
+          {!loading && categories.length > 0 && categories.map(renderOption)}
+
         </Select>
       </div>
     );
@@ -235,7 +252,7 @@ const ModelSelector = () => {
           labelId="version-select-label"
           id="version-select"
           value={versionUrl}
-          onChange={(event) => setVersionUrl(event.target.value as string)}
+          onChange={ handleVersionChange}
         >
           <MenuItem value="create_new">- Create new Version -</MenuItem>
           {possibleVersions.map(renderOption)}
@@ -253,14 +270,13 @@ const ModelSelector = () => {
         <Typography variant="h6" color="inherit">
           Select a model
         </Typography>
-        {test}
 
         <Typography variant="body1" color="inherit">
           Choose an existing model or create a new one
         </Typography>
 
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-          {loadingMC ? (
+          {loading ? (
             <div style={{ display: "flex", justifyContent: "center" }}>
               <CircularProgress />
             </div>
@@ -293,22 +309,24 @@ const ModelSelector = () => {
               )}
 
               {selectedModel !== undefined && versionSelector()}
-              {(selectedModel !== undefined && (possibleVersions.length === 0|| versionUrl === "create_new")) && (
-                <TextField
-                  style={{ margin: "5px 2px" }}
-                  fullWidth
-                  label="New model version"
-                  placeholder="v1.0.0"
-                  onChange={(event) => setVersionNumber(event.target.value)}
-                  value={versionNumber}
-                />
-              )}
+              {selectedModel !== undefined &&
+                (possibleVersions.length === 0 ||
+                  versionUrl === "create_new") && (
+                  <TextField
+                    style={{ margin: "5px 2px" }}
+                    fullWidth
+                    label="New model version"
+                    placeholder="v1.0.0"
+                    onChange={(event) => setVersionNumber(event.target.value)}
+                    value={versionNumber}
+                  />
+                )}
             </Box>
           )}
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               type="submit"
-              disabled={loadingMC || modelUrl === ""}
+              disabled={loading || modelUrl === ""}
               variant="contained"
             >
               Set
@@ -320,7 +338,9 @@ const ModelSelector = () => {
   }
 
   //Model catalog API related
-  return (
+  return saved ? (
+    <Redirect push to={`/notebooks/${getIdFromUrl(selectedVersion?.id as string)}`} />
+  ) : (
     <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
       <Paper
         variant="outlined"

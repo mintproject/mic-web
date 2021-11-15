@@ -11,13 +11,14 @@ import {
   ModelConfigurationApi,
 } from "@mintproject/modelcatalog_client";
 import { useKeycloak } from "@react-keycloak/web";
+import { getIdFromUrl } from "../utils/utils";
 
 interface ModelContextState {
   models: Model[];
   versions: SoftwareVersion[];
   categories: ModelCategory[];
-  test: string | undefined;
-  setTest: Dispatch<React.SetStateAction<string| undefined>>
+  loading: boolean;
+  setLoading: Dispatch<React.SetStateAction<boolean>>
   selectedModel: Model | undefined
   setSelectedModel: Dispatch<React.SetStateAction<Model | undefined>>
   selectedVersion: SoftwareVersion | undefined
@@ -29,8 +30,8 @@ const defaultState = {
   models: [],
   versions: [],
   categories: [],
-  test: '',
-  setTest: () => {},
+  loading: false,
+  setLoading: () => {},
   selectedModel: undefined,
   setSelectedModel: () => {},
   selectedVersion: undefined,
@@ -50,26 +51,19 @@ interface KeycloakTokenParsedLocal {
 
 const ModelContext = createContext<ModelContextState>(defaultState);
 
-const getIdFromUrl = (id: string) => {
-  return id.split('/').slice(-1)[0]
-}
-
 const ModelContextProvider: FC = ({ children }) => {
   //Model catalog API related
   const [user, setUser] = useState<string | undefined>();
-  const [token, setToken] = useState("");
   const [cfg, setCfg] = useState<Configuration | undefined>();
   const { keycloak, initialized } = useKeycloak();
   //States exposed
   const [models, setModels] = useState([] as Model[]);
   const [versions, setVersions] = useState([] as SoftwareVersion[]);
   const [categories, setCategories] = useState([] as ModelCategory[]);
-  const [possibleModels, setPossibleModels] = useState([] as Model[]);
 
   // Fetch and creating status
   const [creating, setCreating] = useState(false);
-  const [loadingMC, setLoadingMC] = useState(true);
-  const [test, setTest] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
 
   //selected
   const [selectedModel, setSelectedModel] = useState<Model>();
@@ -77,9 +71,6 @@ const ModelContextProvider: FC = ({ children }) => {
 
   const saveVersion = () => {
     setCreating(true);
-    console.log(selectedModel)
-    console.log(selectedVersion)
-
     let returnVal = new Promise<SoftwareVersion>((resolve, reject) => {
       if (selectedModel == null || selectedVersion == null) {
         reject("You must first select a model an version");
@@ -88,7 +79,7 @@ const ModelContextProvider: FC = ({ children }) => {
         let mApi: ModelApi = new ModelApi(cfg);
         if (selectedVersion.id) {
           //Version already exists, get the version and update.
-          console.log("version exists");
+          resolve(selectedVersion)
         } else {
           // We need to create the version first
           let pvProm = vApi.softwareversionsPost({
@@ -142,7 +133,7 @@ const ModelContextProvider: FC = ({ children }) => {
     return returnVal;
   };
 
-  const saveConfiguration = (cfg: ModelConfiguration) => {
+ const saveConfiguration = (cfg: ModelConfiguration) => {
     setCreating(true);
     let returnVal = new Promise<ModelConfiguration>((resolve, reject) => {
       if (selectedModel == null || selectedVersion == null) {
@@ -240,7 +231,6 @@ const ModelContextProvider: FC = ({ children }) => {
     if (initialized === true && keycloak.authenticated)  {
       const tokenParsed = keycloak.idTokenParsed as KeycloakTokenParsedLocal;
       setUser(tokenParsed.email);
-      setToken(keycloak.idToken as string);
       let cfg: Configuration = new Configuration({
         basePath: "https://api.models.dev.mint.isi.edu/v1.8.0",
         accessToken: keycloak.idToken,
@@ -253,7 +243,7 @@ const ModelContextProvider: FC = ({ children }) => {
     //FIXME add correct dependencies to use effect
     if (user !== undefined) {
       if (models.length + versions.length === 0) {
-        setLoadingMC(true);
+        setLoading(true);
         // Create APIs and get data
         let mApi = new ModelApi(cfg);
         let cApi = new ModelCategoryApi(cfg);
@@ -270,7 +260,6 @@ const ModelContextProvider: FC = ({ children }) => {
         pModels
           .then((models: Model[]) => {
             setModels(models);
-            setPossibleModels(models);
             //return models;
           })
           .catch((err) => {
@@ -286,7 +275,7 @@ const ModelContextProvider: FC = ({ children }) => {
         });
 
         Promise.all([pModels, pVersions, pCategory])
-          .then(() => setLoadingMC(false))
+          .then(() => setLoading(false))
           .catch((error) => {
             console.warn(error);
           });
@@ -300,8 +289,8 @@ const ModelContextProvider: FC = ({ children }) => {
         models: models,
         versions: versions,
         categories: categories,
-        test: test,
-        setTest: setTest,
+        loading: loading,
+        setLoading: setLoading,
         selectedModel: selectedModel,
         setSelectedModel: setSelectedModel,
         selectedVersion: selectedVersion,
