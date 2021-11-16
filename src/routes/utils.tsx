@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Route, RouteComponentProps } from 'react-router-dom'
 import type { RouteProps } from 'react-router-dom'
-
 import { useKeycloak } from '@react-keycloak/web'
 
 interface PrivateRouteParams extends RouteProps {
@@ -21,7 +20,7 @@ export function PrivateRoute({
       {...rest}
       render={(props) =>
         keycloak?.authenticated ? (
-          <Component {...props} />
+            <Component {...props} />
         ) : (
             keycloak.login()
         )

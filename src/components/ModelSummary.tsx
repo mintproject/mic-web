@@ -1,38 +1,25 @@
-import {
-  Container,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Model} from "../types/mat";
-import { MAT_API } from "./environment";
+import { Container } from "@mui/material";
+import { useEffect, useState, useContext } from "react";
 import ModelEditor from "./ModelEditor";
+import { MicContext } from "../contexts/MicContext";
+import { useParams } from "react-router-dom";
 
-type ModelParameter = {
-  modelId: string;
+type Props = {
+  componentId: string;
 };
 
-const ModelSummary = () => {
-  const { modelId } = useParams<ModelParameter>();
-  const [model, setModel] = useState<Model>();
-  const [isLoading, setLoading] = useState<Boolean>(true);
-
+const ComponentSummary = () => {
+  const props = useParams<Props>()
+  const { component, setId } = useContext(MicContext);
   useEffect(() => {
-    fetch(
-      `${MAT_API}/models?filter[where][id]=${modelId}&filter[include][]=inputs&filter[include][]=parameters`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setModel(data[0]);
-        setLoading(false);
-      });
-  }, [modelId]);
-
+    setId(props.componentId);
+    console.log(component)
+  }, []);
   return (
     <Container maxWidth="sm">
-      {isLoading && <p>Pending</p>}
-      {model && <ModelEditor model={model}/>}
+      {component && <ModelEditor/>}
     </Container>
   );
 };
 
-export default ModelSummary;
+export default ComponentSummary;

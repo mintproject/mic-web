@@ -1515,6 +1515,11 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@mintproject/modelcatalog_client@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@mintproject/modelcatalog_client/-/modelcatalog_client-8.0.0.tgz#165468a90e345be7b7fc13376e0bebadb1b6b034"
+  integrity sha512-CHXCgVKLSKgIPbkmOoMlr78Lz2QqU7SlIFH46KsqbohFV4zgJPQUuu++bYSrtDPB7TUaREc3yBgEHSY52HyTvg==
+
 "@mui/core@5.0.0-alpha.49":
   version "5.0.0-alpha.49"
   resolved "https://registry.yarnpkg.com/@mui/core/-/core-5.0.0-alpha.49.tgz#e74d6ec7f83f85b55d48aa05ea6b7cefff88ce1b"
@@ -3417,9 +3422,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001181:
-  version "1.0.30001191"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001191.tgz#bacb432b6701f690c8c5f7c680166b9a9f0843d9"
-  integrity sha512-xJJqzyd+7GCJXkcoBiQ1GuxEiOBCLQ0aVW9HMekifZsAVGdj5eJ4mFB9fEhSHipq9IOk/QXFJUiIr9lZT+EsGw==
+  version "1.0.30001279"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001279.tgz"
+  integrity sha512-VfEHpzHEXj6/CxggTwSFoZBBYGQfQv9Cf42KPlO79sWXCD1QNKWKsKzFeWL7QpZHJQYAvocqV6Rty1yJMkqWLQ==
 
 capture-exit@^2.0.0:
   version "2.0.0"

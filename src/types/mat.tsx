@@ -6,12 +6,14 @@ export interface Model {
   display_name?: string;
   description?: string;
   type?: string;
-  cwl_spec?: CommandLineObject;
+  cwlspec?: CommandLineObject;
   docker_image?: string;
   parameters?: Parameter[];
   inputs?: Input[];
   container?: Container;
   directives?: Directive[];
+  model_id?: string;
+  version_id?: string;
 }
 
 export interface Parameter {
@@ -57,6 +59,58 @@ export interface Directive {
   created_at?: Date;
 }
 
+export const createSpec = async (modelId: string, spec: CommandLineObject) => {
+  const url = `${MAT_API}/models/${modelId}/cwlspec`;
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(spec),
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const uploadFile = async (spec: CommandLineObject) => {
+  const username = "upload";
+  const password = "HVmyqAPWDNuk5SmkLOK2";
+  try {
+    fetch("https://publisher.mint.isi.edu", {
+      method: "POST",
+      headers: {
+        Authorization: "Basic " + btoa(`${username}:${password}`),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(spec), // This is your file object
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const createParameters = async (
+  modelId: string,
+  parameters: Parameter[]
+) => {
+  const url = `${MAT_API}/models/${modelId}/parameters`;
+  try {
+    for (const parameter of parameters) {
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parameter),
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export function getContainer(containerId: string) {
   return fetch(`${MAT_API}/containers/${containerId}`);
 }
@@ -75,33 +129,24 @@ export function createDirective(modelId: string, command: string) {
     },
     body: JSON.stringify({
       command: command,
-      modelId: modelId
+      modelId: modelId,
     }),
   });
 }
 
-export function createParameters(modelId: string, parameters: Parameter[]) {
-  const url = `${MAT_API}/models/${modelId}/parameters`;
-  return parameters.map((parameter) =>
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(parameter),
-    })
-  );
-}
-
-export function createInputs(modelId: string, inputs: Input[]) {
+export const createInputs = async (modelId: string, inputs: Input[]) => {
   const url = `${MAT_API}/models/${modelId}/inputs`;
-  return inputs.map((input) =>
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(input),
-    })
-  );
-}
+  try {
+    for (const parameter of inputs) {
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parameter),
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};

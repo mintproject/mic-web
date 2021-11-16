@@ -3,30 +3,13 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useParams, useHistory } from "react-router-dom";
-import {
-  CircularProgress,
-  Container,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { CircularProgress, Container, Paper, TextField } from "@mui/material";
 import { useEffect } from "react";
 import { MAT_API } from "./environment";
-
+import React from "react";
 interface Props {
   inputId: string;
 }
-
-// const types = [
-//   {
-//     value: "int",
-//     label: "Integer",
-//   },
-//   {
-//     value: "string",
-//     label: "String",
-//   },
-// ];
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -36,11 +19,11 @@ function replacer(key: string, value: any) {
   return value;
 }
 
-const InputEditor = () => {
-  const { inputId } = useParams<Props>();
-  const history = useHistory();
+const InputEditor = (props: Props) => {
+  const { inputId } = props;
   const [input, setInput] = useState<Input>();
   const [loading, setLoading] = useState(true);
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setInput((prevParameter) => ({ ...prevParameter, [name]: value }));
@@ -48,30 +31,42 @@ const InputEditor = () => {
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-    const url = `${MAT_API}/inputs/${inputId}`;
-    const temp = JSON.stringify(input, replacer);
-    console.log(temp);
-    fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: temp,
-    }).then((response) => {
-      if (response.ok){
-        console.log(response.ok)
-        history.goBack()
+    const submit = async () => {
+      const url = `${MAT_API}/inputs/${inputId}`;
+      const temp = JSON.stringify(input, replacer);
+      try {
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: temp,
+        });
+
+        if (response.ok) {
+          console.log("ok")
+        }
+
+      } catch (error) {
+        //TODO: Show error
+        console.log(error);
       }
-    });
+    };
+    submit();
   }
 
   useEffect(() => {
-    fetch(`${MAT_API}/inputs/${inputId}`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchInput = async () => {
+      try {
+        const response = await fetch(`${MAT_API}/inputs/${inputId}`);
+        const data = await response.json();
         setInput(data);
         setLoading(false);
-      });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchInput();
   }, [inputId]);
 
   return loading ? (
@@ -109,7 +104,9 @@ const InputEditor = () => {
           />
 
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button type="submit" variant="contained">Save</Button>
+            <Button type="submit" variant="contained">
+              Save
+            </Button>
           </Box>
         </form>
       </Paper>

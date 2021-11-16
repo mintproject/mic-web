@@ -18,29 +18,26 @@ type ContainerParameter = {
   modelId: string;
 };
 
-const addCommand = (modelId: string, command: string) => {
-  console.log(`submit ${command}`);
-  createDirective(modelId, command);
-};
+// const addCommand = (modelId: string, command: string) => {
+//   createDirective(modelId, command);
+// };
 
 const Terminal = () => {
   const xtermRef = useRef<XTerm | null>(null);
-  const { containerId: containerId, modelId: modelId } =
-    useParams<ContainerParameter>();
+  const { containerId, modelId } = useParams<ContainerParameter>();
   const [command, setCommand] = useState("");
   const [socket, setSocket] = useState<Socket>();
   const [container, setContainer] = useState<Container>();
-  const [loading, setLoading] = useState(true);
   const [directives, setDirectives] = useState<Directive[]>();
 
   useEffect(() => {
-    getContainer(containerId)
-      .then((response) => response.json())
-      .then((data) => {
-        setContainer(data);
-        setSocket(io(`localhost:${data?.port}`));
-        setLoading(false);
-      });
+    const get = async () => {
+      const response = await getContainer(containerId);
+      const data = await response.json();
+      setContainer(data);
+      setSocket(io(`localhost:${container?.port}`));
+    };
+    get();
   }, [containerId]);
 
   useEffect(() => {
@@ -59,26 +56,20 @@ const Terminal = () => {
   }, [socket]);
 
   const handleChange = (e: any) => {
+    const create = async () => {
+      const response = await createDirective(modelId, command);
+      const data = await response.json();
+      directives
+        ? setDirectives((prevState) => [...(prevState ?? []), data])
+        : setDirectives((prevState) => [data]);
+    };
     switch (e.domEvent.keyCode) {
       // Enter
       case 13:
         socket?.emit("execute");
-        if (directives){
-          
-        }
-        //setDirectives((prev) => [...prev ?? [], command]);
-        createDirective(modelId, command)
-        .then(response => response.json())
-        .then(data => {
-          if (directives){
-            setDirectives(prevState => [...prevState ?? [], data]);
-          } else {
-            setDirectives(prevState => [data])
-          }
-        })
+        create();
         setCommand("");
         break;
-
       // Up arrow
       case 38:
         socket?.emit("input", "\u001b[A");
@@ -127,12 +118,12 @@ const Terminal = () => {
   };
 
   useEffect(() => {
-    getDirectives(modelId)
-      .then((directives) => directives.json())
-      .then((data) => {
-        console.log(data);
-        setDirectives(data);
-      });
+    const get = async() => {
+      const response = await getDirectives(modelId);
+      const data = await response.json();
+      setDirectives(data)
+    }
+    get()
   }, [modelId]);
 
   return (
@@ -141,11 +132,13 @@ const Terminal = () => {
         <XTerm ref={xtermRef} onKey={handleChange} />
       </Grid>
       <Grid item xs={2} md={4}>
-        <History directives={directives ?? []} containerId={containerId} modelId={modelId} />
+        <History
+          directives={directives ?? []}
+          containerId={containerId}
+          modelId={modelId}
+        />
       </Grid>
     </Grid>
-
-
   );
 };
 
