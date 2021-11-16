@@ -187,6 +187,7 @@ const ModelSelector = () => {
           <MenuItem value="-"> None </MenuItem>
           {!loading && categories.length > 0 && categories.map(renderOption)}
         </Select>
+        {/* <FormHelperText style={{margin: "0px 14px"}}>{errCategory}</FormHelperText> */}
       </div>
     );
   }
