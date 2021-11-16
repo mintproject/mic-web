@@ -47,7 +47,7 @@ function Welcome() {
               <Grid item xs>
                 <Item>
                   <p> A Python Jupyter Notebook </p>
-                  <Button component={Link} to={"/ipython"} variant="contained">
+                  <Button component={Link} to={"/models"} variant="contained">
                     Start
                   </Button>
                 </Item>

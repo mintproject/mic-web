@@ -4,3 +4,7 @@ export function replacer(key: string, value: any) {
   }
   return value;
 }
+
+export const getIdFromUrl = (id: string) => {
+  return id.split('/').slice(-1)[0]
+}

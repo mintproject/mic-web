@@ -1,105 +1,19 @@
 import { Paper, Box, TextField, Typography, Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
-import Grid from "@mui/material/Grid";
-import React from "react"
-interface InputItemGridProps {
-  input: Input;
-}
-
-interface ParameterItemGridProps {
-  input: Parameter;
-}
-
-interface ParameterGridProps {
-  model: Model;
-}
-
-const InputGrid = (props: ParameterGridProps) => {
-  return (
-    <Grid container spacing={0}>
-      <Grid item xs={2} md={3}>
-        <Box>Name</Box>
-      </Grid>
-      <Grid item xs={2} md={8}>
-        <Box>Description</Box>
-      </Grid>
-      <Grid item xs={4} md={1}>
-        <Box></Box>
-      </Grid>
-      {props.model?.inputs?.map((input) => (
-        <InputGridItem key={input.id} input={input} />
-      ))}
-    </Grid>
-  );
-};
-
-const ParameterGrid = (props: ParameterGridProps) => {
-  return (
-    <Grid container spacing={0}>
-      <Grid item xs={4} md={3}>
-        <Box>Name</Box>
-      </Grid>
-      <Grid item xs={4} md={6}>
-        <Box>Description</Box>
-      </Grid>
-      <Grid item xs={4} md={2}>
-        <Box>Type</Box>
-      </Grid>
-      <Grid item xs={4} md={1}>
-        <Box></Box>
-      </Grid>
-      {props.model?.parameters?.map((input) => (
-        <ParameterGridItem key={input.id} input={input} />
-      ))}
-    </Grid>
-  );
-};
-
-const InputGridItem = (props: InputItemGridProps) => {
-  return (
-    <Grid container>
-      <Grid item xs={2} md={3}>
-        <Box>{props.input.display_name || props.input.name}</Box>
-      </Grid>
-      <Grid item xs={2} md={8}>
-        <Box>{props.input.description} </Box>
-      </Grid>
-      <Grid item xs={1} md={1}>
-        <Box>
-          <Link to={`/inputs/${props.input.id}`}> Edit </Link>
-        </Box>
-      </Grid>
-    </Grid>
-  );
-};
-
-const ParameterGridItem = (props: ParameterItemGridProps) => {
-  return (
-    <Grid container>
-      <Grid item xs={2} md={3}>
-        <Box>{props.input.display_name || props.input.name } </Box>
-      </Grid>
-      <Grid item xs={4} md={6}>
-        <Box>{props.input.description}</Box>
-      </Grid>
-      <Grid item xs={2} md={2}>
-        <Box>{props.input.type}</Box>
-      </Grid>
-      <Grid item xs={1} md={1}>
-        <Box>
-          <Link to={`/parameters/${props.input.id}`}> Edit </Link>
-        </Box>
-      </Grid>
-    </Grid>
-  );
-};
-
-interface Props {
-  model: Model;
-}
+import React from "react";
+import {
+  DatasetSpecification,
+  Parameter as ModelCatalogParameter,
+  ModelConfiguration,
+} from "@mintproject/modelcatalog_client";
+import { MicContext } from "../contexts/MicContext";
+import InputGrid from "./InputGrid";
+import ParameterGrid from "./ParameterGrid";
+import { ModelContext } from "../contexts/ModelCatalog";
+import Container from "@mui/material/Container";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -122,68 +36,92 @@ const micModelPut = (model: Model) => {
   });
 };
 
+const convertParameterToModelCatalog = (
+  model: Model
+): ModelCatalogParameter[] => {
+  return model.parameters
+    ? model.parameters?.map((parameter) => {
+        return {
+          label: [parameter.display_name || parameter.name ],
+          description: [parameter.description || parameter.name ],
+        } as ModelCatalogParameter;
+      })
+    : ([] as ModelCatalogParameter[]);
+};
 
-const ModelEditor = (props: Props) => {
-  const [model, setModel] = useState<Model>();
+const convertInputsDataset = (model: Model): DatasetSpecification[] => {
+  return model.inputs
+    ? model.inputs?.map((input) => {
+        return {
+          label: [input.display_name || input.name],
+          description: [input.description || input.name ],
+        } as DatasetSpecification;
+      })
+    : ([] as DatasetSpecification[]);
+};
+const ModelEditor = () => {
+  const { component, setComponent } = useContext(MicContext);
   const [saving, setSaving] = useState(false);
-  
+  const { saveConfiguration } = useContext(ModelContext);
+
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
     setSaving(true);
-    const response = await micModelPut(model as Model)
+    const response = await micModelPut(component as Model);
     response.ok && setSaving(false);
-  }
+    let newModelConfiguration: ModelConfiguration = {
+      label: [component?.name as string],
+      description: [component?.description as string],
+      hasInput: convertInputsDataset(component as Model),
+      hasParameter: convertParameterToModelCatalog(component as Model),
+    };
+    saveConfiguration(newModelConfiguration, component?.version_id as string);
+  };
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setModel((prevModel) => ({ ...prevModel, [name]: value }));
+    setComponent((prevModel) => ({ ...prevModel, [name]: value }));
+    console.log(component)
   }
 
-  useEffect(() => {
-    setModel(props.model);
-  }, [props]);
-
   return (
-    <Paper
-      variant="outlined"
-      sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-    >
+      <Paper
+        variant="outlined"
+        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+      >
+
       <Typography variant="h6" color="inherit" gutterBottom>
-        Tell us about your Model
+        Tell us about your Model Configuration.
       </Typography>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
+          required
           fullWidth
           id="display"
           placeholder="Display Name"
           name="name"
-          value={model?.name}
+          value={component?.name}
           variant="outlined"
           onChange={handleChange}
         />
 
         <TextField
+          required
           fullWidth
           id="description"
           placeholder="Description"
           name="description"
-          value={model?.description}
+          value={component?.description}
           variant="outlined"
           onChange={handleChange}
         />
+
         <h3> Inputs </h3>
-        {model?.inputs ? (
-        <InputGrid model={model as Model} />
-        ): (
-          "None"
-        )
-        }
+        {component?.inputs ? <InputGrid  /> : "None"}
+
         <h3> Parameters </h3>
-        {model?.parameters ? (
-          <ParameterGrid model={model as Model} />
-        ) : (
-            "None"
-        )}
+        {component?.parameters ? <ParameterGrid /> : "None"}
+
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
           <Button type="submit" variant="contained">
             {saving ? "Saving" : "Save"}
