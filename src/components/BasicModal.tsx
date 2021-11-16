@@ -42,7 +42,7 @@ interface Props {
 
 
 export default function BasicModal(props: Props) {
-  const {model, setModel} = useContext(MicContext);
+  const {component, setComponent} = useContext(MicContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -69,13 +69,13 @@ export default function BasicModal(props: Props) {
 
         if (response.ok) {
           console.log("ok")
-          const updatedArr = model?.inputs?.map(item => {
+          const updatedArr = component?.inputs?.map(item => {
             if(item.id === item?.id) {
                 return input
             }
             return item
           })
-          setModel(prevState => {
+          setComponent(prevState => {
             return {
               ...prevState, inputs: updatedArr
             }
@@ -95,8 +95,8 @@ export default function BasicModal(props: Props) {
 
   return (
     <div>
-      <IconButton>
-        <EditIcon onClick={handleOpen} />
+      <IconButton onClick={handleOpen}>
+        <EditIcon  />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit</DialogTitle>

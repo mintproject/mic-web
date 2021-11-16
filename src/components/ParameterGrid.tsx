@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const ParameterGrid = () => {
-  const { model, setModel, setId } = useContext(MicContext);
+  const { component: model, setComponent: setModel, setId } = useContext(MicContext);
 
   return (
     <Grid container spacing={0}>

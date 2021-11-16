@@ -5,19 +5,19 @@ import { Model } from "../types/mat";
 interface MicContextState {
   dark: boolean;
   id: string | undefined;
-  model: Model | undefined;
+  component: Model | undefined;
   toggleDark: () => void;
-  setModel: Dispatch<React.SetStateAction<Model | undefined>>
+  setComponent: Dispatch<React.SetStateAction<Model | undefined>>
   setId: Dispatch<React.SetStateAction<string | undefined>>
 }
 
 const defaultState = {
   dark: false,
   id: '',
-  model: {} as Model,
+  component: {} as Model,
   toggleDark: () => {},
   setId: () => {},
-  setModel: () => {}
+  setComponent: () => {}
 };
 
 const MicContext = createContext<MicContextState>(defaultState);
@@ -25,7 +25,7 @@ const MicContext = createContext<MicContextState>(defaultState);
 const MicContextProvider: FC = ({ children }) => {
   const [dark, setDark] = useState(false)
   const [id, setId] = useState<string | undefined>()
-  const [model, setModel] = useState<Model>()  
+  const [component, setComponent] = useState<Model>()  
 
   useEffect(() => {
     const getModels = async () => {
@@ -33,9 +33,10 @@ const MicContextProvider: FC = ({ children }) => {
         `${MAT_API}/models?filter[where][id]=${id}&filter[include][]=inputs&filter[include][]=parameters`
       );
       const data = await response.json();
-      setModel(data[0]);
+      setComponent(data[0]);
     };
     getModels()
+    console.log(component);
   }, [id])
   
   const toggleDark = () => {
@@ -50,8 +51,8 @@ const MicContextProvider: FC = ({ children }) => {
         toggleDark: toggleDark,
         id: id,
         setId: setId,
-        model: model,
-        setModel: setModel,
+        component: component,
+        setComponent: setComponent,
       }}
     >
       {children}
@@ -59,4 +60,4 @@ const MicContextProvider: FC = ({ children }) => {
   );
 };
 
-export { MicContextProvider as MicContextProvider, MicContext};
+export { MicContextProvider, MicContext};

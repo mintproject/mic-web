@@ -14,7 +14,8 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Paper, Typography } from "@mui/material";
-import ModelSummary from "./ModelSummary";
+import ComponentSummary from "./ModelSummary";
+import { Redirect } from "react-router-dom";
 
 function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
@@ -53,6 +54,8 @@ function getFilesCwl(data: CommandLineObject): Input[] {
 
 type NotebooksParams = {
   taskId: string;
+  modelId: string;
+  versionId: string;
 };
 
 type NotebookStatus = {
@@ -65,9 +68,9 @@ const Notebooks = (props: NotebooksParams) => {
   const [notebooks, setNotebooks] = useState<NotebookStatus[] | undefined>(
     undefined
   );
-  const { taskId } = props;
+  const { taskId, modelId, versionId } = props;
   const [option, setOption] = useState<string | undefined>(undefined);
-  const [modelId, setModelId] = useState<string | undefined>(undefined);
+  const [componentId, setComponentId] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
@@ -103,6 +106,8 @@ const Notebooks = (props: NotebooksParams) => {
           name: option ? option : "",
           type: "cwl",
           docker_image: parsed_spec?.hints.DockerRequirement.dockerImageId,
+          model_id: modelId,
+          version_id: versionId,
         };
         //Submit the model
         const response = await fetch(url, {
@@ -132,7 +137,7 @@ const Notebooks = (props: NotebooksParams) => {
         //Submit parameters and inputs
         await createParameters(model.id, parameters);
         await createInputs(model.id, files);
-        setModelId(model.id);
+        setComponentId(model.id);
       }
     };
 
@@ -194,10 +199,10 @@ const Notebooks = (props: NotebooksParams) => {
     );
   };
 
-  return modelId === undefined ? (
+  return componentId === undefined ? (
     renderNotebooks()
   ) : (
-    <ModelSummary id={modelId}/>
+    <Redirect push to={`/components/${componentId}`}/>
   );
 };
 

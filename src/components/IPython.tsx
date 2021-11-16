@@ -7,6 +7,8 @@ import isUrl from "validator/lib/isURL";
 import { IPYTHON_API } from "./environment";
 import IPythonTerminal from "./IPythonTerminal";
 import Notebooks from "./Notebooks";
+import { LinearProgress } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const INTERVAL_TIME = 5000; //miliseconds
 
@@ -27,11 +29,16 @@ function logs(id: string) {
    */
   if (id) {
     return (
-      <Container maxWidth="sm">
-        <IPythonTerminal taskId={id} />
-      </Container>
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress />
+      </Box>
     );
   }
+}
+
+interface Props {
+  modelId: string;
+  versionId: string;
 }
 
 const IPython = () => {
@@ -44,8 +51,9 @@ const IPython = () => {
   );
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [renderStatus, setRenderStatus] = useState<RENDER>(RENDER.Repository);
-
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+  const {modelId, versionId} = useParams<Props>()
+    
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     /**
      * Handle input change
      */
@@ -86,66 +94,62 @@ const IPython = () => {
     }
   }, [taskId]);
 
-  const renderRepository = (toggleDark: () => void) => {
+  const renderRepository = () => {
     return (
       <div>
         <Typography variant="h6" color="inherit">
-          Create a Model Component for your model.
+          Where is your code?
         </Typography>
 
         <Typography variant="body1" color="inherit">
-          You must prepare your repository for use with BinderHub
+          Your code must be available in a Git Repository.
         </Typography>
         <Link />
-        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-          <Box
-            sx={{
-              width: 500,
-              maxWidth: "100%",
-              marginBottom: 2,
-            }}
-          >
-            <TextField
-              fullWidth
-              label="The git url repository"
-              id="gitRepo"
-              name="gitRepo"
-              value={gitRepo}
-              onChange={handleChange}
-              required
-              variant="standard"
-              helperText={errors}
-            />
-          </Box>
-
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              type="submit"
-              disabled={loading}
-              hidden={loading}
-              variant="contained"
+        { !loading &&
+          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <Box
+              sx={{
+                width: 500,
+                maxWidth: "100%",
+                marginBottom: 2,
+              }}
             >
-              Convert repository
-            </Button>
-          </Box>
-        </form>
+              <TextField
+                fullWidth
+                label="The git url repository"
+                id="gitRepo"
+                name="gitRepo"
+                value={gitRepo}
+                onChange={handleChange}
+                required
+                variant="standard"
+                helperText={errors}
+              />
+            </Box>
+
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                type="submit"
+                disabled={loading}
+                hidden={loading}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            </Box>
+          </form>
+        }
         {logs(taskId)}
       </div>
     );
   };
 
-  const renderNotebook = () => {
-    return (
-        <Notebooks taskId={taskId}/>
-    );
-  };
-
-  const render = (toggleDark : () => void) => {
+  const render = () => {
     switch (renderStatus) {
       case RENDER.Repository:
-        return renderRepository(toggleDark);
+        return renderRepository();
       case RENDER.Notebook:
-        return (<Notebooks taskId={taskId}/>)
+        return <Notebooks taskId={taskId} modelId={modelId} versionId={versionId} />;
     }
   };
 
@@ -176,10 +180,14 @@ const IPython = () => {
     };
     submit();
   }
-  const { toggleDark } = useContext(MicContext);
   return (
     <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-      {render(toggleDark)}
+      <Paper
+        variant="outlined"
+        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+      >
+        {render()}
+      </Paper>
     </Container>
   );
 };

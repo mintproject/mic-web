@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import BasicModal from "./BasicModal";
 
 const InputGrid = () => {
-  const { model, setModel, setId } = useContext(MicContext);
+  const { component, setComponent, setId } = useContext(MicContext);
   return (
     <Grid container spacing={0}>
       <Grid item xs={2} md={3}>
@@ -19,8 +19,8 @@ const InputGrid = () => {
       <Grid item xs={4} md={1}>
         <Box></Box>
       </Grid>
-      {model?.inputs?.map((input) => (
-        <Grid container>
+      {component?.inputs?.map((input) => (
+        <Grid container key={input.id}>
           <Grid item xs={2} md={3}>
             <Box>{input.display_name || input.name}</Box>
           </Grid>

@@ -7,8 +7,8 @@ import {
   ModelCategory,
   ModelCategoryApi,
   SoftwareVersion,
-  ModelConfiguration,
   ModelConfigurationApi,
+  ModelConfiguration,
 } from "@mintproject/modelcatalog_client";
 import { useKeycloak } from "@react-keycloak/web";
 import { getIdFromUrl } from "../utils/utils";
@@ -18,12 +18,15 @@ interface ModelContextState {
   versions: SoftwareVersion[];
   categories: ModelCategory[];
   loading: boolean;
-  setLoading: Dispatch<React.SetStateAction<boolean>>
-  selectedModel: Model | undefined
-  setSelectedModel: Dispatch<React.SetStateAction<Model | undefined>>
-  selectedVersion: SoftwareVersion | undefined
-  setSelectedVersion: Dispatch<React.SetStateAction<SoftwareVersion | undefined>>
-  saveVersion: () =>  Promise<SoftwareVersion>
+  setLoading: Dispatch<React.SetStateAction<boolean>>;
+  selectedModel: Model | undefined;
+  setSelectedModel: Dispatch<React.SetStateAction<Model | undefined>>;
+  selectedVersion: SoftwareVersion | undefined;
+  setSelectedVersion: Dispatch<
+    React.SetStateAction<SoftwareVersion | undefined>
+  >;
+  saveVersion: () => Promise<SoftwareVersion>;
+  saveConfiguration: (cfg: ModelConfiguration, version_id: string) => Promise<ModelConfiguration>;
 }
 
 const defaultState = {
@@ -37,6 +40,7 @@ const defaultState = {
   selectedVersion: undefined,
   setSelectedVersion: () => {},
   saveVersion: () => new Promise<SoftwareVersion>(() => {}),
+  saveConfiguration: () => new Promise<ModelConfiguration>(() => {}),
 };
 
 interface KeycloakTokenParsedLocal {
@@ -79,7 +83,7 @@ const ModelContextProvider: FC = ({ children }) => {
         let mApi: ModelApi = new ModelApi(cfg);
         if (selectedVersion.id) {
           //Version already exists, get the version and update.
-          resolve(selectedVersion)
+          resolve(selectedVersion);
         } else {
           // We need to create the version first
           let pvProm = vApi.softwareversionsPost({
@@ -133,102 +137,54 @@ const ModelContextProvider: FC = ({ children }) => {
     return returnVal;
   };
 
- const saveConfiguration = (cfg: ModelConfiguration) => {
+  const saveConfiguration = (
+    modelConfiguration: ModelConfiguration,
+    version_id: string
+  ) => {
     setCreating(true);
     let returnVal = new Promise<ModelConfiguration>((resolve, reject) => {
-      if (selectedModel == null || selectedVersion == null) {
-        reject("You must first select a model an version");
-      } else {
-        let cApi: ModelConfigurationApi = new ModelConfigurationApi();
-        let vApi: SoftwareVersionApi = new SoftwareVersionApi();
-        let mApi: ModelApi = new ModelApi();
+      let cApi: ModelConfigurationApi = new ModelConfigurationApi(cfg);
+      let vApi: SoftwareVersionApi = new SoftwareVersionApi(cfg);
 
-        let cProm = cApi.modelconfigurationsPost({
-          user: user,
-          modelConfiguration: cfg,
-        });
-        cProm.catch(reject);
-        cProm.then((realConfig: ModelConfiguration) => {
-          //We have the saved configuration.
-          if (selectedVersion.id) {
-            //Version already exists, get the version and update.
-            let gvProm = vApi.softwareversionsIdGet({
-              id: selectedVersion.id,
-              username: user,
-            });
-            gvProm.catch(reject);
-            gvProm.then((sv: SoftwareVersion) => {
-              if (sv.hasConfiguration) {
-                sv.hasConfiguration.push(realConfig);
-              } else {
-                sv.hasConfiguration = [realConfig];
-              }
-              let pvProm = vApi.softwareversionsIdPut({
-                user: user,
-                id: sv.id as string,
-                softwareVersion: sv,
-              });
-              pvProm.catch(reject);
-              pvProm.then((realV: SoftwareVersion) => {
-                resolve(realConfig);
-              });
-            });
-          } else {
-            // We need to create the version first
-            selectedVersion.hasConfiguration = [realConfig];
-            let pvProm = vApi.softwareversionsPost({
+      let cProm = cApi.modelconfigurationsPost({
+        user: user,
+        modelConfiguration: modelConfiguration,
+      });
+      cProm.catch(reject);
+      cProm.then((realConfig: ModelConfiguration) => {
+        //We have the saved configuration.
+        if (version_id) {
+          //Version already exists, get the version and update.
+          let gvProm = vApi.softwareversionsIdGet({
+            id: version_id,
+            username: user,
+          });
+          gvProm.catch(reject);
+          gvProm.then((sv: SoftwareVersion) => {
+            if (sv.hasConfiguration) {
+              sv.hasConfiguration.push(realConfig);
+            } else {
+              sv.hasConfiguration = [realConfig];
+            }
+            let pvProm = vApi.softwareversionsIdPut({
               user: user,
-              softwareVersion: selectedVersion,
+              id: getIdFromUrl(sv.id as string),
+              softwareVersion: sv,
             });
             pvProm.catch(reject);
-            pvProm.then((newVer: SoftwareVersion) => {
-              //As this is a new version, we need to add it to the model:
-              if (selectedModel.id) {
-                // Get this model and add the version.
-                let gmProm = mApi.modelsIdGet({
-                  username: user,
-                  id: selectedModel.id,
-                });
-                gmProm.catch(reject);
-                gmProm.then((realModel: Model) => {
-                  if (realModel.hasVersion) {
-                    realModel.hasVersion.push(newVer);
-                  } else {
-                    realModel.hasVersion = [newVer];
-                  }
-                  let pmProm = mApi.modelsIdPut({
-                    user: user,
-                    id: realModel.id as string,
-                    model: realModel,
-                  });
-                  pmProm.catch(reject);
-                  pmProm.then((updatedModel: Model) => {
-                    resolve(realConfig);
-                  });
-                });
-              } else {
-                // Add the model too
-                selectedModel.hasVersion = [newVer];
-                let postModelProm = mApi.modelsPost({
-                  user: user,
-                  model: selectedModel,
-                });
-                postModelProm.catch(reject);
-                postModelProm.then((newModel: Model) => {
-                  resolve(realConfig);
-                });
-              }
+            pvProm.then((realV: SoftwareVersion) => {
+              resolve(realConfig);
             });
-          }
-        });
-      }
+          });
+        }
+      });
     });
     returnVal.finally(() => setCreating(false));
     return returnVal;
   };
 
   useEffect(() => {
-    if (initialized === true && keycloak.authenticated)  {
+    if (initialized === true && keycloak.authenticated) {
       const tokenParsed = keycloak.idTokenParsed as KeycloakTokenParsedLocal;
       setUser(tokenParsed.email);
       let cfg: Configuration = new Configuration({
@@ -295,7 +251,8 @@ const ModelContextProvider: FC = ({ children }) => {
         setSelectedModel: setSelectedModel,
         selectedVersion: selectedVersion,
         setSelectedVersion: setSelectedVersion,
-        saveVersion: saveVersion
+        saveVersion: saveVersion,
+        saveConfiguration: saveConfiguration,
       }}
     >
       {children}

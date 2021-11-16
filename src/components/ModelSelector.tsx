@@ -78,9 +78,9 @@ const ModelSelector = () => {
     event.preventDefault();
     const save = async () => {
       await saveVersion();
-    }
-    save()
-    setSaved(true)
+    };
+    save();
+    setSaved(true);
   }
 
   function handleCategoryChange(event: SelectChangeEvent<String>) {
@@ -88,8 +88,8 @@ const ModelSelector = () => {
      * Handle selection of categories.
      */
     let catId: string = event.target.value as string;
-    setSelectedModel(undefined)
-    setSelectedVersion(undefined)
+    setSelectedModel(undefined);
+    setSelectedVersion(undefined);
     setCategoryUrl(catId);
     if (isUrl(catId)) {
       // Filter models by category url
@@ -108,11 +108,13 @@ const ModelSelector = () => {
   function handleVersionChange(event: SelectChangeEvent<String>) {
     let versionId: string = event.target.value as string;
 
-    setVersionUrl(versionId)
+    setVersionUrl(versionId);
     if (isUrl(versionId)) {
-      let version: SoftwareVersion = possibleVersions.filter((v: SoftwareVersion) => v.id === versionId)[0]
+      let version: SoftwareVersion = possibleVersions.filter(
+        (v: SoftwareVersion) => v.id === versionId
+      )[0];
       setSelectedVersion(version);
-    } 
+    }
   }
 
   function handleModelChange(event: SelectChangeEvent<String>) {
@@ -184,7 +186,6 @@ const ModelSelector = () => {
         >
           <MenuItem value="-"> None </MenuItem>
           {!loading && categories.length > 0 && categories.map(renderOption)}
-
         </Select>
       </div>
     );
@@ -252,7 +253,7 @@ const ModelSelector = () => {
           labelId="version-select-label"
           id="version-select"
           value={versionUrl}
-          onChange={ handleVersionChange}
+          onChange={handleVersionChange}
         >
           <MenuItem value="create_new">- Create new Version -</MenuItem>
           {possibleVersions.map(renderOption)}
@@ -339,7 +340,10 @@ const ModelSelector = () => {
 
   //Model catalog API related
   return saved ? (
-    <Redirect push to={`/notebooks/${getIdFromUrl(selectedVersion?.id as string)}`} />
+    <Redirect
+      push
+      to={`/models/${getIdFromUrl(selectedModel?.id as string)}/${getIdFromUrl(selectedVersion?.id as string)}/notebooks`}
+    />
   ) : (
     <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
       <Paper

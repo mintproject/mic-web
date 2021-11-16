@@ -12,6 +12,8 @@ export interface Model {
   inputs?: Input[];
   container?: Container;
   directives?: Directive[];
+  model_id?: string;
+  version_id?: string;
 }
 
 export interface Parameter {
