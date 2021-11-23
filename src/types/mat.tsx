@@ -9,11 +9,21 @@ export interface Model {
   cwlspec?: CommandLineObject;
   docker_image?: string;
   parameters?: Parameter[];
-  inputs?: Input[];
   container?: Container;
   directives?: Directive[];
   model_id?: string;
   version_id?: string;
+  outputs?: Output[];
+  inputs?: Input[];
+}
+
+export interface Output {
+  id?: string;
+  name: string;
+  display_name?: string;
+  description?: string;
+  type?: string;
+  match?: string;
 }
 
 export interface Parameter {
@@ -25,10 +35,10 @@ export interface Parameter {
   unit?: string;
   unit_description?: string;
   data_type?: string;
-  default?: Number | string | boolean;
+  default?: number | string | boolean;
   choices?: string[];
-  min?: Number;
-  max?: Number;
+  min?: number;
+  max?: number;
   prefix?: string;
 }
 

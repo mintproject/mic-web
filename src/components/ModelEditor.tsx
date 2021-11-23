@@ -1,6 +1,6 @@
-import { Paper, Box, TextField, Typography, Button } from "@mui/material";
+import { Paper, Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import Link from "@mui/material/Link";
 import { Model, Parameter, Input } from "../types/mat";
 import { MAT_API } from "./environment";
 import React from "react";
@@ -10,10 +10,14 @@ import {
   ModelConfiguration,
 } from "@mintproject/modelcatalog_client";
 import { MicContext } from "../contexts/MicContext";
-import InputGrid from "./InputGrid";
-import ParameterGrid from "./ParameterGrid";
+import InputGrid from "./grids/InputGrid";
+import ParameterGrid from "./grids/ParameterGrid";
 import { ModelContext } from "../contexts/ModelCatalog";
 import Container from "@mui/material/Container";
+import OutputGrid from "./grids/OutputGrid";
+import Button from "@mui/material/Button";
+import OutputModal from "./modals/OutputModal";
+import OutputModalNew from "./modals/OutputModalNew";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -42,23 +46,38 @@ const convertParameterToModelCatalog = (
   return model.parameters
     ? model.parameters?.map((parameter) => {
         return {
-          label: [parameter.display_name || parameter.name ],
-          description: [parameter.description || parameter.name ],
+          label: [parameter.display_name || parameter.name],
+          description: [parameter.description || parameter.name],
         } as ModelCatalogParameter;
       })
     : ([] as ModelCatalogParameter[]);
 };
 
 const convertInputsDataset = (model: Model): DatasetSpecification[] => {
-  return model.inputs
-    ? model.inputs?.map((input) => {
+  return model.outputs
+    ? model.outputs?.map((input) => {
         return {
           label: [input.display_name || input.name],
-          description: [input.description || input.name ],
+          description: [input.description || input.name],
         } as DatasetSpecification;
       })
     : ([] as DatasetSpecification[]);
 };
+
+
+const convertOutputDataset = (model: Model): DatasetSpecification[] => {
+  return model.outputs
+    ? model.outputs?.map((item) => {
+        return {
+          label: [item.display_name || item.name],
+          description: [item.description || item.name],
+          path_location: [item.match]
+        } as DatasetSpecification;
+      })
+    : ([] as DatasetSpecification[]);
+};
+
+
 const ModelEditor = () => {
   const { component, setComponent } = useContext(MicContext);
   const [saving, setSaving] = useState(false);
@@ -81,15 +100,14 @@ const ModelEditor = () => {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setComponent((prevModel) => ({ ...prevModel, [name]: value }));
-    console.log(component)
+    console.log(component);
   }
 
   return (
-      <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-      >
-
+    <Paper
+      variant="outlined"
+      sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+    >
       <Typography variant="h6" color="inherit" gutterBottom>
         Tell us about your Model Configuration.
       </Typography>
@@ -117,10 +135,14 @@ const ModelEditor = () => {
         />
 
         <h3> Inputs </h3>
-        {component?.inputs ? <InputGrid  /> : "None"}
+        {component?.inputs ? <InputGrid /> : "None"}
 
         <h3> Parameters </h3>
         {component?.parameters ? <ParameterGrid /> : "None"}
+
+        <h3> Outputs </h3>
+        {component?.outputs && <OutputGrid /> }
+        {<OutputModalNew id={component?.id as string} />}
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
           <Button type="submit" variant="contained">

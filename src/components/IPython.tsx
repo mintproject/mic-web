@@ -30,6 +30,9 @@ function logs(id: string) {
   if (id) {
     return (
       <Box sx={{ width: "100%" }}>
+  <Typography variant="body1" color="inherit">
+    Searching your notebooks
+  </Typography>
         <LinearProgress />
       </Box>
     );
@@ -51,8 +54,8 @@ const IPython = () => {
   );
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [renderStatus, setRenderStatus] = useState<RENDER>(RENDER.Repository);
-  const {modelId, versionId} = useParams<Props>()
-    
+  const { modelId, versionId } = useParams<Props>();
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     /**
      * Handle input change
@@ -101,44 +104,46 @@ const IPython = () => {
           Where is your code?
         </Typography>
 
-        <Typography variant="body1" color="inherit">
-          Your code must be available in a Git Repository.
-        </Typography>
         <Link />
-        { !loading &&
-          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-            <Box
-              sx={{
-                width: 500,
-                maxWidth: "100%",
-                marginBottom: 2,
-              }}
-            >
-              <TextField
-                fullWidth
-                label="The git url repository"
-                id="gitRepo"
-                name="gitRepo"
-                value={gitRepo}
-                onChange={handleChange}
-                required
-                variant="standard"
-                helperText={errors}
-              />
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                type="submit"
-                disabled={loading}
-                hidden={loading}
-                variant="contained"
+        {!loading && (
+          <>
+            <Typography variant="body1" color="inherit">
+              Your code must be available in a Git Repository.
+            </Typography>
+            <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+              <Box
+                sx={{
+                  width: 500,
+                  maxWidth: "100%",
+                  marginBottom: 2,
+                }}
               >
-                Submit
-              </Button>
-            </Box>
-          </form>
-        }
+                <TextField
+                  fullWidth
+                  label="The git url repository"
+                  id="gitRepo"
+                  name="gitRepo"
+                  value={gitRepo}
+                  onChange={handleChange}
+                  required
+                  variant="standard"
+                  helperText={errors}
+                />
+              </Box>
+
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  hidden={loading}
+                  variant="contained"
+                >
+                  Submit
+                </Button>
+              </Box>
+            </form>
+          </>
+        )}
         {logs(taskId)}
       </div>
     );
@@ -149,7 +154,9 @@ const IPython = () => {
       case RENDER.Repository:
         return renderRepository();
       case RENDER.Notebook:
-        return <Notebooks taskId={taskId} modelId={modelId} versionId={versionId} />;
+        return (
+          <Notebooks taskId={taskId} modelId={modelId} versionId={versionId} />
+        );
     }
   };
 
