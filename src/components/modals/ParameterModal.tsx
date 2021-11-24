@@ -8,10 +8,11 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Input } from "../../types/mat";
+import { Input, Parameter } from "../../types/mat";
 import { useContext, useEffect, useState } from "react";
 import { MAT_API } from "../environment";
 import { MicContext } from "./../../contexts/MicContext";
+import Box from "@mui/material/Box";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -30,11 +31,18 @@ export default function ParameterModal(props: Props) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [parameter, setParameter] = useState<Input>(props.item);
+  const [parameter, setParameter] = useState<Parameter>(props.item);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setParameter((prevParameter) => ({ ...prevParameter, [name]: value }));
+    const { name, valueAsNumber, value } = event.target;
+    if (name === "min" || name === "max") {
+      setParameter((prevParameter) => ({
+        ...prevParameter,
+        [name]: valueAsNumber,
+      }));
+    } else {
+      setParameter((prevParameter) => ({ ...prevParameter, [name]: value }));
+    }
   }
 
   function handleSubmit(event: React.FormEvent<EventTarget>) {
@@ -81,7 +89,7 @@ export default function ParameterModal(props: Props) {
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Editing the parameter: {parameter.name}</DialogTitle>
-        <form  autoComplete="off" onSubmit={handleSubmit}>
+        <form autoComplete="off" onSubmit={handleSubmit}>
           <DialogContent>
             <DialogContentText>A Parameter is...</DialogContentText>
             <TextField
@@ -105,6 +113,32 @@ export default function ParameterModal(props: Props) {
               label="description"
               onChange={handleChange}
             />
+            {/* {parameter?.type === "int" && (
+              <Box>
+                <TextField
+                  fullWidth
+                  value={parameter?.min}
+                  name="min"
+                  id="min"
+                  variant="standard"
+                  margin="dense"
+                  label="Minimum Value"
+                  type="number"
+                  onChange={handleChange}
+                />
+                <TextField
+                  fullWidth
+                  value={parameter?.max}
+                  name="max"
+                  id="max"
+                  type="Number"
+                  label="Maximum Value"
+                  onChange={handleChange}
+                  variant="standard"
+                  margin="dense"
+                />
+              </Box>
+            )} */}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>

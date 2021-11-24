@@ -77,6 +77,15 @@ const Notebooks = (props: NotebooksParams) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
+  const pushImage = async (model: Model) => {
+    const url = `${IPYTHON_API}/upload_image`;
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({ name: model.docker_image }),
+    });
+    return await response.json();
+  };
+
   async function setCwlSpec(taskId: string, fileName: string | undefined) {
     if (typeof fileName === "undefined") {
       console.error("filename cannot be undefined");
@@ -167,6 +176,8 @@ const Notebooks = (props: NotebooksParams) => {
     };
     fetchNotebook();
   }, [taskId]);
+
+  const renderUpload = () => {};
 
   const renderNotebooks = () => {
     return (

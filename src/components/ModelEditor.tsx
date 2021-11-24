@@ -2,7 +2,7 @@ import { Paper, Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState, useContext } from "react";
 import Link from "@mui/material/Link";
 import { Model, Parameter, Input } from "../types/mat";
-import { MAT_API } from "./environment";
+import { IPYTHON_API, MAT_API } from "./environment";
 import React from "react";
 import {
   DatasetSpecification,
@@ -27,6 +27,9 @@ function replacer(key: string, value: any) {
   return value;
 }
 
+const INTERVAL_TIME = 5000; //miliseconds
+
+
 const micModelPut = (model: Model) => {
   const url = `${MAT_API}/models/${model.id}`;
   //todo: hack
@@ -48,6 +51,7 @@ const convertParameterToModelCatalog = (
         return {
           label: [parameter.display_name || parameter.name],
           description: [parameter.description || parameter.name],
+          hasDataType: parameter.type ? [parameter.type] : [],
         } as ModelCatalogParameter;
       })
     : ([] as ModelCatalogParameter[]);
@@ -64,14 +68,13 @@ const convertInputsDataset = (model: Model): DatasetSpecification[] => {
     : ([] as DatasetSpecification[]);
 };
 
-
 const convertOutputDataset = (model: Model): DatasetSpecification[] => {
   return model.outputs
     ? model.outputs?.map((item) => {
         return {
           label: [item.display_name || item.name],
           description: [item.description || item.name],
-          path_location: [item.match]
+          path_location: [item.match],
         } as DatasetSpecification;
       })
     : ([] as DatasetSpecification[]);
@@ -93,6 +96,9 @@ const ModelEditor = () => {
       description: [component?.description as string],
       hasInput: convertInputsDataset(component as Model),
       hasParameter: convertParameterToModelCatalog(component as Model),
+      hasComponentLocation: [
+        `${MAT_API}/models/${component?.id}/cwlspec?filter=%7B%22fields%22%3A%7B%22id%22%3A%20false%7D%7D`,
+      ],
     };
     saveConfiguration(newModelConfiguration, component?.version_id as string);
   };
@@ -111,7 +117,7 @@ const ModelEditor = () => {
       <Typography variant="h6" color="inherit" gutterBottom>
         Tell us about your Model Configuration.
       </Typography>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+      <form autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           required
           fullWidth
@@ -141,7 +147,7 @@ const ModelEditor = () => {
         {component?.parameters ? <ParameterGrid /> : "None"}
 
         <h3> Outputs </h3>
-        {component?.outputs && <OutputGrid /> }
+        {component?.outputs && <OutputGrid />}
         {<OutputModalNew id={component?.id as string} />}
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
