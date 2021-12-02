@@ -83,6 +83,9 @@ const ModelEditor = () => {
   const { component, setComponent } = useContext(MicContext);
   const [saving, setSaving] = useState(false);
   const { saveConfiguration } = useContext(ModelContext);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
     setSaving(true);
@@ -97,7 +100,11 @@ const ModelEditor = () => {
         `${MAT_API}/models/${component?.id}/cwlspec?filter=%7B%22fields%22%3A%7B%22id%22%3A%20false%7D%7D`,
       ],
     };
-    saveConfiguration(newModelConfiguration, component?.version_id as string);
+    const responseConfiguration = await saveConfiguration(
+      newModelConfiguration,
+      component?.version_id as string
+    );
+    setSuccess(true);
   };
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -111,48 +118,55 @@ const ModelEditor = () => {
       variant="outlined"
       sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
     >
-      <Typography variant="h6" color="inherit" gutterBottom>
-        Tell us about your Model Configuration.
-      </Typography>
-      <form autoComplete="off" onSubmit={handleSubmit}>
-        <TextField
-          required
-          fullWidth
-          id="display"
-          placeholder="Display Name"
-          name="name"
-          value={component?.name}
-          variant="outlined"
-          onChange={handleChange}
-        />
+      {success && <p>Model saved successfully </p>} 
+      {!success && (
+      <>
+        <Typography variant="h6" color="inherit" gutterBottom>
+          Tell us about your Model Configuration.
+        </Typography>
+        <form autoComplete="off" onSubmit={handleSubmit}>
+          <TextField
+            required
+            fullWidth
+            id="display"
+            placeholder="Display Name"
+            name="name"
+            value={component?.name}
+            variant="outlined"
+            onChange={handleChange}
+          />
 
-        <TextField
-          required
-          fullWidth
-          id="description"
-          placeholder="Description"
-          name="description"
-          value={component?.description}
-          variant="outlined"
-          onChange={handleChange}
-        />
+          <TextField
+            required
+            fullWidth
+            id="description"
+            placeholder="Description"
+            name="description"
+            value={component?.description}
+            variant="outlined"
+            onChange={handleChange}
+          />
 
-        <h3> Inputs </h3>
-        {component?.inputs ? <InputGrid /> : "None"}
+          <h3> Inputs </h3>
+          {component?.inputs ? <InputGrid /> : "None"}
 
-        <h3> Parameters </h3>
-        {component?.parameters ? <ParameterGrid /> : "None"}
+          <h3> Parameters </h3>
+          {component?.parameters ? <ParameterGrid /> : "None"}
 
-        <h3> Outputs </h3>
-        {component?.outputs && <OutputGrid />}
-        {<OutputModalNew id={component?.id as string} />}
+          <h3> Outputs </h3>
+          {component?.outputs && <OutputGrid />}
+          {<OutputModalNew id={component?.id as string} />}
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
-          <Button type="submit" variant="contained">
-            {saving ? "Saving" : "Save"}
-          </Button>
-        </Box>
-      </form>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+          >
+            <Button type="submit" variant="contained">
+              {saving ? "Saving" : "Save"}
+            </Button>
+          </Box>
+        </form>
+      </>
+      )}
     </Paper>
   );
 };

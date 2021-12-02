@@ -21,7 +21,7 @@ const Menu = () => {
             component={RouterLink}
             to="/"
           >
-            <Typography component="a" className="active" sx={{ flexGrow: 1, fontWeight: "bold",  }}>
+            <Typography component='a' className="active" sx={{ flexGrow: 1, fontWeight: "bold",  }}>
               ▶ MINT
             </Typography>
             <Typography component="a" sx={{ flexGrow: 1 }}>

@@ -31,7 +31,10 @@ function logs(id: string, taskMessage: string) {
     return (
       <Box sx={{ width: "100%" }}>
   <Typography variant="body1" color="inherit">
-    Searching notebooks available in the GIT repository: {taskMessage}
+    Searching notebooks available in the Git repository
+  </Typography>
+  <Typography variant="body1" color="inherit">
+    {taskMessage}
   </Typography>
         <LinearProgress />
       </Box>

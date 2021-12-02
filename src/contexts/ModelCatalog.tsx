@@ -12,6 +12,7 @@ import {
 } from "@mintproject/modelcatalog_client";
 import { useKeycloak } from "@react-keycloak/web";
 import { getIdFromUrl } from "../utils/utils";
+import { MODEL_CATALOG_API } from "../components/environment";
 
 interface ModelContextState {
   models: Model[];
@@ -188,7 +189,7 @@ const ModelContextProvider: FC = ({ children }) => {
       const tokenParsed = keycloak.idTokenParsed as KeycloakTokenParsedLocal;
       setUser(tokenParsed.email);
       let cfg: Configuration = new Configuration({
-        basePath: "https://api.models.dev.mint.isi.edu/v1.8.0",
+        basePath: MODEL_CATALOG_API,
         accessToken: keycloak.idToken,
       });
       setCfg(cfg);

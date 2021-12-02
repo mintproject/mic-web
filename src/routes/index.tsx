@@ -46,20 +46,22 @@ export const AppRouter = () => {
   }
   return (
     <>
-      <Menu />
       <BrowserRouter>
+        <Menu />
         <Switch>
-          <Route exact path="/">
-            <Welcome />
-          </Route>
+          <Route exact path="/" component={Welcome} />
           <PrivateRoute exact path="/models" component={ModelSelector} />
-          <PrivateRoute exact path="/models/:modelId/:versionId/notebooks" component={IPython} />
+          <PrivateRoute
+            exact
+            path="/models/:modelId/:versionId/notebooks"
+            component={IPython}
+          />
           <PrivateRoute exact path="/commandLine" component={CommandLine} />
-          {/* <Route exact path="/models/">
-            <ModelList />
-          </Route> */}
-          <PrivateRoute path="/components/:componentId" component={ComponentSummary} />
-         <Route path="/term/:modelId/:containerId">
+          <PrivateRoute
+            path="/components/:componentId"
+            component={ComponentSummary}
+          />
+          <Route path="/term/:modelId/:containerId">
             {" "}
             <Terminal />{" "}
           </Route>
