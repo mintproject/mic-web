@@ -30,12 +30,12 @@ function logs(id: string, taskMessage: string) {
   if (id) {
     return (
       <Box sx={{ width: "100%" }}>
-  <Typography variant="body1" color="inherit">
-    Searching notebooks available in the Git repository
-  </Typography>
-  <Typography variant="body1" color="inherit">
-    {taskMessage}
-  </Typography>
+        <Typography variant="body1" color="inherit">
+          Searching notebooks available in the Git repository
+        </Typography>
+        <Typography variant="body1" color="inherit">
+          {taskMessage}
+        </Typography>
         <LinearProgress />
       </Box>
     );
@@ -78,7 +78,6 @@ const IPython = () => {
       clearInterval(intervalId as NodeJS.Timeout);
       setDockerImage(taskMessage);
       setRenderStatus(RENDER.Notebook);
-  
     }
   }, [taskStatus]);
 
@@ -163,7 +162,12 @@ const IPython = () => {
         return renderRepository();
       case RENDER.Notebook:
         return (
-          <Notebooks taskId={taskId} modelId={modelId} versionId={versionId} dockerImage={dockerImage}/>
+          <Notebooks
+            taskId={taskId}
+            modelId={modelId}
+            versionId={versionId}
+            dockerImage={dockerImage}
+          />
         );
     }
   };

@@ -11,7 +11,7 @@ type Props = {
 const History = (props: Props) => {
   return ( 
     <Grid container spacing={0}>
-      {props.directives?.map((directive) => <DirectiveItem directive={directive} />)}
+      {props.directives?.map((directive) => <DirectiveItem key={directive.id} directive={directive} />)}
     </Grid> 
   )
 };

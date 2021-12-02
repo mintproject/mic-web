@@ -7,18 +7,17 @@ interface Props {
   directive: Directive;
 }
 const DirectiveItem = (props: Props) => {
-
-  const toogle = (directiveId: string | undefined) => {
-    
-    directiveId && console.log(directiveId)
-  }
   return (
     <Grid container spacing={0}>
       <Grid item xs={2} md={8}>
         <Box key={props.directive.id}>{props.directive.command}</Box>
       </Grid>
       <Grid item xs={2} md={4}>
-        <Button onClick={() => toogle(props.directive.id)}>Add directive</Button>
+        {
+          //TODO: add button to delete directive
+          //TODO: create a component to select the parameter
+        }
+        <Button onClick={() => console.log("dummy")}>Add directive</Button>
       </Grid>
     </Grid>
   );

@@ -35,7 +35,8 @@ const Terminal = () => {
       const response = await getContainer(containerId);
       const data = await response.json();
       setContainer(data);
-      setSocket(io(`localhost:${container?.port}`));
+      const url = `localhost:${data.port}`;
+      setSocket(io(url));
     };
     get();
   }, [containerId]);
@@ -129,6 +130,9 @@ const Terminal = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={10} md={8}>
+        {
+        //TODO: onkey avoid copy paste
+        }
         <XTerm ref={xtermRef} onKey={handleChange} />
       </Grid>
       <Grid item xs={2} md={4}>

@@ -53,10 +53,11 @@ const CommandLine = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    console.log(value)
     setModel((prevModel) => ({ ...prevModel, [name]: value }));
   };
 
-  const [model, setModel] = useState<Model>();
+  const [model, setModel] = useState<Model>({name: '', docker_image: 'mintproject/mic-term'} as Model);
   const [containerId, setContainerId] = useState();
   const [modelId, setModelId] = useState<string>();
   const [loading, setLoading] = useState(false);
@@ -81,16 +82,6 @@ const CommandLine = () => {
             name="name"
             label="Name"
             variant="outlined"
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            value={model?.docker_image}
-            name="docker_image"
-            id="docker_image"
-            label="Image"
-            variant="outlined"
-            defaultValue="mintproject/mint-term"
             onChange={handleChange}
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
