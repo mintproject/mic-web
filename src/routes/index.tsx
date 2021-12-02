@@ -5,8 +5,6 @@ import ModelList from "../components/ModelList";
 import ComponentSummary from "../components/ModelSummary";
 import Terminal from "../components/Terminal";
 import Welcome from "../components/Welcome";
-import ParameterEditor from "../components/ParameterEditor";
-import InputEditor from "../components/InputEditor";
 import Menu from "../components/Menu";
 import { PrivateRoute } from "./utils";
 import Container from "@mui/material/Container";
@@ -61,9 +59,6 @@ export const AppRouter = () => {
             <ModelList />
           </Route> */}
           <PrivateRoute path="/components/:componentId" component={ComponentSummary} />
-          <Route path="/parameters/:parameterId">
-            <ParameterEditor />
-          </Route>
          <Route path="/term/:modelId/:containerId">
             {" "}
             <Terminal />{" "}

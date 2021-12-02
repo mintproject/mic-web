@@ -1,13 +1,13 @@
 import Box from "@mui/material/Box";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Grid from "@mui/material/Grid";
-import { MicContext } from "../contexts/MicContext";
+import { MicContext } from "../../contexts/MicContext";
 import { useEffect, useState, useContext } from "react";
 import IconButton from "@mui/material/IconButton";
-import BasicModal from "./BasicModal";
+import BasicModal from "../modals/BasicModal";
 
 const InputGrid = () => {
-  const { component, setComponent, setId } = useContext(MicContext);
+  const { component } = useContext(MicContext);
   return (
     <Grid container spacing={0}>
       <Grid item xs={2} md={3}>

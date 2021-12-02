@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, FC, Dispatch} from "react";
+import React, { useState, useEffect, createContext, FC, Dispatch } from "react";
 import { MAT_API } from "../components/environment";
 import { Model } from "../types/mat";
 
@@ -6,49 +6,41 @@ interface MicContextState {
   dark: boolean;
   id: string | undefined;
   component: Model | undefined;
-  toggleDark: () => void;
-  setComponent: Dispatch<React.SetStateAction<Model | undefined>>
-  setId: Dispatch<React.SetStateAction<string | undefined>>
+  getModel: (id: string) => void;
+  setComponent: Dispatch<React.SetStateAction<Model | undefined>>;
+  setId: Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const defaultState = {
   dark: false,
-  id: '',
+  id: "",
   component: {} as Model,
-  toggleDark: () => {},
+  getModel: () => {},
   setId: () => {},
-  setComponent: () => {}
+  setComponent: () => {},
 };
 
 const MicContext = createContext<MicContextState>(defaultState);
 
 const MicContextProvider: FC = ({ children }) => {
-  const [dark, setDark] = useState(false)
-  const [id, setId] = useState<string | undefined>()
-  const [component, setComponent] = useState<Model>()  
+  const [dark, setDark] = useState(false);
+  const [id, setId] = useState<string | undefined>();
+  const [component, setComponent] = useState<Model>();
 
-  useEffect(() => {
-    const getModels = async () => {
-      const response = await fetch(
-        `${MAT_API}/models?filter[where][id]=${id}&filter[include][]=inputs&filter[include][]=parameters`
-      );
-      const data = await response.json();
-      setComponent(data[0]);
-    };
-    getModels()
-    console.log(component);
-  }, [id])
-  
-  const toggleDark = () => {
-    setDark(prevState => !dark)
-    console.log(dark)
-  }
-  
+  const getModel = async (id: string) => {
+    const response = await fetch(
+      `${MAT_API}/models/${id}/?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%22inputs%22%2C%20%22parameters%22%2C%20%22outputs%22%0A%20%20%5D%0A%7D`
+    );
+    const data = await response.json();
+    const temporal : Model = data
+    setComponent(temporal);
+  };
+
   return (
     <MicContext.Provider
       value={{
         dark: dark,
-        toggleDark: toggleDark,
+        getModel: getModel,
         id: id,
         setId: setId,
         component: component,
@@ -60,4 +52,4 @@ const MicContextProvider: FC = ({ children }) => {
   );
 };
 
-export { MicContextProvider, MicContext};
+export { MicContextProvider, MicContext };
