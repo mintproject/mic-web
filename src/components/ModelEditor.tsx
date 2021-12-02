@@ -29,7 +29,6 @@ function replacer(key: string, value: any) {
 
 const INTERVAL_TIME = 5000; //miliseconds
 
-
 const micModelPut = (model: Model) => {
   const url = `${MAT_API}/models/${model.id}`;
   //todo: hack
@@ -80,18 +79,16 @@ const convertOutputDataset = (model: Model): DatasetSpecification[] => {
     : ([] as DatasetSpecification[]);
 };
 
-
 const ModelEditor = () => {
   const { component, setComponent } = useContext(MicContext);
   const [saving, setSaving] = useState(false);
   const { saveConfiguration } = useContext(ModelContext);
-
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
     setSaving(true);
     const response = await micModelPut(component as Model);
     response.ok && setSaving(false);
-    let newModelConfiguration: ModelConfiguration = {
+    const newModelConfiguration: ModelConfiguration = {
       label: [component?.name as string],
       description: [component?.description as string],
       hasInput: convertInputsDataset(component as Model),
