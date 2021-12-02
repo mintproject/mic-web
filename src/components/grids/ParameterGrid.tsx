@@ -1,12 +1,17 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { MicContext } from "../contexts/MicContext";
+import { MicContext } from "./../../contexts/MicContext";
 import { useContext } from "react";
 import IconButton from "@mui/material/IconButton";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ParameterModal from "../modals/ParameterModal";
 
 const ParameterGrid = () => {
-  const { component: model, setComponent: setModel, setId } = useContext(MicContext);
+  const {
+    component: model,
+    setComponent: setModel,
+    setId,
+  } = useContext(MicContext);
 
   return (
     <Grid container spacing={0}>
@@ -22,22 +27,20 @@ const ParameterGrid = () => {
       <Grid item xs={4} md={1}>
         <Box></Box>
       </Grid>
-      {model?.parameters?.map((input) => (
-        <Grid container>
+      {model?.parameters?.map((item) => (
+        <Grid container key={item.id}>
           <Grid item xs={2} md={3}>
-            <Box>{input.display_name || input.name} </Box>
+            <Box>{item.display_name || item.name} </Box>
           </Grid>
           <Grid item xs={4} md={6}>
-            <Box>{input.description}</Box>
+            <Box>{item.description}</Box>
           </Grid>
           <Grid item xs={2} md={2}>
-            <Box>{input.type}</Box>
+            <Box>{item.type}</Box>
           </Grid>
           <Grid item xs={1} md={1}>
             <Box>
-              <IconButton aria-label="delete" disabled color="primary">
-                <ModeEditIcon />
-              </IconButton>
+              <ParameterModal item={item} />
             </Box>
           </Grid>
         </Grid>

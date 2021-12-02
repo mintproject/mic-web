@@ -10,14 +10,13 @@ type Props = {
 
 const ComponentSummary = () => {
   const props = useParams<Props>()
-  const { component, setId } = useContext(MicContext);
+  const { component, getModel } = useContext(MicContext);
   useEffect(() => {
-    setId(props.componentId);
-    console.log(component)
+    getModel(props.componentId)
   }, []);
   return (
     <Container maxWidth="sm">
-      {component && <ModelEditor/>}
+      <ModelEditor/>
     </Container>
   );
 };

@@ -23,13 +23,16 @@ enum RENDER {
   Summary = "SUMMARY",
 }
 
-function logs(id: string) {
+function logs(id: string, taskMessage: string) {
   /**
    * Return a webcomponent to show the logs using a websocket
    */
   if (id) {
     return (
       <Box sx={{ width: "100%" }}>
+  <Typography variant="body1" color="inherit">
+    Searching notebooks available in the GIT repository: {taskMessage}
+  </Typography>
         <LinearProgress />
       </Box>
     );
@@ -45,14 +48,16 @@ const IPython = () => {
   const [gitRepo, setGitRepo] = useState("");
   const [taskId, setTaskId] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
+  const [taskMessage, setTaskMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dockerImage, setDockerImage] = useState("");
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | undefined>(
     undefined
   );
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [renderStatus, setRenderStatus] = useState<RENDER>(RENDER.Repository);
-  const {modelId, versionId} = useParams<Props>()
-    
+  const { modelId, versionId } = useParams<Props>();
+
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     /**
      * Handle input change
@@ -68,7 +73,9 @@ const IPython = () => {
      */
     if (taskStatus === TASK_STATUS.Success) {
       clearInterval(intervalId as NodeJS.Timeout);
+      setDockerImage(taskMessage);
       setRenderStatus(RENDER.Notebook);
+  
     }
   }, [taskStatus]);
 
@@ -82,6 +89,7 @@ const IPython = () => {
           fetch(`${IPYTHON_API}/tasks/${taskId}`)
             .then((response) => response.json())
             .then((data) => {
+              setTaskMessage(data.task_result);
               setTaskStatus(data.task_status);
               return data;
             })
@@ -101,45 +109,47 @@ const IPython = () => {
           Where is your code?
         </Typography>
 
-        <Typography variant="body1" color="inherit">
-          Your code must be available in a Git Repository.
-        </Typography>
         <Link />
-        { !loading &&
-          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-            <Box
-              sx={{
-                width: 500,
-                maxWidth: "100%",
-                marginBottom: 2,
-              }}
-            >
-              <TextField
-                fullWidth
-                label="The git url repository"
-                id="gitRepo"
-                name="gitRepo"
-                value={gitRepo}
-                onChange={handleChange}
-                required
-                variant="standard"
-                helperText={errors}
-              />
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                type="submit"
-                disabled={loading}
-                hidden={loading}
-                variant="contained"
+        {!loading && (
+          <>
+            <Typography variant="body1" color="inherit">
+              Your code must be available in a Git Repository.
+            </Typography>
+            <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+              <Box
+                sx={{
+                  width: 500,
+                  maxWidth: "100%",
+                  marginBottom: 2,
+                }}
               >
-                Submit
-              </Button>
-            </Box>
-          </form>
-        }
-        {logs(taskId)}
+                <TextField
+                  fullWidth
+                  label="The git url repository"
+                  id="gitRepo"
+                  name="gitRepo"
+                  value={gitRepo}
+                  onChange={handleChange}
+                  required
+                  variant="standard"
+                  helperText={errors}
+                />
+              </Box>
+
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  hidden={loading}
+                  variant="contained"
+                >
+                  Submit
+                </Button>
+              </Box>
+            </form>
+          </>
+        )}
+        {logs(taskId, taskMessage)}
       </div>
     );
   };
@@ -149,7 +159,9 @@ const IPython = () => {
       case RENDER.Repository:
         return renderRepository();
       case RENDER.Notebook:
-        return <Notebooks taskId={taskId} modelId={modelId} versionId={versionId} />;
+        return (
+          <Notebooks taskId={taskId} modelId={modelId} versionId={versionId} dockerImage={dockerImage}/>
+        );
     }
   };
 

@@ -1,8 +1,5 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -11,10 +8,10 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Input } from "../types/mat";
+import { Input } from "../../types/mat";
 import { useContext, useEffect, useState } from "react";
-import { MAT_API } from "./environment";
-import { MicContext } from "../contexts/MicContext";
+import { MAT_API } from "../environment";
+import { MicContext } from "./../../contexts/MicContext";
 
 
 function replacer(key: string, value: any) {
@@ -24,17 +21,6 @@ function replacer(key: string, value: any) {
   }
   return value;
 }
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 interface Props {
   input: Input;
@@ -68,9 +54,8 @@ export default function BasicModal(props: Props) {
         });
 
         if (response.ok) {
-          console.log("ok")
           const updatedArr = component?.inputs?.map(item => {
-            if(item.id === item?.id) {
+            if(item.id === input?.id) {
                 return input
             }
             return item

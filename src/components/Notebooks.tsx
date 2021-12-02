@@ -28,6 +28,8 @@ function getParametersCwl(data: CommandLineObject): Parameter[] {
       if (value?.type !== "File") {
         return {
           name: key,
+          display_name: key,
+          description: key,
           prefix: value?.inputBinding.prefix,
           type: value?.type,
         };
@@ -44,6 +46,7 @@ function getFilesCwl(data: CommandLineObject): Input[] {
         return {
           name: key,
           display_name: key,
+          description: key,
           prefix: value?.inputBinding.prefix,
         };
       }
@@ -56,6 +59,7 @@ type NotebooksParams = {
   taskId: string;
   modelId: string;
   versionId: string;
+  dockerImage: string;
 };
 
 type NotebookStatus = {
@@ -73,6 +77,7 @@ const Notebooks = (props: NotebooksParams) => {
   const [componentId, setComponentId] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
+
 
   async function setCwlSpec(taskId: string, fileName: string | undefined) {
     if (typeof fileName === "undefined") {
@@ -102,10 +107,11 @@ const Notebooks = (props: NotebooksParams) => {
       const parsed_spec = await setCwlSpec(taskId, option);
       if (parsed_spec !== undefined) {
         //Create model
+        const dockerImage = props.dockerImage || parsed_spec.hints.DockerRequirement.dockerImageId;
         const model_request: Model = {
           name: option ? option : "",
           type: "cwl",
-          docker_image: parsed_spec?.hints.DockerRequirement.dockerImageId,
+          docker_image: dockerImage,
           model_id: modelId,
           version_id: versionId,
         };
@@ -165,36 +171,47 @@ const Notebooks = (props: NotebooksParams) => {
     fetchNotebook();
   }, [taskId]);
 
+  const renderUpload = () => {};
+
   const renderNotebooks = () => {
     return (
       <div>
         <Typography variant="h5" color="inherit">
-          Select the notebook to add
+          Select a notebook.
         </Typography>
         {loading && (
           <Box sx={{ display: "flex" }}>
             <CircularProgress />
           </Box>
         )}
-        <form onSubmit={formSubmit}>
-          {notebooks?.map((n) => (
-            <div key={n.name} className="radio">
-              <label>
-                <input
-                  type="radio"
-                  value={n.name}
-                  onChange={onValueChange}
-                  checked={option === n.name}
-                />
-                {n.name}
-                {stringify(n.spec)}
-              </label>
-            </div>
-          ))}
-          <button className="btn btn-default" type="submit">
-            Submit
-          </button>
-        </form>
+
+        {notebooks && notebooks.length > 0 ? (
+          <form onSubmit={formSubmit}>
+            <Typography variant="body1" color="inherit">
+              We found the following notebooks. Please, select one to create a
+              Model Configuration
+            </Typography>
+            {notebooks.map((n) => (
+              <div key={n.name} className="radio">
+                <label>
+                  <input
+                    type="radio"
+                    value={n.name}
+                    onChange={onValueChange}
+                    checked={option === n.name}
+                  />
+                  {n.name}
+                  {stringify(n.spec)}
+                </label>
+              </div>
+            ))}
+            <button className="btn btn-default" type="submit">
+              Submit
+            </button>
+          </form>
+        ) : (
+          <p>No notebooks available</p>
+        )}
       </div>
     );
   };
@@ -202,7 +219,7 @@ const Notebooks = (props: NotebooksParams) => {
   return componentId === undefined ? (
     renderNotebooks()
   ) : (
-    <Redirect push to={`/components/${componentId}`}/>
+    <Redirect push to={`/components/${componentId}`} />
   );
 };
 
