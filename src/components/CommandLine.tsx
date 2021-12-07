@@ -4,6 +4,8 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { LoadingButton } from '@mui/lab';
+import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Model } from "../types/mat";
@@ -11,7 +13,7 @@ import { MAT_API } from "./environment";
 import React from "react"
 
 const CommandLine = () => {
-  const handleSubmit = (event: React.FormEvent<EventTarget>) => {
+  const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
     const submit = async () => {
       try {
@@ -47,13 +49,12 @@ const CommandLine = () => {
       }
     };
     setLoading(true);
-    submit();
+    await submit();
     setLoading(false);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    console.log(value)
     setModel((prevModel) => ({ ...prevModel, [name]: value }));
   };
 
@@ -61,10 +62,9 @@ const CommandLine = () => {
   const [containerId, setContainerId] = useState();
   const [modelId, setModelId] = useState<string>();
   const [loading, setLoading] = useState(false);
+
   return containerId ? (
     <Redirect to={`term/${modelId}/${containerId}`} />
-  ) : loading ? (
-    <p> Loading </p>
   ) : (
     <Container maxWidth="sm">
       <Paper
@@ -84,10 +84,19 @@ const CommandLine = () => {
             variant="outlined"
             onChange={handleChange}
           />
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button type="submit" variant="contained">
+          <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 1, alignContent: "middle"}}>
+            <span style={{color: "#bbb"}}>
+              {loading ? "Staring docker image..." : ""}
+            </span>
+            <LoadingButton
+              type="submit"
+              loading={loading}
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              variant="contained"
+            >
               Save
-            </Button>
+            </LoadingButton>
           </Box>
         </form>
       </Paper>

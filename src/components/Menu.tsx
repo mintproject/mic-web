@@ -21,10 +21,10 @@ const Menu = () => {
             component={RouterLink}
             to="/"
           >
-            <Typography component='a' className="active" sx={{ flexGrow: 1, fontWeight: "bold",  }}>
+            <Typography component='span' className="active" sx={{ flexGrow: 1, fontWeight: "bold",  }}>
               ▶ MINT
             </Typography>
-            <Typography component="a" sx={{ flexGrow: 1 }}>
+            <Typography component='span' sx={{ flexGrow: 1 }}>
               Model Insertion
             </Typography>
           </Link>

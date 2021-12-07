@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.3.0",
     "@mintproject/modelcatalog_client": "^8.0.0",
     "@mui/icons-material": "^5.0.1",
+    "@mui/lab": "^5.0.0-alpha.59",
     "@mui/material": "^5.0.2",
     "@react-keycloak/web": "^3.4.0",
     "@testing-library/jest-dom": "^5.11.4",
