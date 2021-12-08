@@ -51,6 +51,7 @@ const convertParameterToModelCatalog = (
           label: [parameter.display_name || parameter.name],
           description: [parameter.description || parameter.name],
           hasDataType: parameter.type ? [parameter.type] : [],
+          type: ["Parameter"],
         } as ModelCatalogParameter;
       })
     : ([] as ModelCatalogParameter[]);
@@ -62,6 +63,7 @@ const convertInputsDataset = (model: Model): DatasetSpecification[] => {
         return {
           label: [input.display_name || input.name],
           description: [input.description || input.name],
+          type: ["DatasetSpecification"],
         } as DatasetSpecification;
       })
     : ([] as DatasetSpecification[]);
