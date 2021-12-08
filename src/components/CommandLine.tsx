@@ -1,16 +1,10 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { Box, Container, Paper, TextField, Typography } from "@mui/material";
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
-import { useState } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Model } from "../types/mat";
 import { MAT_API } from "./environment";
-import React from "react"
 
 const CommandLine = () => {
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
