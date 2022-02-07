@@ -1,0 +1,27 @@
+site_name: Model Insertion Checker (MIC)
+nav:
+  - Home: index.md
+  - 'Creating a software component from a Jupyter Notebook':
+      - 'Overview': 'notebooks/index.md'
+      - 'Preparing a Binder repository': 'notebooks/prepare_binder.md'
+      - 'Exposing software inputs and outputs': 'notebooks/expose_inputs_outputs.md'
+      - 'Converting the repository to a software component': 'notebooks/convert_repository.md'
+      - 'Testing run': 'notebooks/run_component.md'
+      - 'Uploading to DockerHub and MINT': 'notebooks/upload_component.md'
+
+  - FAQ: faq.md
+  - Glossary: glossary.md
+
+theme:
+  name: material
+  logo: 'logo.png'
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences:
+      # make exceptions to highlighting of code
+  - toc:
+      permalink: true
+plugins:
+    - mkdocs-video
+
+
