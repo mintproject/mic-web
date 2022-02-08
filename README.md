@@ -7,13 +7,13 @@ This project is not production-ready.
 ## Features
 
 ### General 
-- [ ] Align the styles to the MINT web.
-- [ ] Save the model, model versions, model configurations into the MINT Model Catalog.
+- [x] Align the styles to the MINT web.
+- [x] Save the model, model versions, model configurations into the MINT Model Catalog.
 
 ### IPython transformation
 - [x] Transform a IPython notebook according the [ipython2cwl](https://github.com/common-workflow-lab/ipython2cwl).
 - [x] The user can be describe parameters and inputs.
-- [ ] The system must to push the image onto the DockerHub.
+- [x] The system must to push the image onto the DockerHub.
 - [ ] The user can select the output using glob expression. Following the [CWL spec](https://www.commonwl.org/user_guide/10-array-outputs/index.html)
 
 ### Terminal
