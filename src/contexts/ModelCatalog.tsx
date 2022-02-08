@@ -96,6 +96,7 @@ const ModelContextProvider: FC = ({ children }) => {
             //As this is a new version, we need to add it to the model:
             if (selectedModel.id) {
               // Get this model and add the version.
+              setSelectedVersion(newVer);
               let gmProm = mApi.modelsIdGet({
                 username: user,
                 id: getIdFromUrl(selectedModel.id),

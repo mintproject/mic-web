@@ -340,10 +340,10 @@ const ModelSelector = () => {
   }
 
   //Model catalog API related
-  return saved ? (
+  return (saved && selectedModel && selectedModel.id &&  selectedVersion && selectedVersion.id)  ? (
     <Redirect
       push
-      to={`/models/${getIdFromUrl(selectedModel?.id as string)}/${getIdFromUrl(selectedVersion?.id as string)}/notebooks`}
+      to={`/models/${getIdFromUrl(selectedModel.id as string)}/${getIdFromUrl(selectedVersion.id as string)}/notebooks`}
     />
   ) : (
     <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
