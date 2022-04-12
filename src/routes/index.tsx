@@ -1,20 +1,18 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Notebooks from "../components/Notebooks";
-import ModelList from "../components/ModelList";
 import ComponentSummary from "../components/ModelSummary";
 import Terminal from "../components/Terminal";
-import Welcome from "../components/Welcome";
+import Welcome from "../pages/Welcome";
 import Menu from "../components/Menu";
 import { PrivateRoute } from "./utils";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { CircularProgress } from "@mui/material";
-import IPythonModelRegister from "../components/IPythonModelRegister";
 import CommandLine from "../components/CommandLine";
-import IPython from "../components/IPython";
+import GitRepo from "../pages/GitRepo";
 import ModelSelector from "../components/ModelSelector";
+import { DASHBOARD, MODELS, MODEL_NOTEBOOKS, NOTEBOOK_GIT_FORM } from "../constants/routes";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -49,14 +47,24 @@ export const AppRouter = () => {
       <BrowserRouter>
         <Menu />
         <Switch>
-          <Route exact path="/" component={Welcome} />
-          <PrivateRoute exact path="/models" component={ModelSelector} />
+          <Route 
+            exact 
+            path={DASHBOARD}
+            component={Welcome} 
+          />
+          <PrivateRoute 
+            exact path={MODELS}
+            component={ModelSelector}
+          />
           <PrivateRoute
             exact
-            path="/models/:modelId/:versionId/notebooks"
-            component={IPython}
+            path={NOTEBOOK_GIT_FORM}
+            component={GitRepo}
           />
-          <PrivateRoute exact path="/commandLine" component={CommandLine} />
+          <PrivateRoute
+            exact path="/commandLine"
+            component={CommandLine}
+          />
           <PrivateRoute
             path="/components/:componentId"
             component={ComponentSummary}

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import { COMMAND_LINE, MODELS, MODEL_NOTEBOOKS, NOTEBOOK_GIT_FORM } from "../constants/routes";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -47,7 +48,7 @@ function Welcome() {
               <Grid item xs>
                 <Item>
                   <p> A Python Jupyter Notebook </p>
-                  <Button component={Link} to={"/models"} variant="contained">
+                  <Button component={Link} to={NOTEBOOK_GIT_FORM} variant="contained">
                     Start
                   </Button>
                 </Item>
@@ -55,7 +56,7 @@ function Welcome() {
               <Grid item xs>
                 <Item>
                   <p> My model using CLI </p>
-                  <Button component={Link} to={'/commandLine'} variant="outlined">
+                  <Button component={Link} to={COMMAND_LINE} variant="outlined">
                     Start
                   </Button>
                 </Item>
