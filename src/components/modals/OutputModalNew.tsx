@@ -8,11 +8,11 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Input, Model, Output } from "../../types/mat";
 import { useContext, useEffect, useState } from "react";
 import { MAT_API } from "../environment";
 import { MicContext } from "./../../contexts/MicContext";
 import Link from "@mui/material/Link";
+import { Output } from "../../models/Output";
 
 function replacer(key: string, value: any) {
   console.log(value);
