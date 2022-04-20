@@ -9,18 +9,11 @@ import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
 import { useContext, useEffect, useState } from "react";
-import { MAT_API } from "../environment";
+import { MAT_API } from "../../constants/environment";
 import { MicContext } from "./../../contexts/MicContext";
 import { Input } from "../../models/Input";
+import { replacer } from "../../utils/utils";
 
-
-function replacer(key: string, value: any) {
-  console.log(value);
-  if (value === null) {
-    return undefined;
-  }
-  return value;
-}
 
 interface Props {
   input: Input;

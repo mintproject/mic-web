@@ -12,7 +12,7 @@ import {
 } from "@mintproject/modelcatalog_client";
 import { useKeycloak } from "@react-keycloak/web";
 import { getIdFromUrl } from "../utils/utils";
-import { MODEL_CATALOG_API } from "../components/environment";
+import { MODEL_CATALOG_API } from "../constants/environment";
 
 interface ModelContextState {
   models: Model[];

@@ -1,4 +1,4 @@
-import { MAT_API } from "../../components/environment";
+import { MAT_API } from "../../constants/environment";
 import { COMPONENTS_URL } from "../../constants/routes";
 import { Component } from "../../models/Component";
 import { replacer } from "../../utils/utils";

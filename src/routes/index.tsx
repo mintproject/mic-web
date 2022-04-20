@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import ComponentSummary from "../components/ModelSummary";
 import Terminal from "../components/Terminal";
 import Welcome from "../pages/Welcome";
-import Menu from "../components/Menu";
+import Menu from "../components/Header";
 import { PrivateRoute } from "./utils";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";

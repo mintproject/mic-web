@@ -1,4 +1,4 @@
-import { MAT_API } from "../../components/environment";
+import { MAT_API } from "../../constants/environment";
 import { CommandLineObject } from "../../models/cwl/cwl";
 
 export const createSpec = async (modelId: string, spec: CommandLineObject) => {

@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useState, Suspense } from "react";
 import { Button, Container, Link, Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import { createDagRun, IPYTHON_DAG_ID } from "../services/Airflow";
+import { IPYTHON_DAG_CONF } from "../models/AirflowConf";
+import { UserContext } from "../contexts/UserContext";
 
 const INTERVAL_TIME = 5000; //miliseconds
 
@@ -12,7 +15,9 @@ export enum TASK_STATUS {
 
 
 const GitRepo = () => {
+  const { user } = useContext(UserContext);
   const [url, setUrl] = useState("");
+  const [name, setName] = useState("");
   const [taskId, setTaskId] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [taskMessage, setTaskMessage] = useState("");
@@ -32,6 +37,16 @@ const GitRepo = () => {
 
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
+    const conf : IPYTHON_DAG_CONF = {
+      url: url,
+      component_name: name
+    }
+    try {
+      const response = await createDagRun(IPYTHON_DAG_ID, conf, user.token!);
+    } catch (error) {
+      setError("Unable to create dag run on Airflow");
+    }
+
   }
 
 
@@ -45,6 +60,8 @@ const GitRepo = () => {
       <Typography variant="h6" color="inherit">
         Where is your code?
       </Typography>
+
+      {error && ( <Typography variant="body1" color="error"> {error} </Typography>)}
 
       <Link />
         <Suspense fallback={<p>Loading...</p>}>
@@ -60,6 +77,16 @@ const GitRepo = () => {
                 marginBottom: 2,
               }}
             >
+              <TextField
+                fullWidth
+                label="The git url repository"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                variant="standard"
+              />
               <TextField
                 fullWidth
                 label="The git url repository"

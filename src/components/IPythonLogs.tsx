@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { IPYTHON_API, IPYTHON_WS, MAT_API } from "./environment";
+import { IPYTHON_API, IPYTHON_WS, MAT_API } from "../constants/environment";
 interface Message {
   id: string;
   message: string;

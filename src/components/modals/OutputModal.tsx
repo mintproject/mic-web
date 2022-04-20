@@ -9,7 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
 import { useContext, useEffect, useState } from "react";
-import { MAT_API } from "../environment";
+import { MAT_API } from "../../constants/environment";
 import { MicContext } from "./../../contexts/MicContext";
 import Link from "@mui/material/Link";
 import { Output } from "../../models/Output";

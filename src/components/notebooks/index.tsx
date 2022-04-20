@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IPYTHON_API, MAT_API } from "../environment";
+import { IPYTHON_API, MAT_API } from "../../constants/environment";
 import { CommandLineObject } from "../../models/cwl/cwl";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Paper, Typography } from "@mui/material";
