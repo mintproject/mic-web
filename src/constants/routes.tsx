@@ -4,6 +4,7 @@ export const COMPONENTS_URL = '/components'
 export const REPOSITORY_URL = 'repository'
 export const REPO_GIT_FORM = `${COMPONENTS_URL}/:id/${REPOSITORY_URL}`
 export const ANALYZE_PAGE = `${COMPONENTS_URL}/:id/analyze`
+export const TEST_PAGE = `${COMPONENTS_URL}/:id/test`
 export const NOTEBOOKS_PAGE = `${COMPONENTS_URL}/:id/notebooks`
 
 

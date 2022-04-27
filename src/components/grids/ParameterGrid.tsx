@@ -30,7 +30,7 @@ const ParameterGrid = () => {
       {model?.parameters?.map((item) => (
         <Grid container key={item.id}>
           <Grid item xs={2} md={3}>
-            <Box>{item.display_name || item.name} </Box>
+            <Box>{item.displayName || item.name} </Box>
           </Grid>
           <Grid item xs={4} md={6}>
             <Box>{item.description}</Box>

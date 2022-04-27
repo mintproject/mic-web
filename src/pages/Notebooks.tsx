@@ -1,10 +1,21 @@
-import { Box, Button, Container, IconButton, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import CardGrid from "../components/grids/CardGrid";
 import { Component } from "../models/Component";
-import { getComponent } from "../services/api/Component";
+import { getComponent, updateComponent } from "../services/api/Component";
 import SendIcon from "@mui/icons-material/Send";
+import { getSpec } from "../services/api/Spec";
+import { getFilesCwl, getParametersCwl } from "../adapters/cwl2modelCatalog";
+import { createParameters, deleteParameters } from "../services/api/Parameter";
+import { createInputs, deleteInputs } from "../services/api/Input";
 interface Params {
   id: string;
 }
@@ -17,7 +28,7 @@ export const Notebooks = (props: any) => {
   const [error, setError] = useState("");
   const [component, setComponent] = useState<Component>();
   const [loading, setLoading] = useState(false);
-
+  const history = useHistory();
   useEffect(() => {
     getComponent(id)
       .then((component) => {
@@ -30,10 +41,10 @@ export const Notebooks = (props: any) => {
   }, [id]);
 
   return (
-      <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-      >
+    <Paper
+      variant="outlined"
+      sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+    >
       <Typography variant="h4">Notebooks</Typography>
       {component && component.gitRepo && component.gitRepo.notebooks && (
         <CardGrid>
@@ -41,7 +52,26 @@ export const Notebooks = (props: any) => {
             return (
               <Box p={2}>
                 <Typography variant="h6">{notebook.name}</Typography>
-                <Button onClick={() => {console.log("test")}}  variant="outlined">
+                <Button
+                  onClick={async () => {
+                    const spec = await getSpec(notebook);
+                    updateComponent({
+                      ...component,
+                      hasComponentLocation: notebook.spec,
+                      type: notebook.inferredBy,
+                      dockerImage: component.gitRepo?.dockerImage,
+                    });
+                    deleteParameters(component.id!);
+                    deleteInputs(component.id!);
+                    const inputs = getFilesCwl(spec)
+                    const parameters = getParametersCwl(spec)
+                    createParameters(component.id!, parameters)
+                    createInputs(component.id!, inputs)
+                    console.log(spec);
+                    history.push(`/component/${component.id}/test`);
+                  }}
+                  variant="outlined"
+                >
                   Mark as your component
                 </Button>
               </Box>
@@ -49,7 +79,7 @@ export const Notebooks = (props: any) => {
           })}
         </CardGrid>
       )}
-      </Paper>
+    </Paper>
   );
 };
 export default Notebooks;

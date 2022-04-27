@@ -86,9 +86,9 @@ export default function BasicModal(props: Props) {
             fullWidth
             variant="standard"
             margin="dense"
-            value={input?.display_name}
-            name="display_name"
-            id="display_name"
+            value={input?.displayName}
+            name="displayName"
+            id="displayName"
             label="Display name"
             onChange={handleChange}
           />

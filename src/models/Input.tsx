@@ -3,7 +3,7 @@ export interface Input {
   id?: string;
   name: string;
   description?: string;
-  display_name?: string;
+  displayName?: string;
   path?: string;
   prefix?: string;
 }

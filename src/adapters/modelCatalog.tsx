@@ -6,12 +6,12 @@ import {
 } from "@mintproject/modelcatalog_client";
 
 export const convertParameterToModelCatalog = (
-  model: Component
+  component: Component
 ): ModelCatalogParameter[] => {
-  return model.parameters
-    ? model.parameters?.map((parameter) => {
+  return component.parameters
+    ? component.parameters?.map((parameter) => {
         return {
-          label: [parameter.display_name || parameter.name],
+          label: [parameter.displayName || parameter.name],
           description: [parameter.description || parameter.name],
           hasDataType: parameter.type ? [parameter.type] : [],
           type: ["Parameter"],
@@ -24,7 +24,7 @@ export const convertInputsDataset = (model: Component): DatasetSpecification[] =
   return model.outputs
     ? model.outputs?.map((input) => {
         return {
-          label: [input.display_name || input.name],
+          label: [input.displayName || input.name],
           description: [input.description || input.name],
           type: ["DatasetSpecification"],
         } as DatasetSpecification;
@@ -36,7 +36,7 @@ export const convertOutputDataset = (model: Component): DatasetSpecification[] =
   return model.outputs
     ? model.outputs?.map((item) => {
         return {
-          label: [item.display_name || item.name],
+          label: [item.displayName || item.name],
           description: [item.description || item.name],
           path_location: [item.match],
         } as DatasetSpecification;

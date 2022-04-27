@@ -45,26 +45,25 @@ export const createComponent = async (
 };
 
 export const updateComponent = async (component: Component) => {
-  const url = `${MAT_API}/${COMPONENTS_URL}${component.id}`;
-  const temp = JSON.stringify(component, replacer);
+  const url = `${MAT_API}/${COMPONENTS_URL}/${component.id}`;
+  const { gitRepo, inputs, parameters, ...componentClean } = component;
   const response = await fetch(url, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: temp,
+    body: JSON.stringify({
+      ...componentClean,
+    }),
   });
-  if (response.ok) {
-    const data: Component = await response.json();
-    return data;
-  }
-  throw new Error(response.statusText);
+  if (!response.ok)
+    throw new Error(response.statusText);
 };
 
 export const getComponent = async (id: string) => {
   try {
     const params = new URLSearchParams({
-      filter: `{"include":[{"relation":"gitRepo","scope":{"fields":{"name":false},"include":[{"relation":"notebooks"}]}}]}`
+      filter: `{"include":["inputs", "parameters", {"relation":"gitRepo","scope":{"fields":{"name":false},"include":[{"relation":"notebooks"}]}}]}`
     });
     const response = await fetch(`${MAT_API}${COMPONENTS_URL}/${id}?${params}`, {
       method: "GET",

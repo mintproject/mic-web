@@ -22,7 +22,7 @@ const InputGrid = () => {
       {component?.inputs?.map((input) => (
         <Grid container key={input.id}>
           <Grid item xs={2} md={3}>
-            <Box>{input.display_name || input.name}</Box>
+            <Box>{input.displayName || input.name}</Box>
           </Grid>
           <Grid item xs={2} md={8}>
             <Box>{input.description} </Box>

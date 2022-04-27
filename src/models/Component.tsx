@@ -9,11 +9,12 @@ import { Parameter } from "./Parameter";
 export interface Component {
   id?: string;
   name: string;
-  display_name?: string;
+  displayName?: string;
   description?: string;
   type?: string;
   cwlspec?: CommandLineObject;
-  docker_image?: string;
+  hasComponentLocation?: string;
+  dockerImage?: string;
   parameters?: Parameter[];
   container?: Container;
   directives?: Directive[];
