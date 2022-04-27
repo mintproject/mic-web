@@ -29,10 +29,10 @@ const UserContextProvider: FC = ({ children }) => {
   useEffect(() => {
     if (initialized === true && keycloak.authenticated) {
       const tokenParsed = keycloak as User;
-      console.log(tokenParsed);
       setUser(tokenParsed)
     }
   }, [initialized]);
+  
   return <UserContext.Provider value={
     {user: user}
   }>

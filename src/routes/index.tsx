@@ -10,9 +10,12 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { CircularProgress } from "@mui/material";
 import CommandLine from "../components/CommandLine";
-import GitRepo from "../pages/GitRepo";
+import IPython2Cwl from "../components/Analyzers/Ipython2cwl";
 import ModelSelector from "../components/ModelSelector";
-import { DASHBOARD, MODELS, MODEL_NOTEBOOKS, NOTEBOOK_GIT_FORM } from "../constants/routes";
+import { COMPONENTS_URL, DASHBOARD, MODELS, MODEL_NOTEBOOKS, ANALYZE_PAGE, NOTEBOOKS_PAGE } from "../constants/routes";
+import { ComponentNew } from "../pages/ComponentNew";
+import Analyze from "../pages/Analyze";
+import Notebooks from "../pages/Notebooks";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -52,14 +55,25 @@ export const AppRouter = () => {
             path={DASHBOARD}
             component={Welcome} 
           />
+          <PrivateRoute
+            exact
+            path={COMPONENTS_URL}
+            component={ComponentNew}
+            />
+
           <PrivateRoute 
             exact path={MODELS}
             component={ModelSelector}
           />
           <PrivateRoute
             exact
-            path={NOTEBOOK_GIT_FORM}
-            component={GitRepo}
+            path={NOTEBOOKS_PAGE}
+            component={Notebooks}
+          />
+          <PrivateRoute
+            exact
+            path={ANALYZE_PAGE}
+            component={Analyze}
           />
           <PrivateRoute
             exact path="/commandLine"

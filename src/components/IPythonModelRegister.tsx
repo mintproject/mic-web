@@ -1,6 +1,6 @@
 import { Container } from "@mui/material";
 
-import GitRepo from "../pages/GitRepo";
+import IPython2Cwl from "./Analyzers/Ipython2cwl";
 import ModelSelector from "./ModelSelector";
 
 const IPythonModelRegister = () => {
