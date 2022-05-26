@@ -12,11 +12,11 @@ import { CircularProgress } from "@mui/material";
 import CommandLine from "../components/CommandLine";
 import IPython2Cwl from "../components/Analyzers/Ipython2cwl";
 import ModelSelector from "../components/ModelSelector";
-import { COMPONENTS_URL, DASHBOARD, MODELS, MODEL_NOTEBOOKS, ANALYZE_PAGE, NOTEBOOKS_PAGE, TEST_PAGE } from "../constants/routes";
+import { COMPONENTS_URL, DASHBOARD, MODELS, MODEL_NOTEBOOKS, ANALYZE_PAGE, NOTEBOOKS_PAGE, EXECUTION_SAMPLE_PAGE } from "../constants/routes";
 import { ComponentNew } from "../pages/ComponentNew";
 import Analyze from "../pages/Analyze";
 import Notebooks from "../pages/Notebooks";
-import ComponentTest from "../pages/ComponentTest";
+import SampleExecution from "../pages/SampleExecution";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -73,8 +73,8 @@ export const AppRouter = () => {
           />
           <PrivateRoute
             exact
-            path={TEST_PAGE}
-            component={ComponentTest}
+            path={EXECUTION_SAMPLE_PAGE}
+            component={SampleExecution}
           />
           <PrivateRoute
             exact

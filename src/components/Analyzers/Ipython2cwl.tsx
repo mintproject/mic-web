@@ -33,6 +33,7 @@ import {
 } from "../../models/AirflowDagResponse";
 import { patchGitRepo } from "../../services/api/GitRepo";
 import { useHistory } from "react-router-dom";
+import { COMPONENTS_URL, NOTEBOOKS } from "../../constants/routes";
 
 const INTERVAL_TIME = 5000; //miliseconds
 
@@ -70,6 +71,7 @@ const IPython2Cwl = (props: Props) => {
           },
           dagResponse.notebooks
         );
+        history.push(`${COMPONENTS_URL}/${props.component.id}/${NOTEBOOKS}`);
       }
     } catch (error) {
       setError(`${error}`);
