@@ -43,18 +43,18 @@ const Analyze = () => {
         </Typography>
         <CardGrid>
           {[
-            <>
-              <Typography variant="h6">Papermill</Typography>
-              <Typography variant="body2">
-                <Link href="https://papermill.readthedocs.io/en/latest/">
-                  Papermill
-                </Link>{" "}
-                is a Python library for running Jupyter Notebooks.
-              </Typography>
-              <Button variant="contained" color="primary">
-                Run
-              </Button>
-            </>,
+            // <>
+            //   <Typography variant="h6">Papermill</Typography>
+            //   <Typography variant="body2">
+            //     <Link href="https://papermill.readthedocs.io/en/latest/">
+            //       Papermill
+            //     </Link>{" "}
+            //     is a Python library for running Jupyter Notebooks.
+            //   </Typography>
+            //   <Button variant="contained" color="primary">
+            //     Run
+            //   </Button>
+            // </>,
             <>
               <Typography variant="h6">Ipython2CWL</Typography>
               <Typography variant="body2">

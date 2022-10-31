@@ -1,11 +1,6 @@
-import { Button, Container, Paper, Typography, InputLabel, Select, SelectChangeEvent, MenuItem, CircularProgress } from "@mui/material";
+import { Button, Container, Paper, Typography, InputLabel, Select, SelectChangeEvent, MenuItem, CircularProgress, Link } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import {
-    Model,
-    SoftwareVersion,
-    ModelCategory,
-    ModelConfiguration,
-} from "@mintproject/modelcatalog_client";
+import { Model, SoftwareVersion, ModelCategory, ModelConfiguration } from "@mintproject/modelcatalog_client";
 import { ModelContext } from "../contexts/ModelCatalog";
 import Box from "@mui/material/Box";
 import isUrl from "validator/lib/isURL";
@@ -16,10 +11,11 @@ import { Redirect } from "react-router-dom";
 import { getIdFromUrl } from "../utils/utils";
 import { convertModelConfiguration } from "../adapters/modelCatalog";
 import { Component } from "../models/Component";
+import { MODEL_CATALOG_API } from "../constants/environment";
 
 interface Props {
-  component: Component;
-  modelConfiguration: ModelConfiguration
+    component: Component;
+    modelConfiguration: ModelConfiguration;
 }
 
 const ModelSelector = (props: Props) => {
@@ -29,6 +25,7 @@ const ModelSelector = (props: Props) => {
         categories,
         loading,
         setLoading,
+        saved,
         setSelectedModel,
         selectedModel,
         setSelectedVersion,
@@ -45,7 +42,8 @@ const ModelSelector = (props: Props) => {
     const [possibleVersions, setPossibleVersions] = useState([] as SoftwareVersion[]);
     const [modelUrl, setModelUrl] = useState("");
     const [versionUrl, setVersionUrl] = useState("");
-    const [saved, setSaved] = useState(false);
+    const mintModelCatalogUrl = new URL(MODEL_CATALOG_API);
+    const mintUiUrl: string = `${mintModelCatalogUrl.protocol}//${mintModelCatalogUrl.hostname.replace("api.models.", "")}`;
 
     // handle events
     useEffect(() => {
@@ -71,8 +69,7 @@ const ModelSelector = (props: Props) => {
 
     function handleSubmit(event: React.FormEvent<EventTarget>) {
         event.preventDefault();
-        saveVersion(props.modelConfiguration)
-        setSaved(true);
+        saveVersion(props.modelConfiguration);
     }
 
     function handleCategoryChange(event: SelectChangeEvent<String>) {
@@ -222,9 +219,15 @@ const ModelSelector = (props: Props) => {
                 </Typography>
 
                 <Typography variant="body1" color="inherit">
-                    Choose an existing model or create a new one
+                Choose an existing model or create a new one
                 </Typography>
 
+                <Typography variant="body2" color="inherit">
+                    Information obtained from: 
+                    <Link underline="hover"  href={mintUiUrl}>
+                          MINT Model Catalog 
+                    </Link>
+                </Typography>
                 <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                     {loading ? (
                         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -280,12 +283,19 @@ const ModelSelector = (props: Props) => {
     }
 
     //Model catalog API related
-    return renderEditMode()
-    // return saved && selectedModel && selectedModel.id && selectedVersion && selectedVersion.id ? (
-    //     <Redirect push to={`/models/${getIdFromUrl(selectedModel.id as string)}/${getIdFromUrl(selectedVersion.id as string)}/notebooks`} />
-    // ) : (
-    //     renderEditMode()
-    // );
+    // return renderEditMode()
+    return saved && selectedModel && selectedModel.id && selectedVersion && selectedVersion.id ? (
+        <div>
+            <Typography variant="h6" color="inherit">
+                Saved 
+                <Typography variant="body2" color="inherit">
+                    To change the model, go to the <Link underline="hover" href={mintUiUrl}>MINT Model Catalog</Link>
+                </Typography>
+            </Typography>
+        </div>
+    ) : (
+        renderEditMode()
+    );
 };
 
 export default ModelSelector;

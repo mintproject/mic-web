@@ -12,6 +12,7 @@ export const convertParameterToModelCatalog = (model: Component): ModelCatalogPa
                   label: [parameter.displayName || parameter.name],
                   description: [parameter.description || parameter.name],
                   hasDataType: parameter.type ? [parameter.type] : [],
+                  hasDefaultValue: parameter.default ? [parameter.default] : [],
                   type: ["Parameter"],
               } as ModelCatalogParameter;
           })

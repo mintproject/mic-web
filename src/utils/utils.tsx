@@ -4,7 +4,7 @@ export const getIdFromUrl = (id: string) => {
 
 export function replacer(key: string, value: any) {
   console.log(value);
-  if (key === "inputs" || key === "parameters" || value === null) {
+  if (key === "inputs" || key === "parameters" || key === "outputs" || value === null) {
     return undefined;
   }
   return value;

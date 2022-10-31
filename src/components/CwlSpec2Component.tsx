@@ -5,6 +5,7 @@ import { Component } from "../models/Component";
 import { Notebook } from "../models/Notebook";
 import { updateComponent } from "../services/api/Component";
 import { createInputs } from "../services/api/Input";
+import { createOutputs } from "../services/api/Output";
 import { createParameters } from "../services/api/Parameter";
 
 interface Props {
@@ -28,6 +29,7 @@ const CwlSpec2Component = (props: Props) => {
                 setStatus("Updating Model Catalog component");
                 await createParameters(tmpComponent.id!, tmpComponent.parameters!);
                 await createInputs(tmpComponent.id!, tmpComponent.inputs!);
+                await createOutputs(tmpComponent.id!, tmpComponent.outputs!);
                 await updateComponent(tmpComponent);
                 history.push(`/components/${tmpComponent.id}`);
             }

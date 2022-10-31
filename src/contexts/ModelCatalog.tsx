@@ -25,6 +25,7 @@ interface ModelContextState {
     versions: SoftwareVersion[];
     categories: ModelCategory[];
     loading: boolean;
+    saved: boolean;
     setLoading: Dispatch<React.SetStateAction<boolean>>;
     selectedModel: Model | undefined;
     setSelectedModel: Dispatch<React.SetStateAction<Model | undefined>>;
@@ -39,7 +40,9 @@ const defaultState = {
     versions: [],
     categories: [],
     loading: false,
+    saved: false,
     setLoading: () => {},
+    setSaved: () => {},
     selectedModel: undefined,
     setSelectedModel: () => {},
     selectedVersion: undefined,
@@ -73,6 +76,7 @@ const ModelContextProvider: FC = ({ children }) => {
     // Fetch and creating status
     const [creating, setCreating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [saved, setSaved] = useState(false);
 
     //selected
     const [selectedModel, setSelectedModel] = useState<Model>();
@@ -202,10 +206,13 @@ const ModelContextProvider: FC = ({ children }) => {
         modelConfiguration.hasInput = await saveInputs(modelConfiguration);
         modelConfiguration.hasParameter = await saveParameters(modelConfiguration);
         modelConfiguration.hasOutput = await saveOuputs(modelConfiguration);
-        return await cApi.modelconfigurationsPost({
+        modelConfiguration = await cApi.modelconfigurationsPost({
             user: user,
             modelConfiguration: modelConfiguration,
         });
+        setSaved(true);
+        
+        return modelConfiguration;
     };
 
     useEffect(() => {
@@ -271,6 +278,7 @@ const ModelContextProvider: FC = ({ children }) => {
                 versions: versions,
                 categories: categories,
                 loading: loading,
+                saved: saved,
                 setLoading: setLoading,
                 selectedModel: selectedModel,
                 setSelectedModel: setSelectedModel,

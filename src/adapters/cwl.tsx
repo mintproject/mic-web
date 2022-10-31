@@ -14,6 +14,19 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
 }
 
+function getOutputsCwl(data: CommandLineObject): Input[] {
+  return Object.entries(data.outputs)
+    .map(([key, value], index) => {
+      return {
+        name: key,
+        displayName: key,
+        description: key,
+      };
+    })
+    .filter(notEmpty);
+}
+
+
 function getParametersCwl(data: CommandLineObject): Parameter[] {
   console.log(data);
   return Object.entries(data.inputs)
@@ -55,6 +68,7 @@ const convertCwl = (component: Component, spec: string, spec_url: string): Compo
     component.dockerImage = dockerImage;
     component.parameters = getParametersCwl(specCwl);
     component.inputs = getFilesCwl(specCwl);
+    component.outputs = getOutputsCwl(specCwl);
 
     const newComponent : Component = {
         id: component.id,

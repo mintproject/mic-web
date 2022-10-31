@@ -99,7 +99,7 @@ const ComponentSummary = () => {
                             {component?.parameters ? <ParameterGrid parameters={component.parameters} /> : "None"}
 
                             <h3> Outputs </h3>
-                            {component?.outputs && <OutputGrid />}
+                            {component?.outputs && <OutputGrid outputs={component.outputs}/>}
                             {/* {<OutputModalNew id={component?.id as string} />} */}
 
                             <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
