@@ -30,31 +30,6 @@ const ModelEditor = () => {
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
     setSaving(true);
-    try {
-      const response = await updateComponent(component as Component);
-      const newModelConfiguration: ModelConfiguration = {
-        label: [component?.name as string],
-        description: [component?.description as string],
-        hasInput: convertInputsDataset(component as Component),
-        hasParameter: convertParameterToModelCatalog(component as Component),
-        hasComponentLocation: [
-          `${MAT_API}/models/${component?.id}/cwlspec?filter=%7B%22fields%22%3A%7B%22id%22%3A%20false%7D%7D`,
-        ],
-      };
-
-      const responseConfiguration = await saveConfiguration(
-        newModelConfiguration,
-        component?.version_id as string
-      );
-      setSuccess(true);
-    } catch (error) {
-      let message;
-      setSaving(false);
-      setError(true);
-      if (error instanceof Error) message = error.message;
-      else message = String(error)
-      setErrorMessage(message);
-    }
   };
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -98,10 +73,10 @@ const ModelEditor = () => {
             />
 
             <h3> Inputs </h3>
-            {component?.inputs ? <InputGrid /> : "None"}
+            {/* {component?.inputs ? <InputGrid /> : "None"} */}
 
             <h3> Parameters </h3>
-            {component?.parameters ? <ParameterGrid /> : "None"}
+            {/* {component?.parameters ? <ParameterGrid /> : "None"} */}
 
             <h3> Outputs </h3>
             {component?.outputs && <OutputGrid />}

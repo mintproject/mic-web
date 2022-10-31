@@ -8,7 +8,7 @@ type Props = {
   componentId: string;
 };
 
-const ComponentSummary = () => {
+const ModelSummary = () => {
   const props = useParams<Props>()
   const { component, getModel } = useContext(MicContext);
   useEffect(() => {
@@ -21,4 +21,4 @@ const ComponentSummary = () => {
   );
 };
 
-export default ComponentSummary;
+export default ModelSummary;

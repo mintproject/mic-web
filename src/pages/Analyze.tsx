@@ -79,7 +79,6 @@ const Analyze = () => {
 
         {ipython && component && <IPython2Cwl component={component} />}
       </Paper>
-      <Notebooks />
     </Container>
   );
 };

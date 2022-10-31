@@ -97,7 +97,7 @@ export default function ParameterModal(props: Props) {
               fullWidth
               variant="standard"
               margin="dense"
-              value={parameter?.display_name}
+              value={parameter?.displayName}
               name="display_name"
               id="display_name"
               label="Display name"

@@ -1,6 +1,6 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ComponentSummary from "../components/ModelSummary";
+import ModelSummary from "../components/ModelSummary";
 import Terminal from "../components/Terminal";
 import Welcome from "../pages/Welcome";
 import Menu from "../components/Header";
@@ -16,6 +16,8 @@ import { COMPONENTS_URL, DASHBOARD, MODELS, MODEL_NOTEBOOKS, ANALYZE_PAGE, NOTEB
 import { ComponentNew } from "../pages/ComponentNew";
 import Analyze from "../pages/Analyze";
 import Notebooks from "../pages/Notebooks";
+import ComponentSummary from "../pages/ComponentSummary";
+import SubmitComponent from "../pages/SubmitComponent";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -80,8 +82,12 @@ export const AppRouter = () => {
             component={CommandLine}
           />
           <PrivateRoute
-            path="/components/:componentId"
+            exact path="/components/:componentId"
             component={ComponentSummary}
+          />
+          <PrivateRoute
+            exact path="/components/:componentId/submit"
+            component={SubmitComponent}
           />
           <Route path="/term/:modelId/:containerId">
             {" "}

@@ -5,14 +5,13 @@ import { useContext } from "react";
 import IconButton from "@mui/material/IconButton";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ParameterModal from "../modals/ParameterModal";
+import { Parameter } from "../../models/Parameter";
 
-const ParameterGrid = () => {
-  const {
-    component: model,
-    setComponent: setModel,
-    setId,
-  } = useContext(MicContext);
+interface Props {
+  parameters: Parameter[];
+}
 
+const ParameterGrid = (props: Props) => {
   return (
     <Grid container spacing={0}>
       <Grid item xs={4} md={3}>
@@ -27,10 +26,10 @@ const ParameterGrid = () => {
       <Grid item xs={4} md={1}>
         <Box></Box>
       </Grid>
-      {model?.parameters?.map((item) => (
+      {props?.parameters?.map((item) => (
         <Grid container key={item.id}>
           <Grid item xs={2} md={3}>
-            <Box>{item.display_name || item.name} </Box>
+            <Box>{item.displayName || item.name} </Box>
           </Grid>
           <Grid item xs={4} md={6}>
             <Box>{item.description}</Box>
@@ -38,11 +37,11 @@ const ParameterGrid = () => {
           <Grid item xs={2} md={2}>
             <Box>{item.type}</Box>
           </Grid>
-          <Grid item xs={1} md={1}>
+          {/* <Grid item xs={1} md={1}>
             <Box>
               <ParameterModal item={item} />
             </Box>
-          </Grid>
+          </Grid> */}
         </Grid>
       ))}
     </Grid>

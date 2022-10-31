@@ -2,7 +2,7 @@
 export interface Output {
   id?: string;
   name: string;
-  display_name?: string;
+  displayName?: string;
   description?: string;
   type?: string;
   match?: string;

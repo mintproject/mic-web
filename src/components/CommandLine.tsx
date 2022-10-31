@@ -18,7 +18,7 @@ const CommandLine = () => {
       try {
         const component_response = await createComponent(component);
         const component_id : string = component_response.id!
-        const image : string = component_response.docker_image!
+        const image : string = component_response.dockerImage!
         const container_response = await createContainer(component_id, image);
         const container_id : string = container_response.id!
         setModelId(component_id);
@@ -66,7 +66,7 @@ const CommandLine = () => {
           />
           <TextField
             fullWidth
-            value={component?.docker_image}
+            value={component?.dockerImage}
             name="docker_image"
             id="docker_image"
             label="Image"

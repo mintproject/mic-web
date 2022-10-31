@@ -1,5 +1,5 @@
 import { MAT_API } from "../../constants/environment";
-import { REPOSITORY_URL, COMPONENTS_URL } from "../../constants/routes";
+import { REPOSITORY_URL, COMPONENTS_URL, GIT_REPO_URL } from "../../constants/routes";
 import { GitRepo } from "../../models/GitRepo";
 import { Notebook } from "../../models/Notebook";
 
@@ -39,4 +39,23 @@ export const patchGitRepo = async (component_id: string, gitRepo: GitRepo, noteb
         throw new Error(error!.message);
     }
     
-} 
+}
+
+
+export const getNotebooks = async (id: string) => {
+    try {
+        const response = await fetch(`${MAT_API}${GIT_REPO_URL}/${id}/notebooks`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (response.ok) {
+            const data: Notebook[] = await response.json();
+            return data;
+        }
+        throw new Error(response.statusText);
+    } catch (error) {
+        throw new Error(error!.message);
+    }
+};

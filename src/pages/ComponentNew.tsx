@@ -1,5 +1,4 @@
 import { Box, Container, Grid, Paper, Stack, Typography } from "@mui/material";
-import Stepper from "../components/Stepper";
 import { FormComponentNew } from "../components/Component/FormComponentNew";
 import { ListComponents } from "../components/Component/ListComponents";
 
@@ -16,7 +15,7 @@ export const ComponentNew = () => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        <ListComponents/>
+        {/* <ListComponents/> */}
       </Paper>
       
     </Container>

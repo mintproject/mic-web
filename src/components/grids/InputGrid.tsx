@@ -5,9 +5,13 @@ import { MicContext } from "../../contexts/MicContext";
 import { useEffect, useState, useContext } from "react";
 import IconButton from "@mui/material/IconButton";
 import BasicModal from "../modals/BasicModal";
+import { Input } from "../../models/Input";
 
-const InputGrid = () => {
-  const { component } = useContext(MicContext);
+interface Props {
+  inputs: Input[];
+}
+
+const InputGrid = (props: Props) => {
   return (
     <Grid container spacing={0}>
       <Grid item xs={2} md={3}>
@@ -19,19 +23,19 @@ const InputGrid = () => {
       <Grid item xs={4} md={1}>
         <Box></Box>
       </Grid>
-      {component?.inputs?.map((input) => (
+      {props.inputs.map((input: Input) => (
         <Grid container key={input.id}>
           <Grid item xs={2} md={3}>
-            <Box>{input.display_name || input.name}</Box>
+            <Box>{input.displayName || input.name}</Box>
           </Grid>
           <Grid item xs={2} md={8}>
             <Box>{input.description} </Box>
           </Grid>
-          <Grid item xs={1} md={1}>
+          {/* <Grid item xs={1} md={1}>
             <Box>
                 <BasicModal input={input}/>
             </Box>
-          </Grid>
+          </Grid> */}
         </Grid>
       ))}
     </Grid>

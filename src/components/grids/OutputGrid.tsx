@@ -20,7 +20,7 @@ const OutputGrid = () => {
       {component?.outputs?.map((output) => (
         <Grid container key={output.id}>
           <Grid item xs={2} md={3}>
-            <Box>{output.display_name || output.name}</Box>
+            <Box>{output.displayName || output.name}</Box>
           </Grid>
           <Grid item xs={2} md={8}>
             <Box>{output.description} </Box>

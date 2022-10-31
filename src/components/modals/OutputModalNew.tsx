@@ -41,7 +41,7 @@ export default function OutputModalNew(props: Props) {
     event.preventDefault();
     const submit = async () => {
       const url = `${MAT_API}/models/${props.id}/outputs`;
-      output.name = output.display_name as string;
+      output.name = output.displayName as string;
       let temp = JSON.stringify(output, replacer);
       try {
         const response = await fetch(url, {
@@ -83,7 +83,7 @@ export default function OutputModalNew(props: Props) {
             fullWidth
             variant="standard"
             margin="dense"
-            value={output?.display_name}
+            value={output?.displayName}
             name="display_name"
             id="display_name"
             label="Display name"

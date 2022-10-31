@@ -4,5 +4,5 @@ export interface Notebook {
     localPath: string;
     remotePath: string;
     inferredBy: string;
-    specs: string;
+    spec: string;
 }
