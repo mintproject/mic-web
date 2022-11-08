@@ -16,7 +16,7 @@ import {
 } from "@mintproject/modelcatalog_client";
 import { useKeycloak } from "@react-keycloak/web";
 import { getIdFromUrl } from "../utils/utils";
-import { MODEL_CATALOG_API } from "../constants/environment";
+import { REACT_APP_MODEL_CATALOG_API } from "../constants/environment";
 import { VpnKey } from "@mui/icons-material";
 import Module from "module";
 
@@ -220,7 +220,7 @@ const ModelContextProvider: FC = ({ children }) => {
             const tokenParsed = keycloak.idTokenParsed as KeycloakTokenParsedLocal;
             setUser(tokenParsed.email);
             let cfg: Configuration = new Configuration({
-                basePath: MODEL_CATALOG_API,
+                basePath: REACT_APP_MODEL_CATALOG_API,
                 accessToken: keycloak.idToken,
             });
             setCfg(cfg);

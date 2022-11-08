@@ -1,10 +1,10 @@
 
-import { MAT_API } from "../../constants/environment";
+import { REACT_APP_MIC_API } from "../../constants/environment";
 import { COMPONENTS_URL } from "../../constants/routes";
 import { Output } from "../../models/Output";
 
 export const createOutputs = async (modelId: string, outputs: Output[]) => {
-    const url = `${MAT_API}/${COMPONENTS_URL}/${modelId}/outputs`;
+    const url = `${REACT_APP_MIC_API}/${COMPONENTS_URL}/${modelId}/outputs`;
     for (const parameter of outputs) {
         const response = await fetch(url, {
             method: "POST",

@@ -1,11 +1,11 @@
-import { MAT_API } from "../../constants/environment";
+import { REACT_APP_MIC_API } from "../../constants/environment";
 import { REPOSITORY_URL, COMPONENTS_URL, GIT_REPO_URL } from "../../constants/routes";
 import { GitRepo } from "../../models/GitRepo";
 import { Notebook } from "../../models/Notebook";
 
 export const patchGitRepo = async (component_id: string, gitRepo: GitRepo, notebooks?: Notebook[]) => {
     try {
-        const response = await fetch(`${MAT_API}/${COMPONENTS_URL}/${component_id}/git-repo`, {
+        const response = await fetch(`${REACT_APP_MIC_API}/${COMPONENTS_URL}/${component_id}/git-repo`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export const patchGitRepo = async (component_id: string, gitRepo: GitRepo, noteb
         if (response.ok) {
             const gitRepoResponse: GitRepo = await response.json();
             const responseNotebooks = notebooks?.map(async (notebook) => {
-                const response = await fetch(`${MAT_API}/git-repos/${gitRepoResponse.id}/notebooks`, {
+                const response = await fetch(`${REACT_APP_MIC_API}/git-repos/${gitRepoResponse.id}/notebooks`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export const patchGitRepo = async (component_id: string, gitRepo: GitRepo, noteb
 
 export const getNotebooks = async (id: string) => {
     try {
-        const response = await fetch(`${MAT_API}${GIT_REPO_URL}/${id}/notebooks`, {
+        const response = await fetch(`${REACT_APP_MIC_API}${GIT_REPO_URL}/${id}/notebooks`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

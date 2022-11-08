@@ -1,8 +1,8 @@
-import { MAT_API } from "../../constants/environment";
+import { REACT_APP_MIC_API} from "../../constants/environment";
 import { Container } from "../../models/Container";
 
 export const createContainer = async (id: string, image_name: string) => {
-  const response = await fetch(`${MAT_API}/models/${id}/container`, {
+  const response = await fetch(`${REACT_APP_MIC_API}/models/${id}/container`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export const createContainer = async (id: string, image_name: string) => {
 
 
 export const getContainer = async (containerId: string) => {
-  const response = await fetch(`${MAT_API}/containers/${containerId}`);
+  const response = await fetch(`${REACT_APP_MIC_API}/containers/${containerId}`);
   if (response.ok) {
     const data = response.json();
     return data;

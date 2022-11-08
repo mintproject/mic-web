@@ -1,11 +1,11 @@
-import { MAT_API } from "../../constants/environment";
+import { REACT_APP_MIC_API } from "../../constants/environment";
 import { COMPONENTS_URL } from "../../constants/routes";
 import { Component } from "../../models/Component";
 import { replacer } from "../../utils/utils";
 
 export const createComponent = async (component: Component, gitUrl?: string) => {
     try {
-        const response = await fetch(`${MAT_API}${COMPONENTS_URL}`, {
+        const response = await fetch(`${REACT_APP_MIC_API}${COMPONENTS_URL}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const createComponent = async (component: Component, gitUrl?: string) => 
         if (response.ok) {
             const data: Component = await response.json();
             if (gitUrl) {
-                const responseRepo = await fetch(`${MAT_API}${COMPONENTS_URL}/${data.id}/git-repo`, {
+                const responseRepo = await fetch(`${REACT_APP_MIC_API}${COMPONENTS_URL}/${data.id}/git-repo`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const createComponent = async (component: Component, gitUrl?: string) => 
 };
 
 export const updateComponent = async (component: Component) => {
-    const url = `${MAT_API}${COMPONENTS_URL}/${component.id}`;
+    const url = `${REACT_APP_MIC_API}${COMPONENTS_URL}/${component.id}`;
     const temp = JSON.stringify(component, replacer);
     const response = await fetch(url, {
         method: "PUT",
@@ -60,7 +60,7 @@ export const getComponent = async (id: string) => {
         const params = new URLSearchParams({
             filter: `{"include":[{"relation":"gitRepo"}, {"relation":"inputs"}, {"relation":"outputs"}, {"relation":"parameters"}]}`,
         });
-        const response = await fetch(`${MAT_API}${COMPONENTS_URL}/${id}?${params}`, {
+        const response = await fetch(`${REACT_APP_MIC_API}${COMPONENTS_URL}/${id}?${params}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -78,7 +78,7 @@ export const getComponent = async (id: string) => {
 
 export const listComponents = async () => {
     try {
-        const response = await fetch(`${MAT_API}${COMPONENTS_URL}`);
+        const response = await fetch(`${REACT_APP_MIC_API}${COMPONENTS_URL}`);
         if (response.ok) {
             const data: Component[] = await response.json();
             return data;

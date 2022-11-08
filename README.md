@@ -27,7 +27,19 @@ This project is not production-ready.
 - [ ] The user can select the output using glob expression. Following the [CWL spec](https://www.commonwl.org/user_guide/10-array-outputs/index.html)
 - [ ] The system must to push the image onto the DockerHub.
 
+## How to configure?
+
+To configure the project, you need to create a `config.js` file in the public folder. This file must to have the following structure:
+
+```js
+window.REACT_APP_MIC_API = 'https://api.mic.mint.isi.edu';
+window.REACT_APP_AIRFLOW_API = 'https://airflow.mint.isi.edu/api/v1';
+window.REACT_APP_MODEL_CATALOG_API = 'https://api.models.mint.isi.edu/v1.8.0';
+```
+
+
 ## How to run?
+
 
 In the project directory, you can run:
 

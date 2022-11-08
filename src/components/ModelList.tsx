@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MAT_API } from "../constants/environment";
+import { REACT_APP_MIC_API } from "../constants/environment";
 import { Link } from "react-router-dom";
 import { Component } from '../models/Component';
 
@@ -10,7 +10,7 @@ const ModelList = () => {
   useEffect(() => {
     const getModels = async () => {
       try {
-        const response = await fetch(`${MAT_API}/models`);
+        const response = await fetch(`${REACT_APP_MIC_API}/models`);
         const data = await response.json();
         setModels(data);
       } catch (error) {

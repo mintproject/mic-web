@@ -1,6 +1,5 @@
 import { Paper, Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState, useContext } from "react";
-import { IPYTHON_API, MAT_API } from "../constants/environment";
 import React from "react";
 
 import { MicContext } from "../contexts/MicContext";

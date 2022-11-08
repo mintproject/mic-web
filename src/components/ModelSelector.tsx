@@ -11,7 +11,7 @@ import { Redirect } from "react-router-dom";
 import { getIdFromUrl } from "../utils/utils";
 import { convertModelConfiguration } from "../adapters/modelCatalog";
 import { Component } from "../models/Component";
-import { MODEL_CATALOG_API } from "../constants/environment";
+import { REACT_APP_MODEL_CATALOG_API } from "../constants/environment";
 
 interface Props {
     component: Component;
@@ -42,7 +42,7 @@ const ModelSelector = (props: Props) => {
     const [possibleVersions, setPossibleVersions] = useState([] as SoftwareVersion[]);
     const [modelUrl, setModelUrl] = useState("");
     const [versionUrl, setVersionUrl] = useState("");
-    const mintModelCatalogUrl = new URL(MODEL_CATALOG_API);
+    const mintModelCatalogUrl = new URL(REACT_APP_MODEL_CATALOG_API);
     const mintUiUrl: string = `${mintModelCatalogUrl.protocol}//${mintModelCatalogUrl.hostname.replace("api.models.", "")}`;
 
     // handle events

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, FC, Dispatch } from "react";
-import { MAT_API } from "../constants/environment";
+import { REACT_APP_MIC_API } from "../constants/environment";
 import { Component } from "../models/Component";
 
 interface MicContextState {
@@ -29,7 +29,7 @@ const MicContextProvider: FC = ({ children }) => {
 
   const getModel = async (id: string) => {
     const response = await fetch(
-      `${MAT_API}/models/${id}/?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%22inputs%22%2C%20%22parameters%22%2C%20%22outputs%22%0A%20%20%5D%0A%7D`
+      `${REACT_APP_MIC_API}/models/${id}/?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%22inputs%22%2C%20%22parameters%22%2C%20%22outputs%22%0A%20%20%5D%0A%7D`
     );
     const data = await response.json();
     const temporal : Component = data

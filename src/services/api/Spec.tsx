@@ -1,8 +1,8 @@
-import { MAT_API } from "../../constants/environment";
+import { REACT_APP_MIC_API } from "../../constants/environment";
 import { CommandLineObject } from "../../models/cwl/cwl";
 
 export const createSpec = async (modelId: string, spec: CommandLineObject) => {
-  const url = `${MAT_API}/models/${modelId}/cwlspec`;
+  const url = `${REACT_APP_MIC_API}/models/${modelId}/cwlspec`;
   const response = await fetch(url, {
     method: "POST",
     headers: {

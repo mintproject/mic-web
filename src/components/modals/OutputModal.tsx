@@ -9,7 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
 import { useContext, useEffect, useState } from "react";
-import { MAT_API } from "../../constants/environment";
+import { REACT_APP_MIC_API } from "../../constants/environment";
 import { MicContext } from "./../../contexts/MicContext";
 import Link from "@mui/material/Link";
 import { Output } from "../../models/Output";
@@ -45,7 +45,7 @@ export default function OutputModal(props: Props) {
   function handleSubmit(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
     const submit = async () => {
-      const url = `${MAT_API}/outputs/${props.id}`;
+      const url = `${REACT_APP_MIC_API}/outputs/${props.id}`;
       output.name = output.displayName as string;
       let temp = JSON.stringify(output, replacer);
       try {
