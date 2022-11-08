@@ -8,11 +8,11 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Input, Model, Output } from "../../types/mat";
 import { useContext, useEffect, useState } from "react";
-import { MAT_API } from "../environment";
+import { MAT_API } from "../../constants/environment";
 import { MicContext } from "./../../contexts/MicContext";
 import Link from "@mui/material/Link";
+import { Output } from "../../models/Output";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -46,7 +46,7 @@ export default function OutputModal(props: Props) {
     event.preventDefault();
     const submit = async () => {
       const url = `${MAT_API}/outputs/${props.id}`;
-      output.name = output.display_name as string;
+      output.name = output.displayName as string;
       let temp = JSON.stringify(output, replacer);
       try {
         const response = await fetch(url, {
@@ -96,7 +96,7 @@ export default function OutputModal(props: Props) {
             fullWidth
             variant="standard"
             margin="dense"
-            value={output?.display_name}
+            value={output?.displayName}
             name="display_name"
             id="display_name"
             label="Display name"

@@ -8,11 +8,12 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Input, Parameter } from "../../types/mat";
 import { useContext, useEffect, useState } from "react";
-import { MAT_API } from "../environment";
+import { MAT_API } from "../../constants/environment";
 import { MicContext } from "./../../contexts/MicContext";
 import Box from "@mui/material/Box";
+import { Input } from "../../models/Input";
+import { Parameter } from "../../models/Parameter";
 
 function replacer(key: string, value: any) {
   console.log(value);
@@ -96,7 +97,7 @@ export default function ParameterModal(props: Props) {
               fullWidth
               variant="standard"
               margin="dense"
-              value={parameter?.display_name}
+              value={parameter?.displayName}
               name="display_name"
               id="display_name"
               label="Display name"

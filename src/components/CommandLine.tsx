@@ -6,44 +6,25 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { Model } from "../types/mat";
-import { MAT_API } from "./environment";
 import React from "react"
+import { createComponent } from "../services/api/Component";
+import { createContainer } from "../services/api/Container";
+import { Component } from "../models/Component";
 
 const CommandLine = () => {
   const handleSubmit = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
     const submit = async () => {
       try {
-        const response = await fetch(`${MAT_API}/models`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: model?.name,
-            type: "docker",
-          }),
-        });
-        const model_response: Model = await response.json();
-        const container = await fetch(
-          `${MAT_API}/models/${model_response.id}/container`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              image: model?.docker_image,
-            }),
-          }
-        );
-        const container_response = await container.json();
-        setModelId(model_response.id);
-        setContainerId(container_response.id);
+        const component_response = await createComponent(component);
+        const component_id : string = component_response.id!
+        const image : string = component_response.dockerImage!
+        const container_response = await createContainer(component_id, image);
+        const container_id : string = container_response.id!
+        setModelId(component_id);
+        setContainerId(container_id);
       } catch (error) {
-        //TODO: show error message
-        console.log(error);
+        console.error(error);
       }
     };
     setLoading(true);
@@ -53,11 +34,11 @@ const CommandLine = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setModel((prevModel) => ({ ...prevModel, [name]: value }));
+    setComponent((prevModel) => ({ ...prevModel, [name]: value }));
   };
 
-  const [model, setModel] = useState<Model>();
-  const [containerId, setContainerId] = useState();
+  const [component, setComponent] = useState<Component>({} as Component);
+  const [containerId, setContainerId] = useState<string>("");
   const [modelId, setModelId] = useState<string>();
   const [loading, setLoading] = useState(false);
   return containerId ? (
@@ -76,7 +57,7 @@ const CommandLine = () => {
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            value={model?.name}
+            value={component?.name}
             id="name"
             name="name"
             label="Name"
@@ -85,7 +66,7 @@ const CommandLine = () => {
           />
           <TextField
             fullWidth
-            value={model?.docker_image}
+            value={component?.dockerImage}
             name="docker_image"
             id="docker_image"
             label="Image"

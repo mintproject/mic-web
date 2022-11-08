@@ -3,15 +3,12 @@ import { XTerm } from "xterm-for-react";
 import io, { Socket } from "socket.io-client";
 import "./terminal.css";
 import { useParams } from "react-router-dom";
-import {
-  getContainer,
-  Container,
-  createDirective,
-  getDirectives,
-  Directive,
-} from "../types/mat";
 import History from "./History";
 import Grid from "@mui/material/Grid";
+import { Container } from "../models/Container";
+import { Directive } from "../models/Directive";
+import { getContainer } from "../services/api/Container";
+import { createDirective, getDirectives } from "../services/api/Directive";
 
 type ContainerParameter = {
   containerId: string;
@@ -57,11 +54,14 @@ const Terminal = () => {
 
   const handleChange = (e: any) => {
     const create = async () => {
-      const response = await createDirective(modelId, command);
-      const data = await response.json();
-      directives
-        ? setDirectives((prevState) => [...(prevState ?? []), data])
-        : setDirectives((prevState) => [data]);
+      try {
+        const data = await createDirective(modelId, command);
+        directives
+          ? setDirectives((prevState) => [...(prevState ?? []), data])
+          : setDirectives((prevState) => [data]);
+      } catch (error) {
+        console.log(error);
+      }
     };
     switch (e.domEvent.keyCode) {
       // Enter
@@ -118,12 +118,15 @@ const Terminal = () => {
   };
 
   useEffect(() => {
-    const get = async() => {
-      const response = await getDirectives(modelId);
-      const data = await response.json();
-      setDirectives(data)
-    }
-    get()
+    const get = async () => {
+      try {
+        const data = await getDirectives(modelId);
+        setDirectives(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    get();
   }, [modelId]);
 
   return (

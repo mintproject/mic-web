@@ -1,20 +1,23 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Notebooks from "../components/Notebooks";
-import ModelList from "../components/ModelList";
-import ComponentSummary from "../components/ModelSummary";
+import ModelSummary from "../components/ModelSummary";
 import Terminal from "../components/Terminal";
-import Welcome from "../components/Welcome";
-import Menu from "../components/Menu";
+import Welcome from "../pages/Welcome";
+import Menu from "../components/Header";
 import { PrivateRoute } from "./utils";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { CircularProgress } from "@mui/material";
-import IPythonModelRegister from "../components/IPythonModelRegister";
 import CommandLine from "../components/CommandLine";
-import IPython from "../components/IPython";
+import IPython2Cwl from "../components/Analyzers/Ipython2cwl";
 import ModelSelector from "../components/ModelSelector";
+import { COMPONENTS_URL, DASHBOARD, MODELS, MODEL_NOTEBOOKS, ANALYZE_PAGE, NOTEBOOKS_PAGE } from "../constants/routes";
+import { ComponentNew } from "../pages/ComponentNew";
+import Analyze from "../pages/Analyze";
+import Notebooks from "../pages/Notebooks";
+import ComponentSummary from "../pages/ComponentSummary";
+import SubmitComponent from "../pages/SubmitComponent";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
@@ -49,17 +52,42 @@ export const AppRouter = () => {
       <BrowserRouter>
         <Menu />
         <Switch>
-          <Route exact path="/" component={Welcome} />
-          <PrivateRoute exact path="/models" component={ModelSelector} />
+          <Route 
+            exact 
+            path={DASHBOARD}
+            component={Welcome} 
+          />
           <PrivateRoute
             exact
-            path="/models/:modelId/:versionId/notebooks"
-            component={IPython}
+            path={COMPONENTS_URL}
+            component={ComponentNew}
+            />
+
+          <PrivateRoute 
+            exact path={MODELS}
+            component={ModelSelector}
           />
-          <PrivateRoute exact path="/commandLine" component={CommandLine} />
           <PrivateRoute
-            path="/components/:componentId"
+            exact
+            path={NOTEBOOKS_PAGE}
+            component={Notebooks}
+          />
+          <PrivateRoute
+            exact
+            path={ANALYZE_PAGE}
+            component={Analyze}
+          />
+          <PrivateRoute
+            exact path="/commandLine"
+            component={CommandLine}
+          />
+          <PrivateRoute
+            exact path="/components/:componentId"
             component={ComponentSummary}
+          />
+          <PrivateRoute
+            exact path="/components/:componentId/submit"
+            component={SubmitComponent}
           />
           <Route path="/term/:modelId/:containerId">
             {" "}

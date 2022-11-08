@@ -3,7 +3,7 @@ import { XTerm } from "xterm-for-react";
 import "./terminal.css";
 import { AttachAddon } from "xterm-addon-attach";
 //import { FitAddon } from "xterm-addon-fit";
-import { IPYTHON_WS } from "./environment";
+import { IPYTHON_WS } from "../constants/environment";
 
 interface IProps {
   taskId: string;

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import { COMMAND_LINE, COMPONENTS_URL} from "../constants/routes";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -46,16 +47,8 @@ function Welcome() {
             <Grid container spacing={3}>
               <Grid item xs>
                 <Item>
-                  <p> A Python Jupyter Notebook </p>
-                  <Button component={Link} to={"/models"} variant="contained">
-                    Start
-                  </Button>
-                </Item>
-              </Grid>
-              <Grid item xs>
-                <Item>
-                  <p> My model using CLI </p>
-                  <Button component={Link} to={'/commandLine'} variant="outlined">
+                  <p> Create a new Software Component for my Model </p>
+                  <Button component={Link} to={COMPONENTS_URL} variant="contained">
                     Start
                   </Button>
                 </Item>

@@ -1,11 +1,12 @@
 import { Button} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { Directive} from "../types/mat";
+import { Directive } from "../models/Directive";
 
 interface Props {
   directive: Directive;
 }
+
 const DirectiveItem = (props: Props) => {
 
   const toogle = (directiveId: string | undefined) => {

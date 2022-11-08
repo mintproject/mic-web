@@ -6,6 +6,7 @@ import keycloak from "./keycloak";
 import { AppRouter } from "./routes";
 import { ContextProvider } from "./contexts/ModelCatalog";
 import { MicContextProvider } from "./contexts/MicContext";
+import { UserContextProvider } from "./contexts/UserContext";
 
 const theme = createTheme({
   palette: {
@@ -27,11 +28,13 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ReactKeycloakProvider authClient={keycloak}>
-        <ContextProvider>
-          <MicContextProvider>
-            <AppRouter />
-          </MicContextProvider>
-        </ContextProvider>
+        <UserContextProvider>
+          <ContextProvider>
+            <MicContextProvider>
+              <AppRouter />
+            </MicContextProvider>
+          </ContextProvider>
+        </UserContextProvider>
       </ReactKeycloakProvider>
     </ThemeProvider>
   );

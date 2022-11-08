@@ -7,8 +7,11 @@ export interface CommandLineObject  {
     cwlVersion: string,
     hints: Hints,
     inputs: IdMap<Input>,
+    outputs: IdMap<Output>,
     requirements: Requirements,
 }
+
+
 
 export interface Hints {
     DockerRequirement: DockerRequirement
@@ -26,6 +29,16 @@ export interface Input{
 interface InputBinding {
     position?: string
     prefix?: string
+}
+
+export interface Output {
+    outputBinding: OutputBinding
+    type: string    
+}
+
+
+interface OutputBinding {
+    glob: string
 }
 
 interface Requirements {
