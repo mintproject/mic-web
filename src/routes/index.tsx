@@ -1,7 +1,6 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import ModelSummary from "../components/ModelSummary";
-import Terminal from "../components/Terminal";
 import Welcome from "../pages/Welcome";
 import Menu from "../components/Header";
 import { PrivateRoute } from "./utils";
@@ -89,10 +88,6 @@ export const AppRouter = () => {
             exact path="/components/:componentId/submit"
             component={SubmitComponent}
           />
-          <Route path="/term/:modelId/:containerId">
-            {" "}
-            <Terminal />{" "}
-          </Route>
         </Switch>
       </BrowserRouter>
     </>
