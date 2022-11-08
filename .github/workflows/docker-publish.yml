@@ -11,8 +11,8 @@ on:
 env:
   REPOSITORY_MAIN_BRANCH: "master"
   DOCKER_IMAGE_REPOSITORY: mintproject
-  DOCKER_IMAGE_NAME: mic-web 
-  DOCKER_FILE: "Dockerfile"
+  DOCKER_IMAGE_NAME: mic-web
+  DOCKER_FILE: ".Dockerfile-actions"
 
 jobs:
   test:
