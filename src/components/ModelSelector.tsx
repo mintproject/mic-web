@@ -1,7 +1,6 @@
 import { Button, Container, Paper, Typography, InputLabel, Select, SelectChangeEvent, MenuItem, CircularProgress, Link } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import { Model, SoftwareVersion, ModelCategory, ModelConfiguration } from "@mintproject/modelcatalog_client";
-import { ModelContext } from "../contexts/ModelCatalog";
+import { Model, SoftwareVersion, ModelCategory, ModelConfiguration, Configuration } from "@mintproject/modelcatalog_client";
 import Box from "@mui/material/Box";
 import isUrl from "validator/lib/isURL";
 import ListSubheader from "@mui/material/ListSubheader";
@@ -12,28 +11,36 @@ import { getIdFromUrl } from "../utils/utils";
 import { convertModelConfiguration } from "../adapters/modelCatalog";
 import { Component } from "../models/Component";
 import { REACT_APP_MODEL_CATALOG_API } from "../constants/environment";
+import { getCategories, getModels, getVersions, saveConfiguration, saveModel, saveVersion } from "../services/ModelCatalogService";
+import { useKeycloak } from "@react-keycloak/web";
 
 interface Props {
     component: Component;
     modelConfiguration: ModelConfiguration;
 }
 
-const ModelSelector = (props: Props) => {
-    const {
-        models,
-        versions,
-        categories,
-        loading,
-        setLoading,
-        saved,
-        setSelectedModel,
-        selectedModel,
-        setSelectedVersion,
-        selectedVersion,
-        saveModelConfigurationFull: saveVersion,
-        saveConfiguration,
-    } = useContext(ModelContext);
+interface KeycloakTokenParsedLocal {
+    acr?: string;
+    aud?: string;
+    auth_time?: string;
+    azp?: string;
+    email: string;
+    email_verified?: boolean;
+    exp?: number;
+}
 
+const ModelSelector = (props: Props) => {
+    const [models, setModels] = useState<Model[]>([]);
+    const [versions, setVersions] = useState<SoftwareVersion[]>([]);
+    const [categories, setCategories] = useState<ModelCategory[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [saving, setSaving] = useState<boolean>(false);
+    const [saved, setSaved] = useState<boolean>(false);
+    const [selectedModel, setSelectedModel] = useState<Model | undefined>(undefined);
+    const [selectedVersion, setSelectedVersion] = useState<SoftwareVersion | undefined>(undefined);
+    const [username, setUsername] = useState<string>("");
+    const [cfg, setCfg] = useState<Configuration>();
+    const [modelConfigurationUrl, setModelConfigurationUrl] = useState<string>("");
     const [modelName, setModelName] = useState("");
     const [modelDescription, setModelDescription] = useState("");
     const [versionNumber, setVersionNumber] = useState("");
@@ -44,6 +51,36 @@ const ModelSelector = (props: Props) => {
     const [versionUrl, setVersionUrl] = useState("");
     const mintModelCatalogUrl = new URL(REACT_APP_MODEL_CATALOG_API);
     const mintUiUrl: string = `${mintModelCatalogUrl.protocol}//${mintModelCatalogUrl.hostname.replace("api.models.", "")}`;
+    const { keycloak, initialized } = useKeycloak();
+    const [error, setError] = useState<string>("");
+
+    useEffect(() => {
+        if (initialized === true && keycloak.authenticated) {
+            const tokenParsed = keycloak.idTokenParsed as KeycloakTokenParsedLocal;
+            setUsername(tokenParsed.email);
+            let cfg: Configuration = new Configuration({
+                basePath: REACT_APP_MODEL_CATALOG_API,
+                accessToken: keycloak.idToken,
+            });
+            setCfg(cfg);
+        }
+    }, [initialized]);
+
+    useEffect(() => {
+        const fetch = async () => {
+            if (cfg && username && models.length + versions.length === 0) {
+                setLoading(true);
+                const m = await getModels(cfg, username);
+                const v = await getVersions(cfg, username);
+                const c = await getCategories(cfg, username);
+                setModels(m);
+                setVersions(v);
+                setCategories(c);
+                setLoading(false);
+            }
+        };
+        fetch();
+    }, [cfg, username]);
 
     // handle events
     useEffect(() => {
@@ -67,9 +104,50 @@ const ModelSelector = (props: Props) => {
         }
     }, [versionNumber]);
 
+    const formValid = () => {
+        return selectedModel && selectedVersion && modelUrl && versionUrl && username;
+    };
+
+    const buttonDisabled = () => {
+        return !formValid() || saving;
+    };
+
     function handleSubmit(event: React.FormEvent<EventTarget>) {
+        const update = async () => {
+            setSaving(true);
+            if (formValid() && cfg && selectedModel && selectedVersion && username) {
+                const modelConfigurationRequest = { ...props.modelConfiguration, hasModelCategory: [{ id: categoryUrl }] };
+                const modelConfiguration = await saveConfiguration(modelConfigurationRequest, cfg, username);
+                const softwareVersion = await saveVersion(modelConfiguration, cfg, username, selectedModel, selectedVersion);
+                if (softwareVersion) {
+                    const model = await saveModel(softwareVersion, selectedModel, cfg, username);
+                    if (model && model.id && modelConfiguration && modelConfiguration.id && softwareVersion && softwareVersion.id) {
+                        const url =
+                            mintUiUrl +
+                            `/any/models/explore/` +
+                            getIdFromUrl(model.id) +
+                            `/` +
+                            getIdFromUrl(softwareVersion.id) +
+                            `/` +
+                            getIdFromUrl(modelConfiguration.id);
+                        setModelConfigurationUrl(url);
+                        setSaving(false);
+                        setSaved(true);
+                    } else {
+                        setError("Error saving model");
+                        setSaving(false);
+                    }
+                } else {
+                    setError("Error saving version");
+                    setSaving(false);
+                }
+            } else {
+                setError("Error saving configuration");
+                setSaving(false);
+            }
+        };
         event.preventDefault();
-        saveVersion(props.modelConfiguration);
+        update();
     }
 
     function handleCategoryChange(event: SelectChangeEvent<String>) {
@@ -219,19 +297,29 @@ const ModelSelector = (props: Props) => {
                 </Typography>
 
                 <Typography variant="body1" color="inherit">
-                Choose an existing model or create a new one
+                    Choose an existing model or create a new one
                 </Typography>
 
                 <Typography variant="body2" color="inherit">
-                    Information obtained from: 
-                    <Link underline="hover"  href={mintUiUrl}>
-                          MINT Model Catalog 
+                    Information obtained from:
+                    <Link underline="hover" href={mintUiUrl}>
+                        MINT Model Catalog
                     </Link>
                 </Typography>
                 <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-                    {loading ? (
-                        <div style={{ display: "flex", justifyContent: "center" }}>
+                    {loading || saving ? (
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                             <CircularProgress />
+                            {saving && (
+                                <Typography variant="body2" color="inherit">
+                                    Saving your information
+                                </Typography>
+                            )}
+                            {loading && (
+                                <Typography variant="body2" color="inherit">
+                                    Loading information from Model Catalog {REACT_APP_MODEL_CATALOG_API}{" "}
+                                </Typography>
+                            )}
                         </div>
                     ) : (
                         <Box sx={{ marginBottom: "10px" }}>
@@ -273,7 +361,7 @@ const ModelSelector = (props: Props) => {
                         </Box>
                     )}
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button type="submit" disabled={loading || modelUrl === ""} variant="contained">
+                        <Button type="submit" disabled={buttonDisabled()} variant="contained">
                             Set
                         </Button>
                     </Box>
@@ -284,15 +372,29 @@ const ModelSelector = (props: Props) => {
 
     //Model catalog API related
     // return renderEditMode()
-    return saved && selectedModel && selectedModel.id && selectedVersion && selectedVersion.id ? (
-        <div>
-            <Typography variant="h6" color="inherit">
-                Saved 
-                <Typography variant="body2" color="inherit">
-                    To change the model, go to the <Link underline="hover" href={mintUiUrl}>MINT Model Catalog</Link>
+    return saved ? (
+        error ? (
+            <div>
+                <Typography variant="h6" color="inherit">
+                    Error
                 </Typography>
-            </Typography>
-        </div>
+                <Typography variant="body1" color="inherit">
+                    {error}
+                </Typography>
+            </div>
+        ) : (
+            <div>
+                <Typography variant="h6" color="inherit">
+                    Saved
+                    <Typography variant="body2" color="inherit">
+                        To change the model, go to the{" "}
+                        <Link underline="hover" href={modelConfigurationUrl}>
+                            MINT Model Catalog
+                        </Link>
+                    </Typography>
+                </Typography>
+            </div>
+        )
     ) : (
         renderEditMode()
     );

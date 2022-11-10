@@ -44,12 +44,23 @@ export const convertOutputDataset = (model: Component): DatasetSpecification[] =
 };
 
 export const convertModelConfiguration = (component: Component): ModelCatalogModelConfiguration => {
+    const website : string = component.gitRepo?.url || '';
+    let usageNotes = "Generated using the MIC Tool";
+    if (website) {
+        usageNotes += " using the url: " + website
+    }
+
     const newModelConfiguration: ModelCatalogModelConfiguration = {
         label: [component?.name as string],
         description: [component?.description as string],
         hasInput: convertInputsDataset(component as Component),
+        hasOutput: convertOutputDataset(component as Component),
         hasParameter: convertParameterToModelCatalog(component as Component),
-        hasComponentLocation: [component.hasComponentLocation!]
+        hasComponentLocation: [component.hasComponentLocation!],
+        hasSoftwareImage: [{ label: [component?.dockerImage!], availableInRegistry: ["https://hub.docker.com/repository/docker/"] }],
+        hasUsageNotes: [usageNotes],
+        website: [website],
     };
     return newModelConfiguration;
 };
+ 

@@ -11,14 +11,12 @@ import ParameterGrid from "../components/grids/ParameterGrid";
 import { COMPONENTS_URL } from "../constants/routes";
 import SubmitComponent from "./SubmitComponent";
 import { convertModelConfiguration } from "../adapters/modelCatalog";
-import { ModelContext } from "../contexts/ModelCatalog";
 
 interface Props {
     componentId: string;
 }
 
 const ComponentSummary = () => {
-    const { saveConfiguration } = useContext(ModelContext);
     const props = useParams<Props>();
     const history = useHistory();
     const [component, setComponent] = useState<Component>();
@@ -41,7 +39,6 @@ const ComponentSummary = () => {
             setSaving(true);
             try {
                 const response = await updateComponent(component as Component);
-                setSuccess(true);
             } catch (error) {
                 let message;
                 setSaving(false);
@@ -53,7 +50,11 @@ const ComponentSummary = () => {
         saveComponent();
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault()
+        const { name, value } = event.target;
+        setComponent((prevModel) => ({ ...prevModel, [name]: value }));
+    };
 
     return (
         <Container maxWidth="md">
@@ -99,7 +100,7 @@ const ComponentSummary = () => {
                             {component?.parameters ? <ParameterGrid parameters={component.parameters} /> : "None"}
 
                             <h3> Outputs </h3>
-                            {component?.outputs && <OutputGrid outputs={component.outputs}/>}
+                            {component?.outputs && <OutputGrid outputs={component.outputs} />}
                             {/* {<OutputModalNew id={component?.id as string} />} */}
 
                             <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>

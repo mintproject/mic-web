@@ -1,7 +1,5 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ModelSummary from "../components/ModelSummary";
-import Welcome from "../pages/Welcome";
 import Menu from "../components/Header";
 import { PrivateRoute } from "./utils";
 import Container from "@mui/material/Container";
@@ -17,6 +15,7 @@ import Analyze from "../pages/Analyze";
 import Notebooks from "../pages/Notebooks";
 import ComponentSummary from "../pages/ComponentSummary";
 import SubmitComponent from "../pages/SubmitComponent";
+import Welcome from "../pages/Welcome";
 
 export const AppRouter = () => {
   const { initialized } = useKeycloak();
