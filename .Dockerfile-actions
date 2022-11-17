@@ -1,4 +1,4 @@
-FROM nginx:mainline
+FROM nginx:1.23.2
 WORKDIR /usr/share/nginx/html
 COPY ./build/ ./
 RUN sed -i "s/es6\///g" index.html
