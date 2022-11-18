@@ -54,7 +54,7 @@ export const Notebooks = (props: any) => {
                     <>
                         <Typography variant="h4">Notebook</Typography>
                         <Typography variant="body1">
-                            Notebook {notebooks?.length > 1 && `s`} detected on: {component?.gitRepo?.url}
+                            Notebook{notebooks?.length > 1 && `s`} detected on: {component?.gitRepo?.url}
                         </Typography>
                         <CardGrid>
                             {notebooks.map((notebook) => {
