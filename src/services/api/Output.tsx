@@ -18,3 +18,15 @@ export const createOutputs = async (modelId: string, outputs: Output[]) => {
         }
     }
   };
+
+
+
+export const deleteOutputs = async (modelId: string) => {
+    const url = `${REACT_APP_MIC_API}${COMPONENTS_URL}/${modelId}/outputs`;
+    const response = await fetch(url, {
+        method: "DELETE",
+    });
+    if (!response.ok) {
+        throw new Error(`Error deleting parameters: ${response.statusText}`);
+    }
+};

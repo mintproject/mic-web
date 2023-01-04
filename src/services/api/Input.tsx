@@ -17,3 +17,13 @@ export const createInputs = async (modelId: string, inputs: Input[]) => {
         }
     }
   };
+
+export const deleteInputs = async (modelId: string) => {
+    const url = `${REACT_APP_MIC_API}${COMPONENTS_URL}/${modelId}/inputs`;
+    const response = await fetch(url, {
+        method: "DELETE",
+    });
+    if (!response.ok) {
+        throw new Error(`Error deleting parameters: ${response.statusText}`);
+    }
+};

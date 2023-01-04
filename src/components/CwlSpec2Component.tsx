@@ -4,9 +4,9 @@ import convertCwl from "../adapters/cwl";
 import { Component } from "../models/Component";
 import { Notebook } from "../models/Notebook";
 import { updateComponent } from "../services/api/Component";
-import { createInputs } from "../services/api/Input";
-import { createOutputs } from "../services/api/Output";
-import { createParameters } from "../services/api/Parameter";
+import { createInputs, deleteInputs } from "../services/api/Input";
+import { createOutputs, deleteOutputs } from "../services/api/Output";
+import { createParameters, deleteParameters} from "../services/api/Parameter";
 
 interface Props {
     component: Component;
@@ -27,6 +27,10 @@ const CwlSpec2Component = (props: Props) => {
             setStatus("Converting CWL to Model Catalog component");
             const spec = await response.text();
             if (notebook.spec) {
+                await deleteInputs(component.id!)
+                await deleteOutputs(component.id!)
+                await deleteParameters(component.id!)
+
                 const tmpComponent = convertCwl(component, spec, notebook.spec);
                 setNewComponent(tmpComponent);
                 setStatus("Updating Model Catalog component");
