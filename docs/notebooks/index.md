@@ -18,4 +18,7 @@ For software written in Python, the MIC process can be simplified by using a Jup
     The entire notebook should be executable without user input.
 
 - Git repository: The notebook should be available in a public GitHub repository.
-- Binder-ready repository: Prepare your repository for Binder (requires a requirements.txt or environment.yml file). Please read [Get started with Binder](https://mybinder.readthedocs.io/en/latest/introduction.html#what-is-a-binder).
+
+## Next steps
+
+[In the next step](prepare_binder), you will learn how to create a Binder-ready repository. This is a excellent way to test your notebook and make sure it is ready to be used by the MIC.

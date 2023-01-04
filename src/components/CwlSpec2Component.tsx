@@ -18,6 +18,9 @@ const CwlSpec2Component = (props: Props) => {
     const [newComponent, setNewComponent] = useState<Component>();
     const [status, setStatus] = useState("idle");
     const history = useHistory();
+
+    //TODO: Delete all component inputs, outputs and parameters before updating
+
     useEffect(() => {
         const download = async () => {
             const response = await fetch(notebook.spec);

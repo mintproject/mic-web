@@ -53,3 +53,7 @@ https://github.com/mosoriob/simpleModel-1/blob/master/simpleModelAnnotated.ipynb
 ## Check your work
 
 Run your notebook through [https://mybinder.org](https://mybinder.org) and make sure it executes without error or human input at any step.
+
+## Next steps
+
+[In the next step](../convert_repository), you will learn how to use MIC-web.

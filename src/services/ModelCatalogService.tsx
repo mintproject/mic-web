@@ -51,7 +51,7 @@ const saveParameters = async (modelConfiguration: ModelConfiguration, cfg: Confi
     if (modelConfiguration.hasParameter) {
         for (let i = 0; i < modelConfiguration.hasParameter.length; i++) {
             const param = modelConfiguration.hasParameter[i];
-            param.position = [i];
+            param.position = [i + 1];
             promises.push(
                 api.parametersPost({
                     parameter: param,
@@ -74,7 +74,7 @@ const saveInputs = async (modelConfiguration: ModelConfiguration, cfg: Configura
     if (modelConfiguration.hasInput) {
         for (let i = 0; i < modelConfiguration.hasInput.length; i++) {
             const input = modelConfiguration.hasInput[i];
-            input.position = [i];
+            input.position = [i + 1];
             promises.push(
                 api.datasetspecificationsPost({
                     datasetSpecification: input,
@@ -97,7 +97,7 @@ const saveOutputs = async (modelConfiguration: ModelConfiguration, cfg: Configur
     if (modelConfiguration.hasOutput) {
         for (let i = 0; i < modelConfiguration.hasOutput.length; i++) {
             const input = modelConfiguration.hasOutput[i];
-            input.position = [i];
+            input.position = [i + 1];
             promises.push(
                 api.datasetspecificationsPost({
                     datasetSpecification: input,

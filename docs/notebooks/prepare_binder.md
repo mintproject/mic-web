@@ -64,5 +64,12 @@ somebody clicks a link.
 
 If your environment files and content files are not housed in the same branch of the same repository, see [this documentation](https://mybinder.readthedocs.io/en/latest/howto/external_binder_setup.html) on how to generate a URL.
 
+
+
+
 Now that you're acquainted with Binder, see [this page](https://mybinder.readthedocs.io/en/latest/introduction.html)
 for more information about what you can do with it.
+
+## Next steps
+
+[In the next step](../expose_inputs_outputs), you will learn to expose the parameters, inputs and outputs of your model.
