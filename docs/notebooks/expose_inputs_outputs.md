@@ -10,14 +10,12 @@ The basic date types are:
     - CWLBooleanInput
     - CWLStringInput
     - CWLIntInput
+    - CWLFloatInput
 
 - Outputs:
     - CWLFilePathOutput
     - CWLDumpableFile
     - CWLDumpableBinaryFile
-
-!!! warning
-    the `float` datatype is currently not supported. Use a string input and coerce the string to float within the notebook.
 
 In our example, we have 3 parameters `a`, `b` and `c`, an input file (which represents `x`) and a output file (which represents `y`)
 
