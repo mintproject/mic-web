@@ -51,6 +51,7 @@ const saveParameters = async (modelConfiguration: ModelConfiguration, cfg: Confi
     if (modelConfiguration.hasParameter) {
         for (let i = 0; i < modelConfiguration.hasParameter.length; i++) {
             const param = modelConfiguration.hasParameter[i];
+            param.position = [i];
             promises.push(
                 api.parametersPost({
                     parameter: param,
@@ -73,6 +74,7 @@ const saveInputs = async (modelConfiguration: ModelConfiguration, cfg: Configura
     if (modelConfiguration.hasInput) {
         for (let i = 0; i < modelConfiguration.hasInput.length; i++) {
             const input = modelConfiguration.hasInput[i];
+            input.position = [i];
             promises.push(
                 api.datasetspecificationsPost({
                     datasetSpecification: input,
@@ -95,6 +97,7 @@ const saveOutputs = async (modelConfiguration: ModelConfiguration, cfg: Configur
     if (modelConfiguration.hasOutput) {
         for (let i = 0; i < modelConfiguration.hasOutput.length; i++) {
             const input = modelConfiguration.hasOutput[i];
+            input.position = [i];
             promises.push(
                 api.datasetspecificationsPost({
                     datasetSpecification: input,
@@ -172,8 +175,6 @@ const getCategories = async (cfg: Configuration, user: string) => {
     return await cApi.modelcategorysGet({ username: user });
 };
 
-
-
 const saveModel = async (softwareVersion: SoftwareVersion, selectedModel: Model, cfg: Configuration, user: string) => {
     let mApi: ModelApi = new ModelApi(cfg);
     if (softwareVersion && selectedModel) {
@@ -202,11 +203,4 @@ const saveModel = async (softwareVersion: SoftwareVersion, selectedModel: Model,
     }
 };
 
-export  {
-    saveConfiguration,
-    saveVersion,
-    getModels,
-    getVersions,
-    getCategories,
-    saveModel,
-};
+export { saveConfiguration, saveVersion, getModels, getVersions, getCategories, saveModel };
