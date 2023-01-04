@@ -165,6 +165,19 @@ jobs:
           branch: master 
           token: ${{ secrets.MINT_INSTANCES }}
 
+      - name: Update MINT TACC 
+        uses: fjogeleit/yaml-update-action@main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        with:
+          valueFile: tacc/values.yaml
+          propertyPath: "MINT.components.mic_ui.image.tag"
+          value: ${{ env.DOCKER_TAG }}
+          message: "Update mic ui"
+          repository: mintproject/mint-instances
+          workDir: infrastructure
+          branch: master 
+          token: ${{ secrets.MINT_INSTANCES }}
+          
       - name: Update MINT ISI dev
         uses: fjogeleit/yaml-update-action@main
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
