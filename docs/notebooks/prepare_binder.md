@@ -32,6 +32,14 @@ In this case, we have two important files:
     are already standards in the data science community. For a list of all
     configuration files available, see the  [Binder](https://mybinder.readthedocs.io/en/latest/using/config_files.html#config-files) page.
 
+### Fork the repository
+
+Next, we'll **fork the repository**. This will create a copy of the repository
+under your own GitHub account.
+
+-   Navigate to the [repository](https://github.com/mosoriob/simpleModel-1).
+-   Click the **Fork** button in the top-right corner of the page.
+
 
 ### Build your repository
 
