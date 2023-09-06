@@ -1,9 +1,9 @@
 ## Introduction
 
-The Model Insertion web (MIC web) is an application to assist scientists in encapsulating their softwares (e.g., models, pre-processing and post-processing codes, visualizations) in a virtual environment to ensure their execution independently of the evolution of the libraries used to support them. In addition, MIC allows scientists to expose a set of inputs and parameters of interest and to describe basic metadata information to ensure maximum reuse.
+The Model Insertion web (MIC web) is a web application to assist scientists in encapsulating their software (e.g., models, pre-processing and post-processing codes, visualizations) in a virtual environment using Binder.
 
 !!! info
-    MIC is an ALPHA version, which we are still testing and developing continuously. If you find an error or experience any issue, please report them [here](https://github.com/mintproject/mic/issues/new/choose).
+    MIC is an ALPHA version, which we are still testing and developing continuously. If you find an error or experience any issue, please report them [here](https://github.com/mintproject/mic-web/issues/new/choose).
 
 ### What is a model component?
 
